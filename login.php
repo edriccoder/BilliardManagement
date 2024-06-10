@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "
                 <script>
                     alert('Login Successfully!');
-                    window.location.href = 'http://localhost/BilliardManagement/admin_dashboard.php';
+                    window.location.href = 'http://localhost/BilliardManagement/user_dashboard.php';
                 </script>
                 "; 
             }

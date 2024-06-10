@@ -51,7 +51,7 @@
                 
                 <td colspan="3">
                     <center>
-                    <a href="login.php" >
+                    <a href="index.php" >
                         <input type="button" value="Make Appointment" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
                     </a>
                 </center>
@@ -64,7 +64,7 @@
                 </td>
             </tr>
         </table>
-        <p class="sub-text2 footer-hashen">A Web Solution by Hashen.</p>
+        <p class="sub-text2 footer-hashen">A billiard management system.</p>
     </center>
     
     </div>
