@@ -6,7 +6,7 @@
       <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
       <link rel="icon" type="image/png" href="./assets/img/favicon.png">
       <title>
-         Billiard Management
+        Billiard Management
       </title>
       <!--     Fonts and icons     -->
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -28,7 +28,7 @@
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
-      <link href="css/sb-admin-2.min.css" rel="stylesheet">
+      <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
    </head>
    <body class="g-sidenav-show  bg-gray-100">
       <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -36,7 +36,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">Admin</span>
+            <span class="ms-1 font-weight-bold text-white">User</span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
@@ -269,54 +269,97 @@
             </div>
          </div>
         <!-- Table Row -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Billiard Table</h1>
-        </div>
-         <div class="container">
-            <div class="row">
-                <div class="col-md-3 mb-4">
-                    <div class="card">
-                        <img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">
+        <div class="album py-5 bg-light">
+            <div class="card shadow mb-4">
+               <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
+                     </div>
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                           <div class="row">
+                              <?php
+                                 include 'conn.php';
+
+                                 $sqlTables = "SELECT table_number, status, table_id FROM tables";
+                                 $stmtTables = $conn->prepare($sqlTables);
+                                 $stmtTables->execute();
+                                 $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
+
+                                 $sqlUsers = "SELECT user_id, username FROM users";
+                                 $stmtUsers = $conn->prepare($sqlUsers);
+                                 $stmtUsers->execute();
+                                 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+                                 ?>
+
+                                 <div class="container">
+                                    <div class="row">
+                                       <?php
+                                       if (!empty($tables)) {
+                                             foreach ($tables as $row) {
+                                                echo '<div class="col-md-3 mb-4">';
+                                                echo '<div class="card">';
+                                                echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
+                                                echo '<div class="card-body">';
+                                                echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
+                                                echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
+                                                echo '<div class="btn-group">';
+                                                echo '<button type="button" class="btn btn-secondary" onclick=\'openBookingModal('. json_encode($row) .')\'>Book</button>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                             }
+                                       } else {
+                                             echo "0 results";
+                                       }
+                                       ?>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card">
-                        <img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card">
-                        <img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card">
-                        <img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                </div>
-                
+                     </div>
+                  </div>
+               </div>
             </div>
-        </div>
+         </div>
+         <!-- Booking Modal -->                           
+         <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                           </button>
+                        </div>
+                        <div class="modal-body">
+                           <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                              <input type="hidden" name="table_id" id="bookingTableId">
+                              <div class="form-group">
+                                 <label>User</label>
+                                 <select name="user_id" id="bookingUserId" class="form-control" required="required">
+                                    <?php foreach ($users as $user): ?>
+                                       <option value="<?= htmlspecialchars($user['user_id']) ?>"><?= htmlspecialchars($user['username']) ?></option>
+                                    <?php endforeach; ?>
+                                 </select>
+                              </div>
+                              <div class="form-group">
+                                 <label>Start Time</label>
+                                 <input type="datetime-local" name="start_time" class="form-control" required="required"/>
+                              </div>
+                              <div class="form-group">
+                                 <label>End Time</label>
+                                 <input type="datetime-local" name="end_time" class="form-control" required="required"/>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="submit" name="save" class="btn btn-primary">Book</button>
+                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+               </div>
         
          <!-- Content Row -->
          <div class="column">
@@ -410,12 +453,50 @@
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
-           var options = {
-             damping: '0.5'
-           }
-           Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            var options = {
+               damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+
+         function openBookingModal(table) {
+            console.log("openBookingModal called");
+            console.log(table);
+
+            document.getElementById('bookingTableId').value = table.table_id;
+            $('#bookingModal').modal('show');
+         }
+
       </script>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <!-- Bootstrap core JavaScript-->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+      <!-- Core plugin JavaScript-->
+      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <!-- Custom scripts for all pages-->
+      <script src="js/sb-admin-2.min.js"></script>
+
+      <!-- Page level plugins -->
+      <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+         
+      <!-- Page level custom scripts -->
+      <script src="js/demo/datatables-demo.js"></script>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
 </html>

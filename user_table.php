@@ -186,52 +186,55 @@
          <!-- End Navbar -->        
          <div class="container-fluid">
          <!-- Page Heading -->
-         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Billiard Table</h1>
-            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addTableModal'>Add Billiard Talbe</button>
-         </div>
          <!-- Content Row -->
          <div class="album py-5 bg-light">
-        <div class="container">
-          <div class="row">
-          <?php
-                  include 'conn.php';
+            <div class="card shadow mb-4">
+               <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
+                     </div>
+                        <div class="card-body">
+                           <div class="row">
+                              <?php
+                                    include 'conn.php';
 
-                  $sql = "SELECT table_number, status, table_id FROM tables";
-                  $stmt = $conn->prepare($sql);
-                  $stmt->execute();
-                  $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  ?>
-                  <div class="container">
-                     <div class="row">
-                     <?php
-                     if (!empty($tables)) {
-                        foreach ($tables as $row) {
-                           echo '<div class="col-md-4">';
-                           echo '<div class="card mb-4 box-shadow">';
-                           echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
-                           echo '<div class="card-body">';
-                           echo '<p class="card-text">'. htmlspecialchars($row["table_number"]) . '</p>';
-                           echo '<div class="d-flex justify-content-between align-items-center">';
-                           echo '<div class="btn-group">';
-                           echo '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>';
-                           echo '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>';
-                           echo '</div>';
-                           echo '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>';
-                           echo '</div>';
-                           echo '</div>';
-                           echo '</div>';
-                           echo '</div>';
-                        }
-                     } else {
-                        echo "0 results";
-                     }
-                     ?>
+                                    $sql = "SELECT table_number, status, table_id FROM tables";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->execute();
+                                    $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    ?>
+                                    <div class="container">
+                                       <div class="row">
+                                          <?php
+                                          if (!empty($tables)) {
+                                             foreach ($tables as $row) {
+                                                echo '<div class="col-md-3 mb-4">';
+                                                echo '<div class="card">';
+                                                echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
+                                                echo '<div class="card-body">';
+                                                echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
+                                                echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
+                                                echo '<div class="btn-group">';
+                                                echo '<button type="button" class="btn btn-primary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                echo '</div>';
+                                             }
+                                          } else {
+                                             echo "0 results";
+                                          }
+                                          ?>
+                                       </div>
+                                    </div>                                                             
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
                      </div>
                   </div>
                </div>
             </div>
-        </div>
+         </div>
       </div>
         
          <!-- Content Row -->
@@ -322,40 +325,7 @@
                </div>
             </div>
          </div>
-      </div>
-      <!-- Modal for add table -->
-      <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="addTableModalLabel">Add Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action = "addTable.php" enctype="multipart/form-data">
-                        <div class="form-group">
-                              <label>Table Name</label>
-                              <input type="text" name="tablename" class="form-control" required="required"/>
-                        </div>
-                        <div class="form-group">
-                              <label>Table Status</label>
-                              <select name="status" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
-            </div>
-         </div>
-      </div>
+      </div>  
       <!-- Modal for edit table -->            
       <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">

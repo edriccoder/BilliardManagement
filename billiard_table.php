@@ -22,6 +22,7 @@
       <!-- Nepcha Analytics (nepcha.com) -->
       <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
       <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
       <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -215,21 +216,21 @@
                      <?php
                      if (!empty($tables)) {
                         foreach ($tables as $row) {
-                           echo '<div class="col-md-4">';
-                           echo '<div class="card mb-4 box-shadow">';
-                           echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
-                           echo '<div class="card-body">';
-                           echo '<p class="card-text">'. htmlspecialchars($row["table_number"]) . '</p>';
-                           echo '<div class="d-flex justify-content-between align-items-center">';
-                           echo '<div class="btn-group">';
-                           echo '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>';
-                           echo '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>';
-                           echo '</div>';
-                           echo '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>';
-                           echo '</div>';
-                           echo '</div>';
-                           echo '</div>';
-                           echo '</div>';
+                           echo '<div class="col-md-4">' .
+                                    '<div class="card mb-4 box-shadow">' .
+                                          '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
+                                          '<div class="card-body">' .
+                                             '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
+                                             '<div class="d-flex justify-content-between align-items-center">' .
+                                                '<div class="btn-group">' .
+                                                      '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
+                                                      '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
+                                                '</div>' .
+                                                '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
+                                             '</div>' .
+                                          '</div>' .
+                                    '</div>' .
+                                 '</div>';
                         }
                      } else {
                         echo "0 results";
