@@ -22,58 +22,66 @@
       <!-- Nepcha Analytics (nepcha.com) -->
       <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
       <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
       <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
-
    </head>
    <body class="g-sidenav-show  bg-gray-100">
-      <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
          <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">User</span>
+            <span class="ms-1 font-weight-bold text-white">Admin</span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
             <li class="nav-item">
-               <a class="nav-link text-white " href="user_dashboard.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">dashboard</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Dashboard</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="user_table.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">table_view</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Billiard Tables</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="booking_user.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">book</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Booking</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="./notifications.html">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">notifications</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Notifications</span>
-               </a>
-            </li>
+                  <a class="nav-link text-white " href="admin_dashboard.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">dashboard</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Dashboard</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="billiard_table.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">table_view</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Billiard Tables</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="manage_user.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">person</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Manage User and Cashier</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="billiard_table.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">book</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Booking</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="./notifications.html">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">notifications</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Notifications</span>
+                  </a>
+               </li>
             <li class="nav-item mt-3">
          </ul>
       </aside>
@@ -184,189 +192,140 @@
             </div>
          </nav>
          <!-- End Navbar -->        
-         <div class="container-fluid">
          <!-- Page Heading -->
-         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-         </div>
          <!-- Content Row -->
-         <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2">
-                   <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">person</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize">Total Users</p>
-                      <h4 class="mb-0">0</h4>
-                   </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                   <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than last week</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2">
-                   <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">leaderboard</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize">Billiard Table</p>
-                      <h4 class="mb-0">10</h4>
-                   </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                   <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than last month</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                   <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">book</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize ">Bookings</p>
-                      <h4 class="mb-0 ">0</h4>
-                   </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                   <p class="mb-0 "><span class="text-success text-sm font-weight-bolder">+1% </span>than yesterday</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card ">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                   <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">report</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize ">Reports</p>
-                      <h4 class="mb-0 ">0</h4>
-                   </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                   <p class="mb-0 ">Just updated</p>
-                </div>
-             </div>
-            </div>
-         </div>
-        <!-- Table Row -->
-            <div class="card shadow mb-4">
-               <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
-                     </div>
-                        <div class="card-body">
-                           <div class="row">
-                           <?php
-                              include 'conn.php';
+         <?php
+            include 'conn.php';
 
-                              if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                                 $tableId = $_POST['table_id'];
-                                 $tableName = $_POST['table_name'];
-                                 $userId = $_POST['user_id'];
-                                 $startTime = $_POST['start_time'];
-                                 $endTime = $_POST['end_time'];
+            // Retrieve data from users with role 'user'
+            $sql_users = "SELECT user_id, name, email, username FROM users WHERE role = 'user'";
+            $stmt_users = $conn->prepare($sql_users);
+            $stmt_users->execute();
+            $users = $stmt_users->fetchAll(PDO::FETCH_ASSOC);
 
-                                 $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status) VALUES (?, ?, ?, ?, ?, 'Pending')";
-                                 $stmt = $conn->prepare($sql);
-                                 $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
+            // Retrieve data from users with role 'cashier'
+            $sql_cashiers = "SELECT user_id, name, email, username FROM users WHERE role = 'cashier'";
+            $stmt_cashiers = $conn->prepare($sql_cashiers);
+            $stmt_cashiers->execute();
+            $cashiers = $stmt_cashiers->fetchAll(PDO::FETCH_ASSOC);
+            ?>
 
-                              }
-
-                              include 'conn.php';
-
-                              $sqlTables = "SELECT table_number, status, table_id FROM tables";
-                              $stmtTables = $conn->prepare($sqlTables);
-                              $stmtTables->execute();
-                              $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
-
-                              $sqlUsers = "SELECT user_id, username FROM users";
-                              $stmtUsers = $conn->prepare($sqlUsers);
-                              $stmtUsers->execute();
-                              $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
-                              ?>
-
-                              <div class="container">
-                                 <div class="row">
-                                    <?php
-                                    if (!empty($tables)) {
-                                          foreach ($tables as $row) {
-                                             echo '<div class="col-md-3 mb-4">';
-                                             echo '<div class="card">';
-                                             echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
-                                             echo '<div class="card-body">';
-                                             echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
-                                             echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
-                                             echo '<div class="btn-group">';
-                                             echo '<button type="button" class="btn btn-primary" onclick=\'openBookingModal('. json_encode($row) .')\'>Book</button>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                          }
-                                    } else {
-                                          echo "0 results";
-                                    }
-                                    ?>
-                                 </div>
-                              </div>
-                           </div>
+            <!-- Container for Users -->
+            <div class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card my-4">
+                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                    <h6 class="text-white text-capitalize ps-3">Users</h6>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
+                                                <th class="text-secondary opacity-7"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            if (!empty($users)) {
+                                                foreach ($users as $user) {
+                                                    echo '<tr>' .
+                                                            '<td>' .
+                                                                '<div class="d-flex px-2 py-1">' .
+                                                                    '<div class="d-flex flex-column justify-content-center">' .
+                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($user["name"]) . '</h6>' .
+                                                                    '</div>' .
+                                                                '</div>' .
+                                                            '</td>' .
+                                                            '<td>' .
+                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["email"]) . '</p>' .
+                                                            '</td>' .
+                                                            '<td>' .
+                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["username"]) . '</p>' .
+                                                            '</td>' .
+                                                            '<td class="align-middle">' .
+                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
+                                                                'Edit' .
+                                                                '</a>' .
+                                                            '</td>' .
+                                                        '</tr>';
+                                                }
+                                            } else {
+                                                echo '<tr><td colspan="4">No users found</td></tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card my-4">
+                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                    <h6 class="text-white text-capitalize ps-3">Cashiers</h6>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pb-2">
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
+                                                <th class="text-secondary opacity-7"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            if (!empty($cashiers)) {
+                                                foreach ($cashiers as $cashier) {
+                                                    echo '<tr>' .
+                                                            '<td>' .
+                                                                '<div class="d-flex px-2 py-1">' .
+                                                                    '<div class="d-flex flex-column justify-content-center">' .
+                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($cashier["name"]) . '</h6>' .
+                                                                    '</div>' .
+                                                                '</div>' .
+                                                            '</td>' .
+                                                            '<td>' .
+                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["email"]) . '</p>' .
+                                                            '</td>' .
+                                                            '<td>' .
+                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["username"]) . '</p>' .
+                                                            '</td>' .
+                                                            '<td class="align-middle">' .
+                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
+                                                                'Edit' .
+                                                                '</a>' .
+                                                            '</td>' .
+                                                        '</tr>';
+                                                }
+                                            } else {
+                                                echo '<tr><td colspan="4">No cashiers found</td></tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-         <!-- Booking Modal -->                           
-         <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-               <div class="modal-content">
-                  <form method="POST" action="">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bookingModalLabel">Book Table</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <label for="userId">User</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select class="form-control" id="userId" name="user_id">
-                        <?php
-                        foreach ($users as $user) {
-                           echo '<option value="'.htmlspecialchars($user["user_id"]).'">'.htmlspecialchars($user["username"]).'</option>';
-                        }
-                        ?>
-                        </select>
-                     </div>
-                     <label for="startTime">Start Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" class="form-control" id="startTime" name="start_time" required>
-                     </div>
-                     <label for="endTime">End Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" class="form-control" id="endTime" name="end_time" required>
-                     </div>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary">Book</button>
-                  </div>
-                  </form>
-               </div>
-            </div>
-         </div>
+        </div>
+        
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -456,6 +415,74 @@
             </div>
          </div>
       </div>
+      <!-- Modal for add table -->
+      <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addTableModalLabel">Add Billiard Table</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action = "addTable.php" enctype="multipart/form-data">
+                        <div class="form-group">
+                              <label>Table Name</label>
+                              <input type="text" name="tablename" class="form-control" required="required"/>
+                        </div>
+                        <div class="form-group">
+                              <label>Table Status</label>
+                              <select name="status" class="form-control" required="required">
+                                 <option value="Available">Available</option>
+                                 <option value="Occupied">Occupied</option>
+                                 <option value="Under Maintenance">Under Maintenance</option>
+                              </select>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Save</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
+      <!-- Modal for edit table -->            
+      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
+                        <input type="hidden" name="table_id" id="editTableId">
+                        <div class="form-group">
+                              <label>Table Name</label>
+                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
+                        </div>
+                        <div class="form-group">
+                              <label>Table Status</label>
+                              <select name="status" id="editTableStatus" class="form-control" required="required">
+                                 <option value="Available">Available</option>
+                                 <option value="Occupied">Occupied</option>
+                                 <option value="Under Maintenance">Under Maintenance</option>
+                              </select>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Save</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -465,16 +492,17 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function openBookingModal(table) {
-            console.log("openBookingModal called");
+         function openEditModal(table) {
+            console.log("openEditModal called");
             console.log(table);
 
-            document.getElementById('bookingTableId').value = table.table_id;
-            document.getElementById('bookingTableName').value = table.table_number; 
-            $('#bookingModal').modal('show');
+            document.getElementById('editTableId').value = table.table_id;
+            document.getElementById('editTableName').value = table.table_number;
+            document.getElementById('editTableStatus').value = table.status;
+            $('#editTableModal').modal('show');
          }
-
       </script>
+
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

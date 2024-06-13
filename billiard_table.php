@@ -22,14 +22,13 @@
       <!-- Nepcha Analytics (nepcha.com) -->
       <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
       <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
       <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
-      <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
+      
    </head>
    <body class="g-sidenav-show  bg-gray-100">
    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -60,7 +59,7 @@
                   </a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link text-white " href="./profile.html">
+                  <a class="nav-link text-white " href="manage_user.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>
                      </div>
@@ -200,48 +199,51 @@
             <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addTableModal'>Add Billiard Talbe</button>
          </div>
          <!-- Content Row -->
-         <div class="album py-5 bg-light">
-        <div class="container">
-          <div class="row">
-          <?php
-                  include 'conn.php';
-
-                  $sql = "SELECT table_number, status, table_id FROM tables";
-                  $stmt = $conn->prepare($sql);
-                  $stmt->execute();
-                  $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  ?>
+            <div class="card shadow mb-4">
+               <div class="card-header py-3">                
                   <div class="container">
                      <div class="row">
                      <?php
-                     if (!empty($tables)) {
-                        foreach ($tables as $row) {
-                           echo '<div class="col-md-4">' .
-                                    '<div class="card mb-4 box-shadow">' .
-                                          '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
-                                          '<div class="card-body">' .
-                                             '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
-                                             '<div class="d-flex justify-content-between align-items-center">' .
-                                                '<div class="btn-group">' .
-                                                      '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
-                                                      '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
+                              include 'conn.php';
+
+                              $sql = "SELECT table_number, status, table_id FROM tables";
+                              $stmt = $conn->prepare($sql);
+                              $stmt->execute();
+                              $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                              ?>
+                              <div class="container">
+                                 <div class="row">
+                                 <?php
+                                 if (!empty($tables)) {
+                                    foreach ($tables as $row) {
+                                       echo '<div class="col-md-4">' .
+                                                '<div class="card mb-4 box-shadow">' .
+                                                      '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
+                                                      '<div class="card-body">' .
+                                                         '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
+                                                         '<div class="d-flex justify-content-between align-items-center">' .
+                                                            '<div class="btn-group">' .
+                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
+                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
+                                                            '</div>' .
+                                                            '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
+                                                         '</div>' .
+                                                      '</div>' .
                                                 '</div>' .
-                                                '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
-                                             '</div>' .
-                                          '</div>' .
-                                    '</div>' .
-                                 '</div>';
-                        }
-                     } else {
-                        echo "0 results";
-                     }
-                     ?>
-                     </div>
+                                             '</div>';
+                                    }
+                                 } else {
+                                    echo "0 results";
+                                 }
+                                 ?>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
                   </div>
                </div>
             </div>
-        </div>
-      </div>
+         </div>
         
          <!-- Content Row -->
          <div class="column">
@@ -344,12 +346,12 @@
                   </div>
                   <div class="modal-body">
                      <form method="POST" action = "addTable.php" enctype="multipart/form-data">
-                        <div class="form-group">
-                              <label>Table Name</label>
-                              <input type="text" name="tablename" class="form-control" required="required"/>
+                        <label class="form-label">Table Name</label>
+                        <div class="input-group input-group-outline my-3">
+                           <input type="text" name="tablename" class="form-control" required="required"/>
                         </div>
-                        <div class="form-group">
-                              <label>Table Status</label>
+                        <label>Table Status</label>
+                        <div class="input-group input-group-outline my-3">                             
                               <select name="status" class="form-control" required="required">
                                  <option value="Available">Available</option>
                                  <option value="Occupied">Occupied</option>
@@ -378,12 +380,12 @@
                   <div class="modal-body">
                      <form method="POST" action="editTable.php" enctype="multipart/form-data">
                         <input type="hidden" name="table_id" id="editTableId">
-                        <div class="form-group">
-                              <label>Table Name</label>
+                        <label>Table Name</label>
+                        <div class="input-group input-group-outline my-3">
                               <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
                         </div>
-                        <div class="form-group">
-                              <label>Table Status</label>
+                        <label>Table Status</label>
+                        <div class="input-group input-group-outline my-3">                             
                               <select name="status" id="editTableStatus" class="form-control" required="required">
                                  <option value="Available">Available</option>
                                  <option value="Occupied">Occupied</option>
@@ -432,21 +434,15 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <!-- Bootstrap JS -->
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-
       <!-- Core plugin JavaScript-->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
       <!-- Custom scripts for all pages-->
       <script src="js/sb-admin-2.min.js"></script>
-
       <!-- Page level plugins -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-         
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>     
       <!-- Page level custom scripts -->
       <script src="js/demo/datatables-demo.js"></script>
-
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>

@@ -28,7 +28,6 @@
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
-      <link href="css/sb-admin-2.min.css" rel="stylesheet"> 
    </head>
    <body class="g-sidenav-show  bg-gray-100">
    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -59,7 +58,7 @@
                   </a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link text-white " href="user_table.php">
+                  <a class="nav-link text-white " href="booking_user.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">book</i>
                      </div>
@@ -187,25 +186,30 @@
          <div class="container-fluid">
          <!-- Page Heading -->
          <!-- Content Row -->
-         <div class="album py-5 bg-light">
-            <div class="card shadow mb-4">
+         <div class="card shadow mb-4">
                <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
                      </div>
                         <div class="card-body">
                            <div class="row">
                               <?php
-                                    include 'conn.php';
+                                 include 'conn.php';
 
-                                    $sql = "SELECT table_number, status, table_id FROM tables";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                    ?>
-                                    <div class="container">
-                                       <div class="row">
-                                          <?php
-                                          if (!empty($tables)) {
+                                 $sqlTables = "SELECT table_number, status, table_id FROM tables";
+                                 $stmtTables = $conn->prepare($sqlTables);
+                                 $stmtTables->execute();
+                                 $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
+
+                                 $sqlUsers = "SELECT user_id, username FROM users";
+                                 $stmtUsers = $conn->prepare($sqlUsers);
+                                 $stmtUsers->execute();
+                                 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+                                 ?>
+
+                                 <div class="container">
+                                    <div class="row">
+                                       <?php
+                                       if (!empty($tables)) {
                                              foreach ($tables as $row) {
                                                 echo '<div class="col-md-3 mb-4">';
                                                 echo '<div class="card">';
@@ -214,18 +218,17 @@
                                                 echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
                                                 echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
                                                 echo '<div class="btn-group">';
-                                                echo '<button type="button" class="btn btn-primary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>';
+                                                echo '<button type="button" class="btn btn-primary" onclick=\'openBookingModal('. json_encode($row) .')\'>Book</button>';
                                                 echo '</div>';
                                                 echo '</div>';
                                                 echo '</div>';
                                                 echo '</div>';
                                              }
-                                          } else {
+                                       } else {
                                              echo "0 results";
-                                          }
-                                          ?>
-                                       </div>
-                                    </div>                                                             
+                                       }
+                                       ?>
+                                    </div>
                                  </div>
                               </div>
                            </div>
@@ -326,40 +329,46 @@
             </div>
          </div>
       </div>  
-      <!-- Modal for edit table -->            
-      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
+      <!-- Modal for book table -->            
+      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                           </button>
+                        </div>
+                        <div class="modal-body">
+                           <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                              <input type="hidden" name="table_id" id="bookingTableId">
+                              <label>User</label>
+                              <div class="input-group input-group-outline my-3">                             
+                                 <select name="user_id" id="bookingUserId" class="form-control" required="required">
+                                    <?php foreach ($users as $user): ?>
+                                       <option value="<?= htmlspecialchars($user['user_id']) ?>"><?= htmlspecialchars($user['username']) ?></option>
+                                    <?php endforeach; ?>
+                                 </select>
+                              </div>
+                              <label>Start Time</label>
+                              <div class="input-group input-group-outline my-3">                                
+                                 <input type="datetime-local" name="start_time" class="form-control" required="required"/>
+                              </div>
+                              <label>End Time</label>
+                              <div class="input-group input-group-outline my-3">                               
+                                 <input type="datetime-local" name="end_time" class="form-control" required="required"/>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="submit" name="save" class="btn btn-primary">Book</button>
+                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                              </div>
+                           </form>
+                        </div>
+                     </div>
                   </div>
-                  <div class="modal-body">
-                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
-                        <input type="hidden" name="table_id" id="editTableId">
-                        <div class="form-group">
-                              <label>Table Name</label>
-                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
-                        </div>
-                        <div class="form-group">
-                              <label>Table Status</label>
-                              <select name="status" id="editTableStatus" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+               </div>
             </div>
          </div>
-      </div>
 
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
@@ -370,14 +379,13 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
+         function openBookingModal(table) {
+            console.log("openBookingModal called");
             console.log(table);
 
-            document.getElementById('editTableId').value = table.table_id;
-            document.getElementById('editTableName').value = table.table_number;
-            document.getElementById('editTableStatus').value = table.status;
-            $('#editTableModal').modal('show');
+            document.getElementById('bookingTableId').value = table.table_id;
+            $('#bookingModal').modal('show');
+   
          }
       </script>
 
