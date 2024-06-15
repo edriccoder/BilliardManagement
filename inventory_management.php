@@ -6,7 +6,7 @@
       <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
       <link rel="icon" type="image/png" href="./assets/img/favicon.png">
       <title>
-        Billiard Management
+         Billiard Management
       </title>
       <!--     Fonts and icons     -->
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -26,11 +26,12 @@
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
+
       <!-- Custom styles for this template-->
       
    </head>
    <body class="g-sidenav-show  bg-gray-100">
-   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+      <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
          <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
@@ -66,7 +67,7 @@
                   </a>
                </li> 
             <li class="nav-item">
-                  <a class="nav-link text-white " href="manage_user.php">
+                  <a class="nav-link text-white " href="inventory_management.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">inventory</i>
                      </div>
@@ -202,56 +203,85 @@
          <div class="container-fluid">
          <!-- Page Heading -->
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Billiard Table</h1>
-            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addTableModal'>Add Billiard Talbe</button>
+            <h1 class="h3 mb-0 text-gray-800">Inventory Management</h1>
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addItemModal'>Add Item</button>
          </div>
          <!-- Content Row -->
-            <div class="card shadow mb-4">
-               <div class="card-header py-3">                
-                  <div class="container">
-                     <div class="row">
-                     <?php
-                              include 'conn.php';
+         <?php
+            include 'conn.php';
 
-                              $sql = "SELECT table_number, status, table_id FROM tables";
-                              $stmt = $conn->prepare($sql);
-                              $stmt->execute();
-                              $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                              ?>
-                              <div class="container">
-                                 <div class="row">
-                                 <?php
-                                 if (!empty($tables)) {
-                                    foreach ($tables as $row) {
-                                       echo '<div class="col-md-4">' .
-                                                '<div class="card mb-4 box-shadow">' .
-                                                      '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
-                                                      '<div class="card-body">' .
-                                                         '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
-                                                         '<div class="d-flex justify-content-between align-items-center">' .
-                                                            '<div class="btn-group">' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
-                                                            '</div>' .
-                                                            '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
-                                                         '</div>' .
-                                                      '</div>' .
-                                                '</div>' .
-                                             '</div>';
+            // Handle form submission
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+               $itemName = $_POST['item_name'];
+               $quantity = $_POST['quantity'];
+               $description = $_POST['description'];
+               $image = $_FILES['image']['name'];
+               $targetDir = "inventory_image/";
+               $targetFile = $targetDir . basename($_FILES["image"]["name"]);
+               $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+               // Validate image file type
+               if ($imageFileType == "jpg" || $imageFileType == "jpeg" || $imageFileType == "png") {
+                  // Upload image
+                  if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+                        $sql = "INSERT INTO inventory (item_name, quantity, description, image) VALUES (?, ?, ?, ?)";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute([$itemName, $quantity, $description, $image]);
+                  }
+               }
+            }
+
+            // Retrieve inventory items
+            $sqlInventory = "SELECT item_id, item_name, quantity, description, image FROM inventory";
+            $stmtInventory = $conn->prepare($sqlInventory);
+            $stmtInventory->execute();
+            $inventoryItems = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
+            ?>
+         <div class="card shadow mb-4">
+            <div class="row gx-4 mb-2">
+                <div class="col-12 mt-4">
+                  <div class="row">
+                     </div>
+                     <div class="mb-5 ps-3"></div>
+                        <div class="container">
+                        <div class="row">
+                              <?php
+                              if (!empty($inventoryItems)) {
+                                    foreach ($inventoryItems as $item) {
+                                       echo '<div class="col-xl-3 col-md-6 mb-xl-0 mb-4">';
+                                       echo '<div class="card card-blog card-plain">';
+                                       echo '<div class="card-header p-0 mt-n4 mx-3">';
+                                       echo '<a class="d-block shadow-xl border-radius-xl">';
+                                       echo '<img src="inventory_image/' . htmlspecialchars($item["image"]) . '" alt="Item image" class="img-fluid shadow border-radius-xl">';
+                                       echo '</a>';
+                                       echo '</div>';
+                                       echo '<div class="card-body p-3">';
+                                       echo '<p class="mb-0 text-sm">Item ID: ' . htmlspecialchars($item["item_id"]) . '</p>';
+                                       echo '<a href="javascript:;">';
+                                       echo '<h5>' . htmlspecialchars($item["item_name"]) . '</h5>';
+                                       echo '</a>';
+                                       echo '<p class="mb-4 text-sm">Quantity: ' . htmlspecialchars($item["quantity"]) . '</p>';
+                                       echo '<p class="mb-4 text-sm">Description: ' . htmlspecialchars($item["description"]) . '</p>';
+                                       echo '<div class="d-flex align-items-center justify-content-between">';
+                                       echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0">Edit</button>';
+                                       echo '<button type="button" class="btn btn-outline-danger btn-sm mb-0">Delete</button>';
+                                       echo '</div>';
+                                       echo '</div>';
+                                       echo '</div>';
+                                       echo '</div>';
                                     }
-                                 } else {
-                                    echo "0 results";
-                                 }
-                                 ?>
-                                 </div>
-                              </div>
+                              } else {
+                                    echo '<div class="col-12"><p>No items found</p></div>';
+                              }
+                              ?>
                            </div>
                         </div>
+                     </div>
                   </div>
-               </div>
+                </div>
+            </div>
             </div>
          </div>
-        
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -341,95 +371,56 @@
             </div>
          </div>
       </div>
-      <!-- Modal for add table -->
-      <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="addTableModalLabel">Add Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action = "addTable.php" enctype="multipart/form-data">
-                        <label class="form-label">Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="text" name="tablename" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+      <!-- Add Item Modal -->
+      <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+               <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                     </div>
+                     <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data">
+                           <label for="item_name">Item Name</label>
+                           <div class="input-group input-group-outline my-3">                            
+                                 <input type="text" class="form-control" id="item_name" name="item_name" required>
+                           </div>
+                           <label for="quantity">Quantity</label>
+                           <div class="input-group input-group-outline my-3">                              
+                                 <input type="number" class="form-control" id="quantity" name="quantity" required>
+                           </div>
+                           <label for="description">Description</label>
+                           <div class="input-group input-group-outline my-3">                               
+                                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                           </div>
+                           <label for="image">Image</label>
+                           <div class="input-group input-group-outline my-3">
+                                 <input type="file" class="form-control-file" id="image" name="image" accept=".jpg, .jpeg, .png" required>
+                           </div>
+                           <button type="submit" class="btn btn-primary">Add Item</button>
+                        </form>
+                     </div>
+               </div>
             </div>
          </div>
-      </div>
-      <!-- Modal for edit table -->            
-      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
-                        <input type="hidden" name="table_id" id="editTableId">
-                        <label>Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" id="editTableStatus" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
-            </div>
-         </div>
-      </div>
-
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-               damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+           var options = {
+             damping: '0.5'
+           }
+           Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
-            console.log(table);
-
-            document.getElementById('editTableId').value = table.table_id;
-            document.getElementById('editTableName').value = table.table_number;
-            document.getElementById('editTableStatus').value = table.status;
-            $('#editTableModal').modal('show');
-         }
+         $(document).ready(function() {
+            $('#addItemModal').on('hidden.bs.modal', function () {
+               $('#addItemForm')[0].reset();
+               $('#addItemForm').modal('show');
+            });
+         });
       </script>
-
-
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

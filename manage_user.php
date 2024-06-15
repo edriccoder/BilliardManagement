@@ -22,7 +22,6 @@
       <!-- Nepcha Analytics (nepcha.com) -->
       <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
       <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
       <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -42,46 +41,54 @@
          <hr class="horizontal light mt-0 mb-2">
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
+         <li class="nav-item">
+               <a class="nav-link text-white " href="admin_dashboard.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">dashboard</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Dashboard</span>
+               </a>
+            </li>
             <li class="nav-item">
-                  <a class="nav-link text-white " href="admin_dashboard.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">dashboard</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Dashboard</span>
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="billiard_table.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">table_view</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Billiard Tables</span>
-                  </a>
-               </li>
-               <li class="nav-item">
+               <a class="nav-link text-white " href="billiard_table.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">table_view</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Billiard Tables</span>
+               </a>
+            </li>
+            <li class="nav-item">
                   <a class="nav-link text-white " href="manage_user.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>
                      </div>
                      <span class="nav-link-text ms-1">Manage User and Cashier</span>
                   </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="billiard_table.php">
+               </li> 
+            <li class="nav-item">
+                  <a class="nav-link text-white " href="inventory_management.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">book</i>
+                        <i class="material-icons opacity-10">inventory</i>
                      </div>
-                     <span class="nav-link-text ms-1">Booking</span>
+                     <span class="nav-link-text ms-1">Inventory Management</span>
                   </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="./notifications.html">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">notifications</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Notifications</span>
-                  </a>
-               </li>
+               </li> 
+            <li class="nav-item">
+               <a class="nav-link text-white " href="billiard_table.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">book</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Booking</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="./notifications.html">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">notifications</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Notifications</span>
+               </a>
+            </li>
             <li class="nav-item mt-3">
          </ul>
       </aside>
