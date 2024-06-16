@@ -208,45 +208,74 @@
          </div>
          <!-- Content Row -->
          <?php
-            include 'conn.php';
+         include 'conn.php';
 
-            // Handle form submission
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-               $itemName = $_POST['item_name'];
-               $quantity = $_POST['quantity'];
-               $description = $_POST['description'];
-               $image = $_FILES['image']['name'];
-               $targetDir = "inventory_image/";
-               $targetFile = $targetDir . basename($_FILES["image"]["name"]);
-               $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+         // Handle Add/Edit/Delete form submissions
+         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $action = $_POST['action'] ?? '';
 
-               // Validate image file type
-               if ($imageFileType == "jpg" || $imageFileType == "jpeg" || $imageFileType == "png") {
-                  // Upload image
-                  if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+            $itemId = $_POST['item_id'] ?? null;
+            $itemName = $_POST['item_name'] ?? '';
+            $quantity = $_POST['quantity'] ?? 0;
+            $description = $_POST['description'] ?? '';
+            $image = $_FILES['image']['name'] ?? '';
+            $targetDir = "inventory_image/";
+            $targetFile = $targetDir . basename($image);
+            $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+            if ($action == 'add') {
+               // Validate image file type for adding a new item
+               if (in_array($imageFileType, ['jpg', 'jpeg', 'png'])) {
+                     // Upload image
+                     if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
                         $sql = "INSERT INTO inventory (item_name, quantity, description, image) VALUES (?, ?, ?, ?)";
                         $stmt = $conn->prepare($sql);
                         $stmt->execute([$itemName, $quantity, $description, $image]);
-                  }
+                     }
                }
+            } elseif ($action == 'edit') {
+               // Handle edit item details
+               if ($image) {
+                     // Validate image file type for updating the image
+                     if (in_array($imageFileType, ['jpg', 'jpeg', 'png'])) {
+                        // Upload new image
+                        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+                           $sql = "UPDATE inventory SET item_name = ?, quantity = ?, description = ?, image = ? WHERE item_id = ?";
+                           $stmt = $conn->prepare($sql);
+                           $stmt->execute([$itemName, $quantity, $description, $image, $itemId]);
+                        }
+                     }
+               } else {
+                     // Update without changing the image
+                     $sql = "UPDATE inventory SET item_name = ?, quantity = ?, description = ? WHERE item_id = ?";
+                     $stmt = $conn->prepare($sql);
+                     $stmt->execute([$itemName, $quantity, $description, $itemId]);
+               }
+            } elseif ($action == 'delete') {
+               // Handle delete item
+               $sql = "DELETE FROM inventory WHERE item_id = ?";
+               $stmt = $conn->prepare($sql);
+               $stmt->execute([$itemId]);
             }
+         }
 
-            // Retrieve inventory items
-            $sqlInventory = "SELECT item_id, item_name, quantity, description, image FROM inventory";
-            $stmtInventory = $conn->prepare($sqlInventory);
-            $stmtInventory->execute();
-            $inventoryItems = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
-            ?>
+         // Retrieve inventory items
+         $sqlInventory = "SELECT item_id, item_name, quantity, description, image FROM inventory";
+         $stmtInventory = $conn->prepare($sqlInventory);
+         $stmtInventory->execute();
+         $inventoryItems = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
+         ?>
+
+         <!-- HTML for displaying items and modals -->
          <div class="card shadow mb-4">
             <div class="row gx-4 mb-2">
-                <div class="col-12 mt-4">
-                  <div class="row">
-                     </div>
-                     <div class="mb-5 ps-3"></div>
+               <div class="col-12 mt-4">
+                     <div class="row">
+                        <div class="mb-5 ps-3"></div>
                         <div class="container">
-                        <div class="row">
-                              <?php
-                              if (!empty($inventoryItems)) {
+                           <div class="row">
+                                 <?php
+                                 if (!empty($inventoryItems)) {
                                     foreach ($inventoryItems as $item) {
                                        echo '<div class="col-xl-3 col-md-6 mb-xl-0 mb-4">';
                                        echo '<div class="card card-blog card-plain">';
@@ -263,23 +292,25 @@
                                        echo '<p class="mb-4 text-sm">Quantity: ' . htmlspecialchars($item["quantity"]) . '</p>';
                                        echo '<p class="mb-4 text-sm">Description: ' . htmlspecialchars($item["description"]) . '</p>';
                                        echo '<div class="d-flex align-items-center justify-content-between">';
-                                       echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0">Edit</button>';
-                                       echo '<button type="button" class="btn btn-outline-danger btn-sm mb-0">Delete</button>';
+                                       echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" data-target="#editItemModal" data-id="' . $item["item_id"] . '" data-name="' . htmlspecialchars($item["item_name"]) . '" data-quantity="' . $item["quantity"] . '" data-description="' . htmlspecialchars($item["description"]) . '">Edit</button>';
+                                       echo '<form method="POST" style="display:inline-block;">';
+                                       echo '<input type="hidden" name="action" value="delete">';
+                                       echo '<input type="hidden" name="item_id" value="' . $item["item_id"] . '">';
+                                       echo '<button type="submit" class="btn btn-outline-danger btn-sm mb-0">Delete</button>';
+                                       echo '</form>';
                                        echo '</div>';
                                        echo '</div>';
                                        echo '</div>';
                                        echo '</div>';
                                     }
-                              } else {
+                                 } else {
                                     echo '<div class="col-12"><p>No items found</p></div>';
-                              }
-                              ?>
+                                 }
+                                 ?>
                            </div>
                         </div>
                      </div>
-                  </div>
-                </div>
-            </div>
+               </div>
             </div>
          </div>
          <!-- Content Row -->
@@ -373,38 +404,75 @@
       </div>
       <!-- Add Item Modal -->
       <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-               <div class="modal-content">
-                     <div class="modal-header">
-                        <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                           <span aria-hidden="true">&times;</span>
-                        </button>
-                     </div>
-                     <div class="modal-body">
-                        <form method="POST" enctype="multipart/form-data">
-                           <label for="item_name">Item Name</label>
-                           <div class="input-group input-group-outline my-3">                            
-                                 <input type="text" class="form-control" id="item_name" name="item_name" required>
-                           </div>
-                           <label for="quantity">Quantity</label>
-                           <div class="input-group input-group-outline my-3">                              
-                                 <input type="number" class="form-control" id="quantity" name="quantity" required>
-                           </div>
-                           <label for="description">Description</label>
-                           <div class="input-group input-group-outline my-3">                               
-                                 <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-                           </div>
-                           <label for="image">Image</label>
-                           <div class="input-group input-group-outline my-3">
-                                 <input type="file" class="form-control-file" id="image" name="image" accept=".jpg, .jpeg, .png" required>
-                           </div>
-                           <button type="submit" class="btn btn-primary">Add Item</button>
-                        </form>
-                     </div>
-               </div>
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="add">
+                        <label for="item_name">Item Name</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="item_name" name="item_name" required>
+                        </div>
+                        <label for="quantity">Quantity</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        </div>
+                        <label for="description">Description</label>
+                        <div class="input-group input-group-outline my-3">
+                              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <label for="image">Image</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="file" class="form-control-file" id="image" name="image" accept=".jpg, .jpeg, .png" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                     </form>
+                  </div>
             </div>
          </div>
+      </div>
+      <!-- Edit Item Modal -->
+      <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="item_id" id="edit_item_id">
+                        <label for="edit_item_name">Item Name</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="edit_item_name" name="item_name" required>
+                        </div>
+                        <label for="edit_quantity">Quantity</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="number" class="form-control" id="edit_quantity" name="quantity" required>
+                        </div>
+                        <label for="edit_description">Description</label>
+                        <div class="input-group input-group-outline my-3">
+                              <textarea class="form-control" id="edit_description" name="description" rows="3" required></textarea>
+                        </div>
+                        <label for="edit_image">Image</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="file" class="form-control-file" id="edit_image" name="image" accept=".jpg, .jpeg, .png">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Item</button>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -415,9 +483,23 @@
          }
 
          $(document).ready(function() {
-            $('#addItemModal').on('hidden.bs.modal', function () {
-               $('#addItemForm')[0].reset();
-               $('#addItemForm').modal('show');
+            $('#editItemModal').on('show.bs.modal', function(event) {
+               var button = $(event.relatedTarget);
+               var itemId = button.data('id');
+               var itemName = button.data('name');
+               var quantity = button.data('quantity');
+               var description = button.data('description');
+
+               var modal = $(this);
+               modal.find('#edit_item_id').val(itemId);
+               modal.find('#edit_item_name').val(itemName);
+               modal.find('#edit_quantity').val(quantity);
+               modal.find('#edit_description').val(description);
+            });
+
+            // Reset form when Add Item modal is closed
+            $('#addItemModal').on('hidden.bs.modal', function() {
+               $(this).find('form')[0].reset();
             });
          });
       </script>
