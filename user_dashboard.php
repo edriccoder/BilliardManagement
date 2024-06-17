@@ -63,7 +63,7 @@
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
-                  <span class="nav-link-text ms-1">Booking</span>
+                  <span class="nav-link-text ms-1">My Booking</span>
                </a>
             </li>
             <li class="nav-item">
@@ -190,76 +190,7 @@
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
          </div>
          <!-- Content Row -->
-         <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2">
-                   <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">person</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize">Total Users</p>
-                      <h4 class="mb-0">0</h4>
-                   </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                   <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than last week</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2">
-                   <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary shadow text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">leaderboard</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize">Billiard Table</p>
-                      <h4 class="mb-0">10</h4>
-                   </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                   <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than last month</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card  mb-2">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                   <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">book</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize ">Bookings</p>
-                      <h4 class="mb-0 ">0</h4>
-                   </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                   <p class="mb-0 "><span class="text-success text-sm font-weight-bolder">+1% </span>than yesterday</p>
-                </div>
-             </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-              <div class="card ">
-                <div class="card-header p-3 pt-2 bg-transparent">
-                   <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                      <i class="material-icons opacity-10">report</i>
-                   </div>
-                   <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize ">Reports</p>
-                      <h4 class="mb-0 ">0</h4>
-                   </div>
-                </div>
-                <hr class="horizontal my-0 dark">
-                <div class="card-footer p-3">
-                   <p class="mb-0 ">Just updated</p>
-                </div>
-             </div>
-            </div>
-         </div>
+
         <!-- Table Row -->
             <div class="card shadow mb-4">
                <div class="card-header py-3">

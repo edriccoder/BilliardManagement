@@ -213,7 +213,6 @@
          // Handle Add/Edit/Delete form submissions
          if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $action = $_POST['action'] ?? '';
-
             $itemId = $_POST['item_id'] ?? null;
             $itemName = $_POST['item_name'] ?? '';
             $quantity = $_POST['quantity'] ?? 0;
@@ -265,51 +264,47 @@
          $stmtInventory->execute();
          $inventoryItems = $stmtInventory->fetchAll(PDO::FETCH_ASSOC);
          ?>
-
          <!-- HTML for displaying items and modals -->
          <div class="card shadow mb-4">
-            <div class="row gx-4 mb-2">
-               <div class="col-12 mt-4">
-                     <div class="row">
-                        <div class="mb-5 ps-3"></div>
-                        <div class="container">
-                           <div class="row">
-                                 <?php
-                                 if (!empty($inventoryItems)) {
-                                    foreach ($inventoryItems as $item) {
-                                       echo '<div class="col-xl-3 col-md-6 mb-xl-0 mb-4">';
-                                       echo '<div class="card card-blog card-plain">';
-                                       echo '<div class="card-header p-0 mt-n4 mx-3">';
-                                       echo '<a class="d-block shadow-xl border-radius-xl">';
-                                       echo '<img src="inventory_image/' . htmlspecialchars($item["image"]) . '" alt="Item image" class="img-fluid shadow border-radius-xl">';
-                                       echo '</a>';
-                                       echo '</div>';
-                                       echo '<div class="card-body p-3">';
-                                       echo '<p class="mb-0 text-sm">Item ID: ' . htmlspecialchars($item["item_id"]) . '</p>';
-                                       echo '<a href="javascript:;">';
-                                       echo '<h5>' . htmlspecialchars($item["item_name"]) . '</h5>';
-                                       echo '</a>';
-                                       echo '<p class="mb-4 text-sm">Quantity: ' . htmlspecialchars($item["quantity"]) . '</p>';
-                                       echo '<p class="mb-4 text-sm">Description: ' . htmlspecialchars($item["description"]) . '</p>';
-                                       echo '<div class="d-flex align-items-center justify-content-between">';
-                                       echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" data-target="#editItemModal" data-id="' . $item["item_id"] . '" data-name="' . htmlspecialchars($item["item_name"]) . '" data-quantity="' . $item["quantity"] . '" data-description="' . htmlspecialchars($item["description"]) . '">Edit</button>';
-                                       echo '<form method="POST" style="display:inline-block;">';
-                                       echo '<input type="hidden" name="action" value="delete">';
-                                       echo '<input type="hidden" name="item_id" value="' . $item["item_id"] . '">';
-                                       echo '<button type="submit" class="btn btn-outline-danger btn-sm mb-0">Delete</button>';
-                                       echo '</form>';
-                                       echo '</div>';
-                                       echo '</div>';
-                                       echo '</div>';
-                                       echo '</div>';
-                                    }
-                                 } else {
-                                    echo '<div class="col-12"><p>No items found</p></div>';
+            <div class="card-body">
+               <div class="table-responsive">
+                     <table class="table table-hover">
+                        <thead>
+                           <tr>
+                                 <th scope="col">Item ID</th>
+                                 <th scope="col">Item Name</th>
+                                 <th scope="col">Quantity</th>
+                                 <th scope="col">Description</th>
+                                 <th scope="col">Image</th>
+                                 <th scope="col">Actions</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <?php
+                           if (!empty($inventoryItems)) {
+                                 foreach ($inventoryItems as $item) {
+                                    echo '<tr>';
+                                    echo '<th scope="row">' . htmlspecialchars($item["item_id"]) . '</th>';
+                                    echo '<td>' . htmlspecialchars($item["item_name"]) . '</td>';
+                                    echo '<td>' . htmlspecialchars($item["quantity"]) . '</td>';
+                                    echo '<td>' . htmlspecialchars($item["description"]) . '</td>';
+                                    echo '<td><img src="inventory_image/' . htmlspecialchars($item["image"]) . '" alt="Item image" class="img-fluid shadow border-radius-xl" style="max-width: 100px;"></td>';
+                                    echo '<td class="align-middle">';
+                                    echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" onclick=\'openEditModal(' . json_encode($item) . ')\'>Edit</button>';
+                                    echo '<form method="POST" style="display:inline-block;">';
+                                    echo '<input type="hidden" name="action" value="delete">';
+                                    echo '<input type="hidden" name="item_id" value="' . $item["item_id"] . '">';
+                                    echo '<button type="submit" class="btn btn-outline-danger btn-sm mb-0">Delete</button>';
+                                    echo '</form>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                  }
-                                 ?>
-                           </div>
-                        </div>
-                     </div>
+                           } else {
+                                 echo '<tr><td colspan="6">No items found</td></tr>';
+                           }
+                           ?>
+                        </tbody>
+                     </table>
                </div>
             </div>
          </div>
@@ -476,32 +471,24 @@
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
-           var options = {
-             damping: '0.5'
-           }
-           Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            var options = {
+                  damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         $(document).ready(function() {
-            $('#editItemModal').on('show.bs.modal', function(event) {
-               var button = $(event.relatedTarget);
-               var itemId = button.data('id');
-               var itemName = button.data('name');
-               var quantity = button.data('quantity');
-               var description = button.data('description');
+         function openEditModal(item) {
+            console.log("editItemModal called");
+            console.log(item);
 
-               var modal = $(this);
-               modal.find('#edit_item_id').val(itemId);
-               modal.find('#edit_item_name').val(itemName);
-               modal.find('#edit_quantity').val(quantity);
-               modal.find('#edit_description').val(description);
-            });
+            document.getElementById('edit_item_id').value = item.item_id;
+            document.getElementById('edit_item_name').value = item.item_name;
+            document.getElementById('edit_quantity').value = item.quantity;
+            document.getElementById('edit_description').value = item.description;
+            document.getElementById('edit_image').value = ''; // Clear file input
 
-            // Reset form when Add Item modal is closed
-            $('#addItemModal').on('hidden.bs.modal', function() {
-               $(this).find('form')[0].reset();
-            });
-         });
+            $('#editItemModal').modal('show');
+         }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

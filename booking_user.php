@@ -63,7 +63,7 @@
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
-                  <span class="nav-link-text ms-1">Booking</span>
+                  <span class="nav-link-text ms-1">My Booking</span>
                </a>
             </li>
             <li class="nav-item">
@@ -188,61 +188,61 @@
          <!-- Page Heading -->      
         <!-- Table Row -->
         <?php
-            include 'conn.php';
+         include 'conn.php';
 
-            // Retrieve booking data
-            $sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings";
-            $stmtBookings = $conn->prepare($sqlBookings);
-            $stmtBookings->execute();
-            $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
+         // Retrieve booking data
+         $sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings";
+         $stmtBookings = $conn->prepare($sqlBookings);
+         $stmtBookings->execute();
+         $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
 
-            // Retrieve user data for display
-            $sqlUsers = "SELECT user_id, username FROM users";
-            $stmtUsers = $conn->prepare($sqlUsers);
-            $stmtUsers->execute();
-            $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+         // Retrieve user data for display
+         $sqlUsers = "SELECT user_id, username FROM users";
+         $stmtUsers = $conn->prepare($sqlUsers);
+         $stmtUsers->execute();
+         $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
 
-            // Create a map for user_id to username
-            $userMap = [];
-            foreach ($users as $user) {
-                $userMap[$user['user_id']] = $user['username'];
-            }
-            ?>
-            <div class="card">
-                <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Booking Information</h6>
-                </div>
-                <div class="card-body pt-4 p-3">
-                    <ul class="list-group">
-                        <?php
-                        if (!empty($bookings)) {
-                            foreach ($bookings as $booking) {
-                                echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                                echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                                echo '<div class="d-flex flex-column">';
-                                echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                                echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                                echo '</div>';
-                                echo '<div class="ms-auto text-end">';
-                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                                echo '<a class="btn btn-link text-dark px-3 mb-0" href="edit_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                                echo '</div>';
-                                echo '</li>';
-                            }
-                        } else {
-                            echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                            echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
-                            echo '</div>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </ul>
-                </div>
+         // Create a map for user_id to username
+         $userMap = [];
+         foreach ($users as $user) {
+            $userMap[$user['user_id']] = $user['username'];
+         }
+         ?>
+         <div class="card">
+            <div class="card-header pb-0 px-3">
+               <h6 class="mb-0">Booking Information</h6>
             </div>
+            <div class="card-body pt-4 p-3">
+               <ul class="list-group">
+                     <?php
+                     if (!empty($bookings)) {
+                        foreach ($bookings as $booking) {
+                           echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                           echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
+                           echo '<div class="d-flex flex-column">';
+                           echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
+                           echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                           echo '</div>';
+                           echo '<div class="ms-auto text-end">';
+                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" data-id="' . htmlspecialchars($booking["booking_id"]) . '" data-user="' . htmlspecialchars($booking["user_id"]) . '" data-start="' . htmlspecialchars($booking["start_time"]) . '" data-end="' . htmlspecialchars($booking["end_time"]) . '"><i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                           echo '</div>';
+                           echo '</li>';
+                        }
+                     } else {
+                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<div class="d-flex flex-column">';
+                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                        echo '</div>';
+                        echo '</li>';
+                     }
+                     ?>
+               </ul>
+            </div>
+         </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -332,6 +332,44 @@
             </div>
          </div>
       </div>
+      <!-- Edit Modal -->
+      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bookingModalLabel">Edit Booking</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action="edit_booking.php">
+                        <input type="hidden" name="booking_id" id="editBookingId">
+                        <label>User</label>
+                        <div class="input-group input-group-outline my-3">
+                              <select name="user_id" id="editUserId" class="form-control" required>
+                                 <?php foreach ($users as $user): ?>
+                                    <option value="<?= htmlspecialchars($user['user_id']) ?>"><?= htmlspecialchars($user['username']) ?></option>
+                                 <?php endforeach; ?>
+                              </select>
+                        </div>
+                        <label>Start Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                        </div>
+                        <label>End Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Save Changes</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                     </form>
+                  </div>
+            </div>
+         </div>    
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -340,7 +378,21 @@
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+         $(document).ready(function() {
+            $('#bookingModal').on('show.bs.modal', function(event) {
+                  var button = $(event.relatedTarget);
+                  var bookingId = button.data('id');
+                  var userId = button.data('user');
+                  var startTime = button.data('start');
+                  var endTime = button.data('end');
 
+                  var modal = $(this);
+                  modal.find('#editBookingId').val(bookingId);
+                  modal.find('#editUserId').val(userId);
+                  modal.find('#editStartTime').val(startTime.replace(' ', 'T'));
+                  modal.find('#editEndTime').val(endTime.replace(' ', 'T'));
+            });
+         });
       </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
