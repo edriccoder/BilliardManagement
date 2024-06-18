@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 10, 2024 at 01:40 PM
+-- Generation Time: Jun 18, 2024 at 02:39 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -31,10 +31,48 @@ CREATE TABLE `bookings` (
   `booking_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `table_id` int(11) DEFAULT NULL,
+  `table_name` varchar(100) NOT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime NOT NULL,
-  `status` enum('Pending','Confirmed','Cancelled') NOT NULL
+  `status` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`booking_id`, `user_id`, `table_id`, `table_name`, `start_time`, `end_time`, `status`) VALUES
+(1, 1, 1, '', '2024-06-18 17:09:00', '2024-06-18 20:12:00', 'Pending'),
+(2, 1, 2, 'Table ni sam', '2024-06-14 01:07:00', '2024-06-14 02:08:00', 'Pending'),
+(7, 1, 2, 'Table ni sam', '2024-06-18 21:04:00', '2024-06-18 22:05:00', 'Pending'),
+(8, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
+(9, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
+(10, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
+(11, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE `inventory` (
+  `item_id` int(11) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `quantity` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `image` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`item_id`, `item_name`, `quantity`, `description`, `image`) VALUES
+(15, 'tako', '123', 'tako', 'tako.jpg'),
+(16, 'tako', '4555', 'tako', 'tako.jpg'),
+(18, 'tako', '123', 'tako', 'tako.jpg'),
+(19, 'ball', '123', 'ball', 'ball.jpg');
 
 -- --------------------------------------------------------
 
@@ -102,7 +140,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `name`, `email`, `username`, `password`, `role`) VALUES
-(1, 'jakezyrus', 'jakezyrus@gmail.com', 'jake', 'jake', 'user');
+(1, 'jakezyrus', 'jakezyrus@gmail.com', 'jake', 'jake', 'user'),
+(2, 'sam', 'sam', 'sam', 'sam', 'user'),
+(3, 'cris', 'cris', 'cris', 'cris', 'admin'),
+(4, 'chuy', 'chuy', 'chuy', 'chuy', 'cashier');
 
 --
 -- Indexes for dumped tables
@@ -115,6 +156,12 @@ ALTER TABLE `bookings`
   ADD PRIMARY KEY (`booking_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `table_id` (`table_id`);
+
+--
+-- Indexes for table `inventory`
+--
+ALTER TABLE `inventory`
+  ADD PRIMARY KEY (`item_id`);
 
 --
 -- Indexes for table `tables`
@@ -142,7 +189,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `inventory`
+--
+ALTER TABLE `inventory`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tables`
@@ -160,7 +213,7 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
