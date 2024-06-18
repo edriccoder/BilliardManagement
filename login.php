@@ -18,23 +18,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password === $stored_password) {
             session_start();
             $_SESSION['user_id'] = $user_id;
+            $_SESSION['username'] = $username;
+            $_SESSION['role'] = $stored_role;
 
-            if ($stored_role == 'admin') {
-                echo "
-                <script>
-                    alert('Login Successfully!');
-                    window.location.href = 'http://localhost/BilliardManagement/admin_dashboard.php';
-                </script>
-                "; 
-            } else if ($stored_role == 'user') {
-                echo "
-                <script>
-                    alert('Login Successfully!');
-                    window.location.href = 'http://localhost/BilliardManagement/user_dashboard.php';
-                </script>
-                "; 
-            }
-            
+            echo "
+            <script>
+                alert('Login Successfully!');
+                window.location.href = 'redirect_user.php';
+            </script>
+            "; 
+
         } else {
             echo "
             <script>
@@ -53,5 +46,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ";
     }
 }
-
 ?>

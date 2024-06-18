@@ -1,3 +1,22 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
+    // Redirect to login page if session variables are not set
+    header("Location: index.php");
+    exit();
+}
+$username = htmlspecialchars($_SESSION['username']);
+$user_id = htmlspecialchars($_SESSION['user_id']);
+
+// Output JSON encoded user data for JavaScript to use
+echo "<script>
+        const userData = {
+            username: '{$username}',
+            user_id: '{$user_id}'
+        };
+      </script>";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -36,7 +55,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">User</span>
+            <span class="ms-1 font-weight-bold text-white"><?php echo htmlspecialchars($username); ?></span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
@@ -213,18 +232,11 @@
                                  $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
 
                               }
-
-                              include 'conn.php';
-
                               $sqlTables = "SELECT table_number, status, table_id FROM tables";
                               $stmtTables = $conn->prepare($sqlTables);
                               $stmtTables->execute();
                               $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
 
-                              $sqlUsers = "SELECT user_id, username FROM users";
-                              $stmtUsers = $conn->prepare($sqlUsers);
-                              $stmtUsers->execute();
-                              $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
                               ?>
 
                               <div class="container">
@@ -257,47 +269,6 @@
                   </div>
                </div>
             </div>
-         <!-- Booking Modal -->                           
-         <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-               <div class="modal-content">
-                  <form method="POST" action="">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bookingModalLabel">Book Table</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <label for="userId">User</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select class="form-control" id="userId" name="user_id">
-                        <?php
-                        foreach ($users as $user) {
-                           echo '<option value="'.htmlspecialchars($user["user_id"]).'">'.htmlspecialchars($user["username"]).'</option>';
-                        }
-                        ?>
-                        </select>
-                     </div>
-                     <label for="startTime">Start Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" class="form-control" id="startTime" name="start_time" required>
-                     </div>
-                     <label for="endTime">End Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" class="form-control" id="endTime" name="end_time" required>
-                     </div>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary">Book</button>
-                  </div>
-                  </form>
-               </div>
-            </div>
-         </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -387,11 +358,51 @@
             </div>
          </div>
       </div>
+      <!-- Booking Modal -->
+      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <form method="POST" action="">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Book Table</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                        </button>
+                     </div>
+                     <div class="modal-body">
+                        <input type="hidden" id="bookingTableId" name="table_id">
+                        <input type="hidden" id="bookingTableName" name="table_name">
+                        <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+
+                        <label for="username">User</label>
+                        <div class="input-group input-group-outline my-3">
+                              <!-- Corrected the way username is displayed -->
+                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                        </div>
+
+                        <label for="startTime">Start Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" class="form-control" id="startTime" name="start_time" required>
+                        </div>
+                        <label for="endTime">End Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" class="form-control" id="endTime" name="end_time" required>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Book</button>
+                     </div>
+                  </form>
+            </div>
+         </div>
+      </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                  damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
@@ -401,10 +412,11 @@
             console.log(table);
 
             document.getElementById('bookingTableId').value = table.table_id;
-            document.getElementById('bookingTableName').value = table.table_number; 
+            document.getElementById('bookingTableName').value = table.table_number;
+            document.getElementById('username').value = userData.username;  // Ensure the username is filled correctly
+            document.getElementById('userId').value = userData.user_id;    // Ensure the user ID is filled correctly
             $('#bookingModal').modal('show');
          }
-
       </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

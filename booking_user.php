@@ -1,3 +1,32 @@
+<?php
+session_start();
+include 'conn.php';
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
+    // Redirect to login page if session variables are not set
+    header("Location: index.php");
+    exit();
+}
+
+// Escape and encode session variables for safe output
+$user_id = htmlspecialchars($_SESSION['user_id']);
+
+$sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings WHERE user_id = :user_id";
+$stmtBookings = $conn->prepare($sqlBookings);
+$stmtBookings->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$stmtBookings->execute();
+$bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
+
+// Create a map for user_id to username (if needed)
+$sqlUsers = "SELECT user_id, username FROM users";
+$stmtUsers = $conn->prepare($sqlUsers);
+$stmtUsers->execute();
+$users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+
+$userMap = [];
+foreach ($users as $user) {
+    $userMap[$user['user_id']] = $user['username'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -36,7 +65,7 @@
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">User</span>
+            <span class="ms-1 font-weight-bold text-white"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
@@ -186,28 +215,7 @@
          <!-- End Navbar -->        
          <div class="container-fluid">
          <!-- Page Heading -->      
-        <!-- Table Row -->
-        <?php
-         include 'conn.php';
-
-         // Retrieve booking data
-         $sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings";
-         $stmtBookings = $conn->prepare($sqlBookings);
-         $stmtBookings->execute();
-         $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
-
-         // Retrieve user data for display
-         $sqlUsers = "SELECT user_id, username FROM users";
-         $stmtUsers = $conn->prepare($sqlUsers);
-         $stmtUsers->execute();
-         $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
-
-         // Create a map for user_id to username
-         $userMap = [];
-         foreach ($users as $user) {
-            $userMap[$user['user_id']] = $user['username'];
-         }
-         ?>
+         <!-- Table Row -->
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Booking Information</h6>
@@ -228,7 +236,8 @@
                            echo '</div>';
                            echo '<div class="ms-auto text-end">';
                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" data-id="' . htmlspecialchars($booking["booking_id"]) . '" data-user="' . htmlspecialchars($booking["user_id"]) . '" data-start="' . htmlspecialchars($booking["start_time"]) . '" data-end="' . htmlspecialchars($booking["end_time"]) . '"><i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking["booking_id"])) . ', ' . htmlspecialchars(json_encode($booking["user_id"])) . ', ' . htmlspecialchars(json_encode($booking["start_time"])) . ', ' . htmlspecialchars(json_encode($booking["end_time"])) . ')\'>';
+                           echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
                            echo '</div>';
                            echo '</li>';
                         }
@@ -336,39 +345,39 @@
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bookingModalLabel">Edit Booking</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="edit_booking.php">
-                        <input type="hidden" name="booking_id" id="editBookingId">
-                        <label>User</label>
+               <div class="modal-header">
+                  <h5 class="modal-title" id="bookingModalLabel">Edit Booking</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">×</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form method="POST" action="edit_booking.php">
+                     <input type="hidden" id="bookingTableId" name="table_id">
+                     <input type="hidden" id="bookingTableName" name="table_name">
+                     <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+
+                     <label for="username">User</label>
                         <div class="input-group input-group-outline my-3">
-                              <select name="user_id" id="editUserId" class="form-control" required>
-                                 <?php foreach ($users as $user): ?>
-                                    <option value="<?= htmlspecialchars($user['user_id']) ?>"><?= htmlspecialchars($user['username']) ?></option>
-                                 <?php endforeach; ?>
-                              </select>
-                        </div>
-                        <label>Start Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                        </div>
-                        <label>End Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save Changes</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+                              <!-- Corrected the way username is displayed -->
+                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                        </div>   
+                     <label>Start Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                     </div>
+                     <label>End Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit" name="save" class="btn btn-primary">Save Changes</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                     </div>
+                  </form>
+               </div>
             </div>
-         </div>    
+         </div>
       </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
@@ -378,21 +387,19 @@
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
-         $(document).ready(function() {
-            $('#bookingModal').on('show.bs.modal', function(event) {
-                  var button = $(event.relatedTarget);
-                  var bookingId = button.data('id');
-                  var userId = button.data('user');
-                  var startTime = button.data('start');
-                  var endTime = button.data('end');
 
-                  var modal = $(this);
-                  modal.find('#editBookingId').val(bookingId);
-                  modal.find('#editUserId').val(userId);
-                  modal.find('#editStartTime').val(startTime.replace(' ', 'T'));
-                  modal.find('#editEndTime').val(endTime.replace(' ', 'T'));
-            });
-         });
+         const userData = <?php echo $userData; ?>;
+
+         function openEditModal(bookingId, userId, startTime, endTime, username) {
+            document.getElementById('bookingTableId').value = bookingId;
+            document.getElementById('bookingTableName').value = 'Table Name'; // Replace with actual table name if applicable
+            document.getElementById('userId').value = userId;
+            document.getElementById('username').value = userData.username;
+            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
+            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
+
+            $('#bookingModal').modal('show');
+         }
       </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
