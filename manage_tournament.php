@@ -26,11 +26,12 @@
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
+
       <!-- Custom styles for this template-->
-      
+
    </head>
    <body class="g-sidenav-show  bg-gray-100">
-   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+      <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
          <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
@@ -209,58 +210,55 @@
          </nav>
          <!-- End Navbar -->        
          <div class="container-fluid">
-         <!-- Page Heading -->
+         <!-- Page Heading -->      
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Billiard Table</h1>
-            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addTableModal'>Add Billiard Talbe</button>
-         </div>
-         <!-- Content Row -->
-            <div class="card shadow mb-4">
-               <div class="card-header py-3">                
-                  <div class="container">
-                     <div class="row">
-                     <?php
-                              include 'conn.php';
+            <h1 class="h3 mb-0 text-gray-800">Add Tournament</h1>
+            <button class='btn btn-primary' data-toggle='modal' data-target='#addTournamentModal'>Add Tournament</button>
+        </div>
+         <!-- Table Row -->
+         <?php
+            include 'conn.php';
+            $sqlTournaments = "SELECT * FROM tournaments";
+            $stmtTournaments = $conn->prepare($sqlTournaments);
+            $stmtTournaments->execute();
+            $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
+            ?>
 
-                              $sql = "SELECT table_number, status, table_id FROM tables";
-                              $stmt = $conn->prepare($sql);
-                              $stmt->execute();
-                              $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                              ?>
-                              <div class="container">
-                                 <div class="row">
-                                 <?php
-                                 if (!empty($tables)) {
-                                    foreach ($tables as $row) {
-                                       echo '<div class="col-md-4">' .
-                                                '<div class="card mb-4 box-shadow">' .
-                                                      '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
-                                                      '<div class="card-body">' .
-                                                         '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
-                                                         '<div class="d-flex justify-content-between align-items-center">' .
-                                                            '<div class="btn-group">' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
-                                                            '</div>' .
-                                                            '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
-                                                         '</div>' .
-                                                      '</div>' .
-                                                '</div>' .
-                                             '</div>';
-                                    }
-                                 } else {
-                                    echo "0 results";
-                                 }
-                                 ?>
-                                 </div>
-                              </div>
-                           </div>
+            <div class="card">
+                        <div class="card-header pb-0 px-3">
+                        <h6 class="mb-0">Tournament</h6>
                         </div>
-                  </div>
-               </div>
+                        <div class="card-body pt-4 p-3">
+                            <ul class="list-group">
+                                <?php if (!empty($tournaments)) : ?>
+                                    <?php foreach ($tournaments as $tournament) : ?>
+                                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                                <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                                <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                                <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                                            </div>
+                                            <div class="ms-auto text-end">
+                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                                <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                        <div class="d-flex flex-column">
+                                            <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
-        
+
+         
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -350,94 +348,65 @@
             </div>
          </div>
       </div>
-      <!-- Modal for add table -->
-      <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="addTableModalLabel">Add Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action = "addTable.php" enctype="multipart/form-data">
-                        <label class="form-label">Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="text" name="tablename" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+      <!-- Add Tournament Modal -->
+        <div class="modal fade" id="addTournamentModal" tabindex="-1" role="dialog" aria-labelledby="addTournamentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addTournamentForm" method="POST" action="add_tournament.php">
+                        <label for="tournamentName">Tournament Name</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" class="form-control" id="tournamentName" name="name" required>
+                            </div>
+                            <label for="startDate">Start Date</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="date" class="form-control" id="startDate" name="start_date" required>
+                            </div>
+                            <label for="endDate">End Date</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="date" class="form-control" id="endDate" name="end_date" required>
+                            </div>
+                            <label for="status">Status</label>
+                            <div class="input-group input-group-outline my-3">                          
+                                <select class="form-control" id="status" name="status" required>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="ongoing">Ongoing</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Tournament</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-      <!-- Modal for edit table -->            
-      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
-                        <input type="hidden" name="table_id" id="editTableId">
-                        <label>Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" id="editTableStatus" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
-            </div>
-         </div>
-      </div>
-
+        </div>
       <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
+        }
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
-            console.log(table);
+        const userData = <?php echo json_encode($userMap); ?>;
 
-            document.getElementById('editTableId').value = table.table_id;
-            document.getElementById('editTableName').value = table.table_number;
-            document.getElementById('editTableStatus').value = table.status;
-            $('#editTableModal').modal('show');
-         }
-      </script>
+        function openEditModal(bookingId, userId, startTime, endTime) {
+            document.getElementById('bookingId').value = bookingId;
+            document.getElementById('userId').value = userId;
+            document.getElementById('username').value = userData[userId];
+            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
+            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
 
+            $('#bookingModal').modal('show');
+        }
+        </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -450,15 +419,21 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <!-- Bootstrap JS -->
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
       <!-- Core plugin JavaScript-->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
       <!-- Custom scripts for all pages-->
       <script src="js/sb-admin-2.min.js"></script>
+
       <!-- Page level plugins -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>     
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+         
       <!-- Page level custom scripts -->
       <script src="js/demo/datatables-demo.js"></script>
+
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>

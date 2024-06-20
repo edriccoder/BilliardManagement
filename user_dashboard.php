@@ -269,6 +269,52 @@ echo "<script>
                   </div>
                </div>
             </div>
+            <div class="container-fluid">
+               <div class="card shadow mb-4">
+                     <div class="card-header pb-0 px-3">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <h6 class="mb-0">Your Transaction's</h6>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-start justify-content-md-end align-items-center">
+                           <i class="material-icons me-2 text-lg">date_range</i>
+                           <small>23 - 30 March 2020</small>
+                        </div>
+                     </div>
+                     </div>
+                     <div class="card-body pt-4 p-3">
+                     <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Newest</h6>
+                     <ul class="list-group">
+                        <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                           <div class="d-flex align-items-center">
+                           <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i class="material-icons text-lg">expand_more</i></button>
+                           <div class="d-flex flex-column">
+                              <h6 class="mb-1 text-dark text-sm">Table 1</h6>
+                              <span class="text-xs">27 March 2020, at 12:30 PM</span>
+                           </div>
+                           </div>
+                           <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+                           $ 100
+                           </div>
+                        </li>
+                        <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                           <div class="d-flex align-items-center">
+                           <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i class="material-icons text-lg">expand_less</i></button>
+                           <div class="d-flex flex-column">
+                              <h6 class="mb-1 text-dark text-sm">Table 2</h6>
+                              <span class="text-xs">27 March 2020, at 04:30 AM</span>
+                           </div>
+                           </div>
+                           <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+                           $100
+                           </div>
+                        </li>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+                                    
          <!-- Content Row -->
          <div class="column">
          </div>

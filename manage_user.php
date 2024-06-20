@@ -65,6 +65,14 @@
                      <span class="nav-link-text ms-1">Manage User and Cashier</span>
                   </a>
                </li> 
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="manage_tournament.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">flag</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Manage Tournament</span>
+                  </a>
+               </li> 
             <li class="nav-item">
                   <a class="nav-link text-white " href="inventory_management.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -74,7 +82,7 @@
                   </a>
                </li> 
             <li class="nav-item">
-               <a class="nav-link text-white " href="billiard_table.php">
+               <a class="nav-link text-white " href="admin_booking.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
@@ -89,6 +97,7 @@
                   <span class="nav-link-text ms-1">Notifications</span>
                </a>
             </li>
+            <li class="nav-item mt-3">
             <li class="nav-item mt-3">
          </ul>
       </aside>

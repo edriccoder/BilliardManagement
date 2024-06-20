@@ -1,3 +1,31 @@
+<?php
+session_start();
+include 'conn.php';
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
+    // Redirect to login page if session variables are not set
+    header("Location: index.php");
+    exit();
+}
+
+// Escape and encode session variables for safe output
+$user_id = htmlspecialchars($_SESSION['user_id']);
+
+$sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings";
+$stmtBookings = $conn->prepare($sqlBookings);
+$stmtBookings->execute();
+$bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
+
+// Create a map for user_id to username (if needed)
+$sqlUsers = "SELECT user_id, username FROM users";
+$stmtUsers = $conn->prepare($sqlUsers);
+$stmtUsers->execute();
+$users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
+
+$userMap = [];
+foreach ($users as $user) {
+    $userMap[$user['user_id']] = $user['username'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -26,11 +54,12 @@
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
+
       <!-- Custom styles for this template-->
-      
+
    </head>
    <body class="g-sidenav-show  bg-gray-100">
-   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+      <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
          <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
@@ -42,7 +71,7 @@
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
          <li class="nav-item">
-               <a class="nav-link text-white " href="admin_dashboard.php">
+               <a class="nav-link text-white " href="cashier_dashboard.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">dashboard</i>
                   </div>
@@ -50,54 +79,21 @@
                </a>
             </li>
             <li class="nav-item">
-               <a class="nav-link text-white " href="billiard_table.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">table_view</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Billiard Tables</span>
-               </a>
-            </li>
-            <li class="nav-item">
-                  <a class="nav-link text-white " href="manage_user.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">person</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Manage User and Cashier</span>
-                  </a>
-               </li> 
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="manage_tournament.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">flag</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Manage Tournament</span>
-                  </a>
-               </li> 
-            <li class="nav-item">
-                  <a class="nav-link text-white " href="inventory_management.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">inventory</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Inventory Management</span>
-                  </a>
-               </li> 
-            <li class="nav-item">
-               <a class="nav-link text-white " href="admin_booking.php">
+               <a class="nav-link text-white " href="cashier_booking.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
-                  <span class="nav-link-text ms-1">Booking</span>
+                  <span class="nav-link-text ms-1">Manage Reservation</span>
                </a>
             </li>
             <li class="nav-item">
-               <a class="nav-link text-white " href="./notifications.html">
+               <a class="nav-link text-white " href="cashier_payment.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">notifications</i>
+                     <i class="material-icons opacity-10">payment</i>
                   </div>
-                  <span class="nav-link-text ms-1">Notifications</span>
+                  <span class="nav-link-text ms-1">Billing and payments</span>
                </a>
             </li>
-            <li class="nav-item mt-3">
             <li class="nav-item mt-3">
          </ul>
       </aside>
@@ -209,58 +205,44 @@
          </nav>
          <!-- End Navbar -->        
          <div class="container-fluid">
-         <!-- Page Heading -->
-         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Billiard Table</h1>
-            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addTableModal'>Add Billiard Talbe</button>
-         </div>
-         <!-- Content Row -->
-            <div class="card shadow mb-4">
-               <div class="card-header py-3">                
-                  <div class="container">
-                     <div class="row">
+         <!-- Page Heading -->      
+         <!-- Table Row -->
+         <div class="card">
+            <div class="card-header pb-0 px-3">
+               <h6 class="mb-0">Booking Information</h6>
+            </div>
+            <div class="card-body pt-4 p-3">
+               <ul class="list-group">
                      <?php
-                              include 'conn.php';
-
-                              $sql = "SELECT table_number, status, table_id FROM tables";
-                              $stmt = $conn->prepare($sql);
-                              $stmt->execute();
-                              $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                              ?>
-                              <div class="container">
-                                 <div class="row">
-                                 <?php
-                                 if (!empty($tables)) {
-                                    foreach ($tables as $row) {
-                                       echo '<div class="col-md-4">' .
-                                                '<div class="card mb-4 box-shadow">' .
-                                                      '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">' . 
-                                                      '<div class="card-body">' .
-                                                         '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
-                                                         '<div class="d-flex justify-content-between align-items-center">' .
-                                                            '<div class="btn-group">' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
-                                                            '</div>' .
-                                                            '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .
-                                                         '</div>' .
-                                                      '</div>' .
-                                                '</div>' .
-                                             '</div>';
-                                    }
-                                 } else {
-                                    echo "0 results";
-                                 }
-                                 ?>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                  </div>
-               </div>
+                     if (!empty($bookings)) {
+                        foreach ($bookings as $booking) {
+                           echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                           echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
+                           echo '<div class="d-flex flex-column">';
+                           echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
+                           echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
+                           echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                           echo '</div>';
+                           echo '<div class="ms-auto text-end">';
+                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking["booking_id"])) . ', ' . htmlspecialchars(json_encode($booking["user_id"])) . ', ' . htmlspecialchars(json_encode($booking["start_time"])) . ', ' . htmlspecialchars(json_encode($booking["end_time"])) . ')\'>';
+                           echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                           echo '</div>';
+                           echo '</li>';
+                        }
+                     } else {
+                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<div class="d-flex flex-column">';
+                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                        echo '</div>';
+                        echo '</li>';
+                     }
+                     ?>
+               </ul>
             </div>
          </div>
-        
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -350,94 +332,63 @@
             </div>
          </div>
       </div>
-      <!-- Modal for add table -->
-      <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="addTableModalLabel">Add Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action = "addTable.php" enctype="multipart/form-data">
-                        <label class="form-label">Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="text" name="tablename" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+      <!-- Edit Modal -->
+        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="manage_booking.php">
+                            <input type="hidden" id="bookingId" name="booking_id">
+                            <input type="hidden" id="userId" name="user_id">
+                            <label for="username">User</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                            </div>
+                            <label>Start Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                            </div>
+                            <label>End Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
+                                <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-      <!-- Modal for edit table -->            
-      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
-                        <input type="hidden" name="table_id" id="editTableId">
-                        <label>Table Name</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
-                        </div>
-                        <label>Table Status</label>
-                        <div class="input-group input-group-outline my-3">                             
-                              <select name="status" id="editTableStatus" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
-            </div>
-         </div>
-      </div>
-
+        </div>
       <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
+        }
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
-            console.log(table);
+        const userData = <?php echo json_encode($userMap); ?>;
 
-            document.getElementById('editTableId').value = table.table_id;
-            document.getElementById('editTableName').value = table.table_number;
-            document.getElementById('editTableStatus').value = table.status;
-            $('#editTableModal').modal('show');
-         }
-      </script>
+        function openEditModal(bookingId, userId, startTime, endTime) {
+            document.getElementById('bookingId').value = bookingId;
+            document.getElementById('userId').value = userId;
+            document.getElementById('username').value = userData[userId];
+            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
+            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
 
+            $('#bookingModal').modal('show');
+        }
+        </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -450,15 +401,21 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <!-- Bootstrap JS -->
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
       <!-- Core plugin JavaScript-->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
       <!-- Custom scripts for all pages-->
       <script src="js/sb-admin-2.min.js"></script>
+
       <!-- Page level plugins -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>     
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+         
       <!-- Page level custom scripts -->
       <script src="js/demo/datatables-demo.js"></script>
+
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>

@@ -343,64 +343,60 @@ foreach ($users as $user) {
       </div>
       <!-- Edit Modal -->
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="bookingModalLabel">Edit Booking</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">×</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form method="POST" action="edit_booking.php">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-
-                     <label for="username">User</label>
-                        <div class="input-group input-group-outline my-3">
-                              <!-- Corrected the way username is displayed -->
-                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                        </div>   
-                     <label>Start Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                     </div>
-                     <label>End Time</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                     </div>
-                     <div class="modal-footer">
-                        <button type="submit" name="save" class="btn btn-primary">Save Changes</button>
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                     </div>
-                  </form>
-               </div>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="edit_booking.php">
+                            <input type="hidden" id="bookingId" name="booking_id">
+                            <input type="hidden" id="userId" name="user_id">
+                            <label for="username">User</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                            </div>
+                            <label>Start Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                            </div>
+                            <label>End Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="confirm" class="btn btn-primary">Confirm Edit</button>
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-      <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
+        </div>
+        <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
+        }
 
-         const userData = <?php echo $userData; ?>;
+        const userData = <?php echo json_encode($userMap); ?>;
 
-         function openEditModal(bookingId, userId, startTime, endTime, username) {
-            document.getElementById('bookingTableId').value = bookingId;
-            document.getElementById('bookingTableName').value = 'Table Name'; // Replace with actual table name if applicable
+        function openEditModal(bookingId, userId, startTime, endTime) {
+            document.getElementById('bookingId').value = bookingId;
             document.getElementById('userId').value = userId;
-            document.getElementById('username').value = userData.username;
+            document.getElementById('username').value = userData[userId];
             document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
             document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
 
             $('#bookingModal').modal('show');
-         }
-      </script>
+        }
+        </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
