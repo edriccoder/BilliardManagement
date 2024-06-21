@@ -63,7 +63,7 @@
     <div class="main row">
 
         <div class="title-container col-6">
-            <h1>Billiard Management System</h1>
+            <h1>T James Sporty Bar </h1>
         </div>
 
         <div class="main-container col-4">

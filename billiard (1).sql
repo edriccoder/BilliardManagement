@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2024 at 02:39 PM
+-- Generation Time: Jun 21, 2024 at 04:08 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -42,13 +42,13 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`booking_id`, `user_id`, `table_id`, `table_name`, `start_time`, `end_time`, `status`) VALUES
-(1, 1, 1, '', '2024-06-18 17:09:00', '2024-06-18 20:12:00', 'Pending'),
-(2, 1, 2, 'Table ni sam', '2024-06-14 01:07:00', '2024-06-14 02:08:00', 'Pending'),
+(1, 1, 1, '', '2024-06-25 19:11:00', '2024-06-25 12:16:00', 'Pending'),
+(2, 1, 2, 'Table ni sam', '2024-06-21 03:09:00', '2024-06-21 05:11:00', 'Pending'),
 (7, 1, 2, 'Table ni sam', '2024-06-18 21:04:00', '2024-06-18 22:05:00', 'Pending'),
 (8, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
 (9, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
 (10, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending'),
-(11, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Pending');
+(11, 2, 1, 'Table 4', '2024-06-18 21:06:00', '2024-06-18 22:07:00', 'Confirmed');
 
 -- --------------------------------------------------------
 
@@ -73,6 +73,39 @@ INSERT INTO `inventory` (`item_id`, `item_name`, `quantity`, `description`, `ima
 (16, 'tako', '4555', 'tako', 'tako.jpg'),
 (18, 'tako', '123', 'tako', 'tako.jpg'),
 (19, 'ball', '123', 'ball', 'ball.jpg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `matches`
+--
+
+CREATE TABLE `matches` (
+  `match_id` int(11) NOT NULL,
+  `tournament_id` int(11) NOT NULL,
+  `table_id` int(11) DEFAULT NULL,
+  `player1_id` int(11) NOT NULL,
+  `player2_id` int(11) NOT NULL,
+  `player1_score` int(11) DEFAULT 0,
+  `player2_score` int(11) DEFAULT 0,
+  `start_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  `created_at` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `players`
+--
+
+CREATE TABLE `players` (
+  `player_id` int(11) NOT NULL,
+  `user_id` varchar(50) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -123,6 +156,28 @@ INSERT INTO `tbl_user` (`tbl_user_id`, `name`, `username`, `password`, `role`) V
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tournaments`
+--
+
+CREATE TABLE `tournaments` (
+  `tournament_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `status` varchar(100) NOT NULL,
+  `created_at` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tournaments`
+--
+
+INSERT INTO `tournaments` (`tournament_id`, `name`, `start_date`, `end_date`, `status`, `created_at`) VALUES
+(1, 'Tournament 1', '2024-06-21', '2024-06-22', 'upcoming', '2024-06-21 01:29:10');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -143,7 +198,8 @@ INSERT INTO `users` (`user_id`, `name`, `email`, `username`, `password`, `role`)
 (1, 'jakezyrus', 'jakezyrus@gmail.com', 'jake', 'jake', 'user'),
 (2, 'sam', 'sam', 'sam', 'sam', 'user'),
 (3, 'cris', 'cris', 'cris', 'cris', 'admin'),
-(4, 'chuy', 'chuy', 'chuy', 'chuy', 'cashier');
+(4, 'chuy', 'chuy', 'chuy', 'chuy', 'cashier'),
+(5, 'was', 'was', 'was', 'was', 'cashier');
 
 --
 -- Indexes for dumped tables
@@ -164,6 +220,22 @@ ALTER TABLE `inventory`
   ADD PRIMARY KEY (`item_id`);
 
 --
+-- Indexes for table `matches`
+--
+ALTER TABLE `matches`
+  ADD PRIMARY KEY (`match_id`),
+  ADD KEY `tournament_id` (`tournament_id`),
+  ADD KEY `table_id` (`table_id`),
+  ADD KEY `player1_id` (`player1_id`),
+  ADD KEY `player2_id` (`player2_id`);
+
+--
+-- Indexes for table `players`
+--
+ALTER TABLE `players`
+  ADD PRIMARY KEY (`player_id`);
+
+--
 -- Indexes for table `tables`
 --
 ALTER TABLE `tables`
@@ -174,6 +246,12 @@ ALTER TABLE `tables`
 --
 ALTER TABLE `tbl_user`
   ADD PRIMARY KEY (`tbl_user_id`);
+
+--
+-- Indexes for table `tournaments`
+--
+ALTER TABLE `tournaments`
+  ADD PRIMARY KEY (`tournament_id`);
 
 --
 -- Indexes for table `users`
@@ -198,6 +276,18 @@ ALTER TABLE `inventory`
   MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- AUTO_INCREMENT for table `matches`
+--
+ALTER TABLE `matches`
+  MODIFY `match_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `players`
+--
+ALTER TABLE `players`
+  MODIFY `player_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tables`
 --
 ALTER TABLE `tables`
@@ -210,10 +300,16 @@ ALTER TABLE `tbl_user`
   MODIFY `tbl_user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `tournaments`
+--
+ALTER TABLE `tournaments`
+  MODIFY `tournament_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -225,6 +321,15 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`table_id`) REFERENCES `tables` (`table_id`);
+
+--
+-- Constraints for table `matches`
+--
+ALTER TABLE `matches`
+  ADD CONSTRAINT `matches_ibfk_1` FOREIGN KEY (`tournament_id`) REFERENCES `tournaments` (`tournament_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `matches_ibfk_2` FOREIGN KEY (`table_id`) REFERENCES `tables` (`table_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `matches_ibfk_3` FOREIGN KEY (`player1_id`) REFERENCES `players` (`player_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `matches_ibfk_4` FOREIGN KEY (`player2_id`) REFERENCES `players` (`player_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
