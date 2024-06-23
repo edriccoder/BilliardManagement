@@ -101,41 +101,32 @@
             <h2 class="text-center">Register Your Account!</h2>
             <p class="text-center">Please enter your personal details.</p>
             <div class="registration-form">
-            <form action="add-user.php" method="POST">
-                <div class="form-group">
-                    <label for="name">Full Name:</label>
-                    <input type="text" class="form-control" id="name" name="name">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="text" class="form-control" id="email" name="email">
-                </div>
-                <div class="form-group">
-                    <label for="role">Role:</label>
-                    <select class="form-control" id="role" name="role">
-                        <option>-select-</option>
-                        <option value="admin">Admin</option>
-                        <option value="cashier">Cashier</option>
-                        <option value="user">User</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="registerUsername">Username:</label>
-                    <input type="text" class="form-control" id="registerUsername" name="username">
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password:</label>
-                    <input type="password" class="form-control" id="registerPassword" name="password">
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
-                </div>
-                <div class="form-group float-right">
-                    <small class="show-form" onclick="showForm()">Already have an account? Login Here.</small>
-                </div>
-                <button type="submit" class="btn btn-primary login-register form-control">Register</button>
-            </form>
+                <form action="add-user.php" method="POST">
+                    <div class="form-group">
+                        <label for="name">Full Name:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerUsername">Username:</label>
+                        <input type="text" class="form-control" id="registerUsername" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password:</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                    </div>
+                    <div class="form-group float-right">
+                        <small class="show-form" onclick="showForm()">Already have an account? Login Here.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary login-register form-control">Register</button>
+                </form>
 
             </div>
 

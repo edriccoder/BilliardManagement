@@ -1,10 +1,10 @@
 <?php 
 include ('conn.php');
 
-if (isset($_POST['name'], $_POST['email'],  $_POST['role'], $_POST['username'], $_POST['password'])) {
+if (isset($_POST['name'], $_POST['email'], $_POST['username'], $_POST['password'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $role = $_POST['role'];
+    $role = 'user'; // Automatically set role to 'user'
     $username = $_POST['username'];
     $password = $_POST['password'];
     
@@ -12,12 +12,12 @@ if (isset($_POST['name'], $_POST['email'],  $_POST['role'], $_POST['username'], 
         $stmt = $conn->prepare("SELECT `email` FROM `users` WHERE `email` =  :email ");
         $stmt->execute(['email' => $email]);
 
-        $nameExist =  $stmt->fetch(PDO::FETCH_ASSOC);
+        $nameExist = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (empty($nameExist)) {
             $conn->beginTransaction();
 
-            $insertStmt = $conn->prepare("INSERT INTO `users` (`name`, `email`,  `role`, `username`, `password`) VALUES (:name, :email, :role, :username, :password)");
+            $insertStmt = $conn->prepare("INSERT INTO `users` (`name`, `email`, `role`, `username`, `password`) VALUES (:name, :email, :role, :username, :password)");
             $insertStmt->bindParam('name', $name, PDO::PARAM_STR);
             $insertStmt->bindParam('email', $email, PDO::PARAM_STR);
             $insertStmt->bindParam('role', $role, PDO::PARAM_STR);
@@ -49,5 +49,5 @@ if (isset($_POST['name'], $_POST['email'],  $_POST['role'], $_POST['username'], 
     }
 
 }
-
 ?>
+
