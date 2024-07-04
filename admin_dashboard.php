@@ -1,4 +1,27 @@
 <!DOCTYPE html>
+<?php
+// Include database connection
+include 'conn.php';
+
+function getCount($conn, $sql) {
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['total'] : 0;
+}
+
+// Fetch total users
+$sql_users = "SELECT COUNT(*) as total FROM users";
+$total_users = getCount($conn, $sql_users);
+
+// Fetch total billiard tables
+$sql_tables = "SELECT COUNT(*) as total FROM tables";
+$total_tables = getCount($conn, $sql_tables);
+
+// Fetch total bookings
+$sql_bookings = "SELECT COUNT(*) as total FROM bookings";
+$total_bookings = getCount($conn, $sql_bookings);
+?>
 <html lang="en">
    <head>
       <meta charset="utf-8" />
@@ -224,7 +247,7 @@
                    </div>
                    <div class="text-end pt-1">
                       <p class="text-sm mb-0 text-capitalize">Total Users</p>
-                      <h4 class="mb-0">0</h4>
+                      <h4 class="mb-0"><?php echo $total_users; ?></h4>
                    </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -242,7 +265,7 @@
                    </div>
                    <div class="text-end pt-1">
                       <p class="text-sm mb-0 text-capitalize">Billiard Table</p>
-                      <h4 class="mb-0">10</h4>
+                      <h4 class="mb-0"><?php echo $total_tables; ?></h4>
                    </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -259,7 +282,7 @@
                    </div>
                    <div class="text-end pt-1">
                       <p class="text-sm mb-0 text-capitalize ">Bookings</p>
-                      <h4 class="mb-0 ">0</h4>
+                      <h4 class="mb-0"><?php echo $total_bookings; ?></h4>
                    </div>
                 </div>
                 <hr class="horizontal my-0 dark">

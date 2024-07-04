@@ -223,42 +223,38 @@
             $stmtTournaments->execute();
             $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
             ?>
-
-            <div class="card">
-                        <div class="card-header pb-0 px-3">
-                        <h6 class="mb-0">Tournament</h6>
-                        </div>
-                        <div class="card-body pt-4 p-3">
-                            <ul class="list-group">
-                                <?php if (!empty($tournaments)) : ?>
-                                    <?php foreach ($tournaments as $tournament) : ?>
-                                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                            <div class="d-flex flex-column">
-                                                <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                                <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                                <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                                <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                                            </div>
-                                            <div class="ms-auto text-end">
-                                                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                                <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
-                                            </div>
-                                        </li>
-                                    <?php endforeach; ?>
-                                <?php else : ?>
-                                    <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                        <div class="d-flex flex-column">
-                                            <h6 class="mb-3 text-sm">No tournaments found.</h6>
-                                        </div>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+         <div class="card">
+            <div class="card-header pb-0 px-3">
+               <h6 class="mb-0">Tournament</h6>
             </div>
-
-         
+            <div class="card-body pt-4 p-3">
+               <ul class="list-group">
+                     <?php if (!empty($tournaments)) : ?>
+                        <?php foreach ($tournaments as $tournament) : ?>
+                           <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                 <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                                 </div>
+                                 <div class="ms-auto text-end">
+                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                                 </div>
+                           </li>
+                        <?php endforeach; ?>
+                     <?php else : ?>
+                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                           <div class="d-flex flex-column">
+                                 <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                           </div>
+                        </li>
+                     <?php endif; ?>
+               </ul>
+            </div>
+         </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -349,43 +345,47 @@
          </div>
       </div>
       <!-- Add Tournament Modal -->
-        <div class="modal fade" id="addTournamentModal" tabindex="-1" role="dialog" aria-labelledby="addTournamentModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addTournamentForm" method="POST" action="add_tournament.php">
+      <div class="modal fade" id="addTournamentModal" tabindex="-1" role="dialog" aria-labelledby="addTournamentModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form id="addTournamentForm" method="POST" action="add_tournament.php">
                         <label for="tournamentName">Tournament Name</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="text" class="form-control" id="tournamentName" name="name" required>
-                            </div>
-                            <label for="startDate">Start Date</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="date" class="form-control" id="startDate" name="start_date" required>
-                            </div>
-                            <label for="endDate">End Date</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="date" class="form-control" id="endDate" name="end_date" required>
-                            </div>
-                            <label for="status">Status</label>
-                            <div class="input-group input-group-outline my-3">                          
-                                <select class="form-control" id="status" name="status" required>
-                                    <option value="upcoming">Upcoming</option>
-                                    <option value="ongoing">Ongoing</option>
-                                    <option value="completed">Completed</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Tournament</button>
-                        </form>
-                    </div>
-                </div>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="tournamentName" name="name" required>
+                        </div>
+                        <label for="startDate">Start Date</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="date" class="form-control" id="startDate" name="start_date" required>
+                        </div>
+                        <label for="endDate">End Date</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="date" class="form-control" id="endDate" name="end_date" required>
+                        </div>
+                        <label for="maxPlayers">Max Players</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
+                        </div>
+                        <label for="status">Status</label>
+                        <div class="input-group input-group-outline my-3">                          
+                              <select class="form-control" id="status" name="status" required>
+                                 <option value="upcoming">Upcoming</option>
+                                 <option value="ongoing">Ongoing</option>
+                                 <option value="completed">Completed</option>
+                              </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Tournament</button>
+                     </form>
+                  </div>
             </div>
-        </div>
+         </div>
+      </div>
       <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
