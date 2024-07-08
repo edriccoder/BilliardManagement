@@ -16,6 +16,7 @@ echo "<script>
         };
       </script>";
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -44,8 +45,10 @@ echo "<script>
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
       <!-- Custom styles for this template-->
+
    </head>
    <body class="g-sidenav-show  bg-gray-100">
    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -53,7 +56,7 @@ echo "<script>
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white"><?php echo htmlspecialchars($username); ?></span>
+            <span class="ms-1 font-weight-bold text-white"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
@@ -210,57 +213,47 @@ echo "<script>
          </nav>
          <!-- End Navbar -->        
          <div class="container-fluid">
-         <!-- Page Heading -->
-         <!-- Content Row -->
-         <div class="card shadow mb-4">
-               <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
-                     </div>
-                        <div class="card-body">
-                           <div class="row">
-                              <?php
-                                 include 'conn.php';
-
-                                 $sqlTables = "SELECT table_number, status, table_id FROM tables";
-                                 $stmtTables = $conn->prepare($sqlTables);
-                                 $stmtTables->execute();
-                                 $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
-                                 ?>
-
-                                 <div class="container">
-                                    <div class="row">
-                                       <?php
-                                       if (!empty($tables)) {
-                                             foreach ($tables as $row) {
-                                                echo '<div class="col-md-3 mb-4">';
-                                                echo '<div class="card">';
-                                                echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
-                                                echo '<div class="card-body">';
-                                                echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
-                                                echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
-                                                echo '<div class="btn-group">';
-                                                echo '<button type="button" class="btn btn-primary" onclick=\'openBookingModal('. json_encode($row) .')\'>Book</button>';
-                                                echo '</div>';
-                                                echo '</div>';
-                                                echo '</div>';
-                                                echo '</div>';
-                                             }
-                                       } else {
-                                             echo "0 results";
-                                       }
-                                       ?>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+         <!-- Page Heading -->      
+         <!-- Table Row -->
+         <?php
+            include 'conn.php';
+            $sqlTournaments = "SELECT * FROM tournaments";
+            $stmtTournaments = $conn->prepare($sqlTournaments);
+            $stmtTournaments->execute();
+            $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
+            ?>
+            <div class="card">
+                <div class="card-header pb-0 px-3">
+                    <h6 class="mb-0">Tournament</h6>
+                </div>
+                <div class="card-body pt-4 p-3">
+                    <ul class="list-group">
+                    <?php if (!empty($tournaments)) : ?>
+                        <?php foreach ($tournaments as $tournament) : ?>
+                            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                                </div>
+                                <div class="ms-auto text-end">
+                                    <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                            <div class="d-flex flex-column">
+                                <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                            </div>
+                        </li>
+                    <?php endif; ?>
+                    </ul>
+                </div>
             </div>
-         </div>
-      </div>
-        
+ 
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -349,81 +342,54 @@ echo "<script>
                </div>
             </div>
          </div>
-      </div>  
-      <!-- Modal for book table -->            
-      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
-                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                           </button>
-                        </div>
-                        <div class="modal-body">
-                           <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                              <input type="hidden" id="bookingTableId" name="table_id">
-                              <input type="hidden" id="bookingTableName" name="table_name">
-                              <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                              <label for="username">User</label>
-                              <div class="input-group input-group-outline my-3">
-                                    <!-- Corrected the way username is displayed -->
-                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                              </div>
-                              <label>Start Time</label>
-                              <div class="input-group input-group-outline my-3">                                
-                                 <input type="datetime-local" name="start_time" class="form-control" required="required"/>
-                              </div>
-                              <label>End Time</label>
-                              <div class="input-group input-group-outline my-3">                               
-                                 <input type="datetime-local" name="end_time" class="form-control" required="required"/>
-                              </div>
-                              <div class="modal-footer">
-                                 <button type="submit" name="save" class="btn btn-primary">Book</button>
-                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-
+      </div>
       <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
+        }
+        document.querySelectorAll('.join-tournament').forEach(button => {
+            button.addEventListener('click', function() {
+                const tournamentId = this.getAttribute('data-tournament-id');
 
-         function openBookingModal(table) {
-            console.log("openBookingModal called");
-            console.log(table);
+                fetch('join_tournament.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: userData.user_id,
+                        username: userData.username,
+                        tournament_id: tournamentId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Joined the tournament successfully!');
+                        location.reload(); // Reload to update the list
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            });
+        });
+        </script>
 
-            document.getElementById('bookingTableId').value = table.table_id;
-            document.getElementById('bookingTableName').value = table.table_number;
-            document.getElementById('username').value = userData.username;  // Ensure the username is filled correctly
-            document.getElementById('userId').value = userData.user_id;
-            $('#bookingModal').modal('show');
-   
-         }
-      </script>
-
-
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
       <!-- Bootstrap core JavaScript-->
       <script src="vendor/jquery/jquery.min.js"></script>
       <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
       <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
       <!-- Core plugin JavaScript-->

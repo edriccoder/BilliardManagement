@@ -1,3 +1,10 @@
+<?php
+   include 'conn.php';
+   $sqlTournaments = "SELECT * FROM tournaments";
+   $stmtTournaments = $conn->prepare($sqlTournaments);
+   $stmtTournaments->execute();
+   $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -5,9 +12,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
       <link rel="icon" type="image/png" href="./assets/img/favicon.png">
-      <title>
-        Billiard Management
-      </title>
+      <title>Billiard Management</title>
       <!--     Fonts and icons     -->
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
       <!-- Nucleo Icons -->
@@ -26,8 +31,8 @@
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
-
       <!-- Custom styles for this template-->
+    </style>
 
    </head>
    <body class="g-sidenav-show  bg-gray-100">
@@ -214,44 +219,38 @@
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Add Tournament</h1>
             <button class='btn btn-primary' data-toggle='modal' data-target='#addTournamentModal'>Add Tournament</button>
-        </div>
+         </div>
          <!-- Table Row -->
-         <?php
-            include 'conn.php';
-            $sqlTournaments = "SELECT * FROM tournaments";
-            $stmtTournaments = $conn->prepare($sqlTournaments);
-            $stmtTournaments->execute();
-            $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
-            ?>
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Tournament</h6>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-                     <?php if (!empty($tournaments)) : ?>
-                        <?php foreach ($tournaments as $tournament) : ?>
-                           <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                 <div class="d-flex flex-column">
-                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                                 </div>
-                                 <div class="ms-auto text-end">
-                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                    <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
-                                 </div>
-                           </li>
-                        <?php endforeach; ?>
-                     <?php else : ?>
+                  <?php if (!empty($tournaments)) : ?>
+                     <?php foreach ($tournaments as $tournament) : ?>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                            <div class="d-flex flex-column">
-                                 <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                              <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                              <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                              <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                              <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                              <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                           </div>
+                           <div class="ms-auto text-end">
+                              <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                              <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                              <a class="btn btn-link text-dark px-3 mb-0 show-players" data-toggle="modal" data-target="#playersModal" href="#" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">person</i>Show Players</a>
                            </div>
                         </li>
-                     <?php endif; ?>
+                     <?php endforeach; ?>
+                  <?php else : ?>
+                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                           <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                        </div>
+                     </li>
+                  <?php endif; ?>
                </ul>
             </div>
          </div>
@@ -387,55 +386,31 @@
          </div>
       </div>
       <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
+         var win = navigator.platform.indexOf('Win') > -1;
+         if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = { damping: '0.5' }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-
-        const userData = <?php echo json_encode($userMap); ?>;
-
-        function openEditModal(bookingId, userId, startTime, endTime) {
-            document.getElementById('bookingId').value = bookingId;
-            document.getElementById('userId').value = userId;
-            document.getElementById('username').value = userData[userId];
-            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
-            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
-
-            $('#bookingModal').modal('show');
-        }
-        </script>
-
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+         }
+      </script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-      <!-- Bootstrap core JavaScript-->
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
       <script src="vendor/jquery/jquery.min.js"></script>
       <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-
-      <!-- Core plugin JavaScript-->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-      <!-- Custom scripts for all pages-->
       <script src="js/sb-admin-2.min.js"></script>
-
-      <!-- Page level plugins -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
       <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-         
-      <!-- Page level custom scripts -->
       <script src="js/demo/datatables-demo.js"></script>
-
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
+      <script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
+       <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+   
    </body>
 </html>

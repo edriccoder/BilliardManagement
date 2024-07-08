@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
-    $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; // Set default value if status is not provided
+    $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; 
     $max_player = $_POST['max_player'];
 
     $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at) VALUES (:name, :start_date, :end_date, :status, :max_player, NOW())";

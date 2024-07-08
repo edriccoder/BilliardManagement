@@ -11,5 +11,4 @@ try {
 } catch (PDOException $e) {
     echo "Failed " . $e->getMessage();
 }
-
 ?>
