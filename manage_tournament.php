@@ -391,7 +391,7 @@
             <div class="modal-content">
                   <div class="modal-header">
                      <h5 class="modal-title" id="playersModalLabel">Tournament Players</h5>
-                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                      <table class="table">
@@ -408,7 +408,7 @@
                   </div>
                   <div class="modal-footer">
                      <button type="button" id="createBracketBtn" class="btn btn-primary">Create Bracket</button>
-                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   </div>
             </div>
          </div>
@@ -420,13 +420,15 @@
          Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
          
-         document.addEventListener('DOMContentLoaded', function() {
+         let currentTournamentId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
             const showPlayersButtons = document.querySelectorAll('.show-players');
             showPlayersButtons.forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const tournamentId = this.getAttribute('data-tournament-id');
-                    fetch(`fetch_players.php?tournament_id=${tournamentId}`)
+                    currentTournamentId = this.getAttribute('data-tournament-id');
+                    fetch(`fetch_players.php?tournament_id=${currentTournamentId}`)
                         .then(response => response.json())
                         .then(players => {
                             const playersTableBody = document.getElementById('playersTableBody');
@@ -460,22 +462,23 @@
                         });
                 });
             });
-         });
-         document.getElementById('createBracketBtn').addEventListener('click', function() {
-            if (currentTournamentId !== null) {
-                fetch(`create_bracket.php?tournament_id=${currentTournamentId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Bracket created successfully!');
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error creating bracket:', error);
-                    });
-            }
+
+            document.getElementById('createBracketBtn').addEventListener('click', function() {
+                if (currentTournamentId !== null) {
+                    fetch(`create_bracket.php?tournament_id=${currentTournamentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Bracket created successfully!');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error creating bracket:', error);
+                        });
+                }
+            });
         });
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -505,6 +508,7 @@
       <script src="js/demo/datatables-demo.js"></script>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
