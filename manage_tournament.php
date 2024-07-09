@@ -31,7 +31,7 @@
       <link
          href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
          rel="stylesheet">
-      <!-- Custom styles for this template-->
+
     </style>
 
    </head>
@@ -223,35 +223,35 @@
          <!-- Table Row -->
          <div class="card">
             <div class="card-header pb-0 px-3">
-               <h6 class="mb-0">Tournament</h6>
+                  <h6 class="mb-0">Tournament</h6>
             </div>
             <div class="card-body pt-4 p-3">
-               <ul class="list-group">
-                  <?php if (!empty($tournaments)) : ?>
-                     <?php foreach ($tournaments as $tournament) : ?>
+                  <ul class="list-group">
+                     <?php if (!empty($tournaments)) : ?>
+                        <?php foreach ($tournaments as $tournament) : ?>
+                              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                 <div class="d-flex flex-column">
+                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                                 </div>
+                                 <div class="ms-auto text-end">
+                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                                    <a class="btn btn-link text-dark px-3 mb-0 show-players" data-bs-toggle="modal" data-bs-target="#playersModal" href="#" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">person</i>Show Players</a>
+                                 </div>
+                              </li>
+                        <?php endforeach; ?>
+                     <?php else : ?>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                           <div class="d-flex flex-column">
-                              <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                              <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                              <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                              <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                              <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                           </div>
-                           <div class="ms-auto text-end">
-                              <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                              <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
-                              <a class="btn btn-link text-dark px-3 mb-0 show-players" data-toggle="modal" data-target="#playersModal" href="#" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">person</i>Show Players</a>
-                           </div>
+                              <div class="d-flex flex-column">
+                                 <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                              </div>
                         </li>
-                     <?php endforeach; ?>
-                  <?php else : ?>
-                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                        <div class="d-flex flex-column">
-                           <h6 class="mb-3 text-sm">No tournaments found.</h6>
-                        </div>
-                     </li>
-                  <?php endif; ?>
-               </ul>
+                     <?php endif; ?>
+                  </ul>
             </div>
          </div>
          <!-- Content Row -->
@@ -385,32 +385,127 @@
             </div>
          </div>
       </div>
+      <!-- Modal Structure -->
+      <div class="modal fade" id="playersModal" tabindex="-1" aria-labelledby="playersModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="playersModalLabel">Tournament Players</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                     <table class="table">
+                        <thead>
+                              <tr>
+                                 <th scope="col">User ID</th>
+                                 <th scope="col">Username</th>
+                              </tr>
+                        </thead>
+                        <tbody id="playersTableBody">
+                              <!-- Player rows will be appended here dynamically -->
+                        </tbody>
+                     </table>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" id="createBracketBtn" class="btn btn-primary">Create Bracket</button>
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = { damping: '0.5' }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+         var options = { damping: '0.5' }
+         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+         
+         document.addEventListener('DOMContentLoaded', function() {
+            const showPlayersButtons = document.querySelectorAll('.show-players');
+            showPlayersButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const tournamentId = this.getAttribute('data-tournament-id');
+                    fetch(`fetch_players.php?tournament_id=${tournamentId}`)
+                        .then(response => response.json())
+                        .then(players => {
+                            const playersTableBody = document.getElementById('playersTableBody');
+                            playersTableBody.innerHTML = ''; // Clear existing rows
+
+                            if (players.length > 0) {
+                                players.forEach(player => {
+                                    const row = `
+                                        <tr>
+                                            <td>${player.user_id}</td>
+                                            <td>${player.username}</td>
+                                        </tr>
+                                    `;
+                                    playersTableBody.innerHTML += row;
+                                });
+                            } else {
+                                const row = `
+                                    <tr>
+                                        <td colspan="2">No players found.</td>
+                                    </tr>
+                                `;
+                                playersTableBody.innerHTML += row;
+                            }
+
+                            // Show the modal
+                            const playersModal = new bootstrap.Modal(document.getElementById('playersModal'));
+                            playersModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching players:', error);
+                        });
+                });
+            });
+         });
+         document.getElementById('createBracketBtn').addEventListener('click', function() {
+            if (currentTournamentId !== null) {
+                fetch(`create_bracket.php?tournament_id=${currentTournamentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Bracket created successfully!');
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error creating bracket:', error);
+                    });
+            }
+        });
       </script>
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+      <!-- Bootstrap core JavaScript-->
       <script src="vendor/jquery/jquery.min.js"></script>
       <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-      <script src="js/sb-admin-2.min.js"></script>
-      <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-      <script src="js/demo/datatables-demo.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
-       <!-- jQuery -->
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <!-- Bootstrap JS -->
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-   
+
+
+      <!-- Core plugin JavaScript-->
+      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+      <!-- Custom scripts for all pages-->
+      <script src="js/sb-admin-2.min.js"></script>
+
+      <!-- Page level plugins -->
+      <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+         
+      <!-- Page level custom scripts -->
+      <script src="js/demo/datatables-demo.js"></script>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
 </html>
