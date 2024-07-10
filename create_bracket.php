@@ -2,7 +2,6 @@
 include 'conn.php';
 
 function createSingleEliminationBracket($players) {
-    // This function should create and return the bracket structure
     $bracket = [];
     shuffle($players); // Randomize the order of players
 
@@ -15,6 +14,16 @@ function createSingleEliminationBracket($players) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
     $tournamentId = $_GET['tournament_id'];
+
+    // Check if a bracket already exists for this tournament
+    $stmt = $conn->prepare('SELECT COUNT(*) as bracket_count FROM bracket WHERE tournament_id = ?');
+    $stmt->execute([$tournamentId]);
+    $bracketCount = $stmt->fetch(PDO::FETCH_ASSOC)['bracket_count'];
+
+    if ($bracketCount > 0) {
+        echo json_encode(['success' => false, 'message' => 'Bracket already exists for this tournament.']);
+        exit;
+    }
 
     // Get tournament details
     $stmt = $conn->prepare('SELECT max_player FROM tournaments WHERE tournament_id = ?');

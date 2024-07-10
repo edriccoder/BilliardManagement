@@ -221,39 +221,86 @@
             <button class='btn btn-primary' data-toggle='modal' data-target='#addTournamentModal'>Add Tournament</button>
          </div>
          <!-- Table Row -->
-         <div class="card">
-            <div class="card-header pb-0 px-3">
+         <div class="row">
+            <div class="col-lg-8">
+               <div class="card">
+                  <div class="card-header pb-0 px-3">
                   <h6 class="mb-0">Tournament</h6>
-            </div>
-            <div class="card-body pt-4 p-3">
+                  </div>
+                  <div class="card-body pt-4 p-3">
                   <ul class="list-group">
                      <?php if (!empty($tournaments)) : ?>
-                        <?php foreach ($tournaments as $tournament) : ?>
-                              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                 <div class="d-flex flex-column">
-                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                                 </div>
-                                 <div class="ms-auto text-end">
-                                    <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                                    <a class="btn btn-link text-dark px-3 mb-0" href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">edit</i>Edit</a>
-                                    <a class="btn btn-link text-dark px-3 mb-0 show-players" data-bs-toggle="modal" data-bs-target="#playersModal" href="#" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-sm me-2">person</i>Show Players</a>
-                                 </div>
-                              </li>
-                        <?php endforeach; ?>
+                     <?php foreach ($tournaments as $tournament) : ?>
+                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                        <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                        <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                        <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                        <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                        </div>
+                        <div class="ms-auto text-end">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0"
+                           href="delete_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i
+                              class="material-icons text-sm me-2">delete</i>Delete</a>
+                        <a class="btn btn-link text-dark px-3 mb-0"
+                           href="edit_tournament.php?tournament_id=<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i
+                              class="material-icons text-sm me-2">edit</i>Edit</a>
+                        <a class="btn btn-link text-dark px-3 mb-0 show-players" data-bs-toggle="modal"
+                           data-bs-target="#playersModal" href="#"
+                           data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i
+                              class="material-icons text-sm me-2">person</i>Show Players</a>
+                        </div>
+                     </li>
+                     <?php endforeach; ?>
                      <?php else : ?>
-                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                              <div class="d-flex flex-column">
-                                 <h6 class="mb-3 text-sm">No tournaments found.</h6>
-                              </div>
-                        </li>
+                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                        </div>
+                     </li>
                      <?php endif; ?>
                   </ul>
+                  </div>
+               </div>
             </div>
-         </div>
+            <div class="col-lg-4">
+               <div class="card h-100">
+                  <div class="card-header pb-0 p-3">
+                        <div class="row">
+                           <div class="col-6 d-flex align-items-center">
+                              <h6 class="mb-0">Available Bracket Tournament</h6>
+                           </div>
+                        </div>
+                  </div>
+                  <div class="card-body p-3 pb-0">
+                        <ul class="list-group">
+                           <?php
+                           // Fetch available brackets
+                           $stmt = $conn->prepare('SELECT DISTINCT tournament_id FROM bracket');
+                           $stmt->execute();
+                           $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                           ?>
+                           <?php if (!empty($tournaments)) : ?>
+                              <?php foreach ($tournaments as $tournament) : ?>
+                                    <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                       <div class="d-flex flex-column">
+                                          <h6 class="mb-1 text-dark font-weight-bold text-sm">Tournament ID: <?php echo htmlspecialchars($tournament['tournament_id']); ?></h6>
+                                       </div>
+                                       <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" data-toggle="modal" data-target="#bracketModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-lg position-relative me-1"></i> Show Players</button>
+                                    </li>
+                              <?php endforeach; ?>
+                           <?php else : ?>
+                              <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                    <div class="d-flex flex-column">
+                                       <h6 class="mb-1 text-dark font-weight-bold text-sm">No tournaments available.</h6>
+                                    </div>
+                              </li>
+                           <?php endif; ?>
+                        </ul>
+                  </div>
+               </div>
+            </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -413,6 +460,28 @@
             </div>
          </div>
       </div>
+      <!-- Modal for showing bracket -->
+      <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="bracketModalLabel">Single Elimination Tournament Bracket</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                     </div>
+                     <div class="modal-body">
+                        <div class="container">
+                              <div class="bracket" id="bracketContainer">
+                                 <!-- Bracket content will be loaded here -->
+                              </div>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+            </div>
+         </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -421,6 +490,83 @@
          }
          
          let currentTournamentId = null;
+         document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.show-bracket').forEach(button => {
+                button.addEventListener('click', function () {
+                    const tournamentId = this.getAttribute('data-tournament-id');
+
+                    fetch(`get_bracket.php?tournament_id=${tournamentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const bracketContainer = document.getElementById('bracketContainer');
+                            bracketContainer.innerHTML = ''; // Clear existing bracket
+
+                            if (data.success && data.players.length > 0) {
+                                const players = data.players;
+                                const rounds = Math.ceil(Math.log2(players.length));
+                                let matchups = players.slice();
+
+                                for (let round = 1; round <= rounds; round++) {
+                                    const roundDiv = document.createElement('div');
+                                    roundDiv.className = 'round';
+                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
+
+                                    const matches = Math.ceil(matchups.length / 2);
+                                    const newMatchups = [];
+
+                                    for (let match = 0; match < matches; match++) {
+                                        const matchDiv = document.createElement('div');
+                                        matchDiv.className = 'match';
+
+                                        const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
+                                        const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
+
+                                        matchDiv.innerHTML = `
+                                            <div class="team">${team1}</div>
+                                            <div class="team">${team2}</div>
+                                        `;
+
+                                        roundDiv.appendChild(matchDiv);
+
+                                        // Placeholder for winners to advance to the next round
+                                        newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
+                                    }
+
+                                    if (round > 1) {
+                                        roundDiv.classList.add('vertical-center');
+                                    }
+
+                                    bracketContainer.appendChild(roundDiv);
+                                    matchups = newMatchups;
+                                }
+
+                                // Add the final winner placeholder if there are more than 1 player
+                                if (players.length > 1) {
+                                    const finalRoundDiv = document.createElement('div');
+                                    finalRoundDiv.className = 'vertical-center';
+                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
+
+                                    const winnerPlaceholder = document.createElement('div');
+                                    winnerPlaceholder.className = 'match winner-placeholder';
+                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
+
+                                    finalRoundDiv.appendChild(winnerPlaceholder);
+                                    bracketContainer.appendChild(finalRoundDiv);
+                                }
+
+                                // Show the modal
+                                const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
+                                playersModal.show();
+                            } else {
+                                alert(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching bracket:', error);
+                        });
+                });
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             const showPlayersButtons = document.querySelectorAll('.show-players');
@@ -464,23 +610,111 @@
             });
 
             document.getElementById('createBracketBtn').addEventListener('click', function() {
-                if (currentTournamentId !== null) {
-                    fetch(`create_bracket.php?tournament_id=${currentTournamentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('Bracket created successfully!');
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error creating bracket:', error);
-                        });
-                }
+               if (currentTournamentId !== null) {
+               fetch(`create_bracket.php?tournament_id=${currentTournamentId}`)
+                  .then(response => response.json())
+                  .then(data => {
+                     if (data.success) {
+                     alert('Bracket created successfully!');
+                     } else {
+                     alert('Error: ' + data.message);
+                     }
+                  })
+                  .catch(error => {
+                     console.error('Error creating bracket:', error);
+                  });
+               }
             });
         });
       </script>
+      <style>
+        .bracket {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .round h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .match {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .team {
+            width: 150px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .winner-placeholder {
+            height: 50px;
+        }
+
+        .round-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: #ccc;
+        }
+
+        .match-line {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background-color: #ccc;
+            top: 50%;
+            left: 100%;
+        }
+
+        .vertical-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .final-round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .final-winner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            width: 200px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            background-color: #ddd;
+        }
+    </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
