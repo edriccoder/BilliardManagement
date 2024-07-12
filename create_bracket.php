@@ -4,9 +4,11 @@ include 'conn.php';
 function createSingleEliminationBracket($players) {
     $bracket = [];
     shuffle($players); // Randomize the order of players
+    $round = 1;
+    $matchNumber = 1;
 
     while (count($players) > 1) {
-        $bracket[] = array_splice($players, 0, 2); // Pair players
+        $bracket[] = ['round' => $round, 'match_number' => $matchNumber++, 'players' => array_splice($players, 0, 2)];
     }
 
     return $bracket;
@@ -32,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
 
     if ($tournament) {
         // Get the players
-        $stmt = $conn->prepare('SELECT user_id FROM players WHERE tournament_id = ?');
+        $stmt = $conn->prepare('SELECT user_id, username FROM players WHERE tournament_id = ?');
         $stmt->execute([$tournamentId]);
         $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -42,8 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
 
             // Save the bracket to the database
             foreach ($bracket as $match) {
-                $stmt = $conn->prepare('INSERT INTO bracket (tournament_id, player1_id, player2_id) VALUES (?, ?, ?)');
-                $stmt->execute([$tournamentId, $match[0]['user_id'], $match[1]['user_id']]);
+                $player1_id = isset($match['players'][0]) ? $match['players'][0]['user_id'] : null;
+                $player2_id = isset($match['players'][1]) ? $match['players'][1]['user_id'] : null;
+
+                $stmt = $conn->prepare('INSERT INTO bracket (tournament_id, round, match_number, player1_id, player2_id) VALUES (?, ?, ?, ?, ?)');
+                $stmt->execute([$tournamentId, $match['round'], $match['match_number'], $player1_id, $player2_id]);
             }
 
             echo json_encode(['success' => true]);
