@@ -350,45 +350,54 @@ echo "<script>
             </div>
          </div>
       </div>  
-      <!-- Modal for book table -->            
+      <!-- Booking Modal -->
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                     <div class="modal-content">
-                        <div class="modal-header">
-                           <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
-                           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                           </button>
-                        </div>
-                        <div class="modal-body">
-                           <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                              <input type="hidden" id="bookingTableId" name="table_id">
-                              <input type="hidden" id="bookingTableName" name="table_name">
-                              <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                              <label for="username">User</label>
-                              <div class="input-group input-group-outline my-3">
-                                    <!-- Corrected the way username is displayed -->
-                                    <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                              </div>
-                              <label>Start Time</label>
-                              <div class="input-group input-group-outline my-3">                                
-                                 <input type="datetime-local" name="start_time" class="form-control" required="required"/>
-                              </div>
-                              <label>End Time</label>
-                              <div class="input-group input-group-outline my-3">                               
-                                 <input type="datetime-local" name="end_time" class="form-control" required="required"/>
-                              </div>
-                              <div class="modal-footer">
-                                 <button type="submit" name="save" class="btn btn-primary">Book</button>
-                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
                   </div>
-               </div>
+                  <div class="modal-body">
+                     <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                        <input type="hidden" id="bookingTableId" name="table_id">
+                        <input type="hidden" id="bookingTableName" name="table_name">
+                        <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                        <input type="hidden" id="amount" name="amount">
+                        <label for="username">User</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                        </div>
+                        <label>Start Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                        </div>
+                        <label>End Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                        </div>
+                        <label>Payment Method</label>
+                        <div class="input-group input-group-outline my-3">
+                              <select name="payment_method" class="form-control">
+                                 <option value="cash">Cash</option>
+                                 <option value="credit_card">Gcash</option>
+                              </select>
+                        </div>
+                        <label>Total Amount</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" id="totalAmount" class="form-control" readonly>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                     </form>
+                  </div>
             </div>
          </div>
+      </div>
 
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
@@ -399,16 +408,26 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function openBookingModal(table) {
-            console.log("openBookingModal called");
-            console.log(table);
+         function calculateAmount() {
+            var startTime = document.getElementById('startTime').value;
+            var endTime = document.getElementById('endTime').value;
+            if (startTime && endTime) {
+               var start = new Date(startTime);
+               var end = new Date(endTime);
+               var diff = (end - start) / (1000 * 60 * 60); // Convert difference to hours
+               var amount = diff * 30; // Assuming the rate is $30 per hour
+               document.getElementById('totalAmount').value = amount.toFixed(2);
+               document.getElementById('amount').value = amount.toFixed(2);
+            }
+         }
 
+         function openBookingModal(table) {
             document.getElementById('bookingTableId').value = table.table_id;
             document.getElementById('bookingTableName').value = table.table_number;
-            document.getElementById('username').value = userData.username;  // Ensure the username is filled correctly
+            document.getElementById('username').value = userData.username;
             document.getElementById('userId').value = userData.user_id;
+            document.getElementById('totalAmount').value = ''; // Reset total amount
             $('#bookingModal').modal('show');
-   
          }
       </script>
 

@@ -7,14 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $end_date = $_POST['end_date'];
     $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; 
     $max_player = $_POST['max_player'];
+    $prize = $_POST['prize'];
 
-    $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at) VALUES (:name, :start_date, :end_date, :status, :max_player, NOW())";
+    $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at, prize) VALUES (:name, :start_date, :end_date, :status, :max_player, NOW(), :prize)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':start_date', $start_date);
     $stmt->bindParam(':end_date', $end_date);
     $stmt->bindParam(':status', $status);
     $stmt->bindParam(':max_player', $max_player);
+    $stmt->bindParam(':prize', $prize);
 
     if ($stmt->execute()) {
         // Redirect to a success page or display a success message

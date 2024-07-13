@@ -1,7 +1,4 @@
 <?php
-   ini_set('display_errors', 1);
-   ini_set('display_startup_errors', 1);
-   error_reporting(E_ALL);
    include 'conn.php';
    $sqlTournaments = "SELECT * FROM tournaments";
    $stmtTournaments = $conn->prepare($sqlTournaments);
@@ -247,6 +244,7 @@
                                  <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
                                  <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
                                  <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                 <span class="mb-2 text-xs">Prizes: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
                                  <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
                               </div>
                               <div class="ms-auto text-end">
@@ -427,6 +425,10 @@
                         <div class="input-group input-group-outline my-3">
                               <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
                         </div>
+                        <label for="maxPlayers">Prizes</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="prize" name="prize" required>
+                        </div>
                         <label for="status">Status</label>
                         <div class="input-group input-group-outline my-3">                          
                               <select class="form-control" id="status" name="status" required>
@@ -469,6 +471,10 @@
                      <label for="editMaxPlayers">Max Players</label>
                      <div class="input-group input-group-outline my-3">
                         <input type="number" class="form-control" id="editMaxPlayers" name="max_player" required>
+                     </div>
+                     <label for="editPrize">Prize</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="editPrize" name="prize" required>
                      </div>
                      <label for="editStatus">Status</label>
                      <div class="input-group input-group-outline my-3">
@@ -740,6 +746,7 @@ function moveWinnerToNextRound(winnerElement, round, match) {
             document.getElementById('editStartDate').value = tournament.start_date;
             document.getElementById('editEndDate').value = tournament.end_date;
             document.getElementById('editMaxPlayers').value = tournament.max_player;
+            document.getElementById('editPrize').value = tournament.prize;
             document.getElementById('editStatus').value = tournament.status;
 
             $('#editTournamentModal').modal('show');

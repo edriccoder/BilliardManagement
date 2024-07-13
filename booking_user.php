@@ -10,7 +10,10 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-$sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings WHERE user_id = :user_id";
+$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method
+                FROM bookings b
+                LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                WHERE b.user_id = :user_id";
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 $stmtBookings->execute();
@@ -230,33 +233,43 @@ foreach ($users as $user) {
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-                     <?php
-                     if (!empty($bookings)) {
-                        foreach ($bookings as $booking) {
-                           echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                           echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                           echo '<div class="d-flex flex-column">';
-                           echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                           echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                           echo '</div>';
-                           echo '<div class="ms-auto text-end">';
-                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking["booking_id"])) . ', ' . htmlspecialchars(json_encode($booking["user_id"])) . ', ' . htmlspecialchars(json_encode($booking["start_time"])) . ', ' . htmlspecialchars(json_encode($booking["end_time"])) . ')\'>';
-                           echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                           echo '</div>';
-                           echo '</li>';
-                        }
-                     } else {
+               <?php
+                  if (!empty($bookings)) {
+                     foreach ($bookings as $booking) {
                         echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
                         echo '<div class="d-flex flex-column">';
-                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                        echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
+                        echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
+                        echo '</div>';
+                        echo '<div class="ms-auto text-end">';
+                        echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                        echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
+                        echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
+
+                        // Add conditional check for status
+                        if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
+                              echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
+                        } else {
+                              echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_receipt.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
+                        }
+
                         echo '</div>';
                         echo '</li>';
                      }
-                     ?>
+                  } else {
+                     echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                     echo '<div class="d-flex flex-column">';
+                     echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                     echo '</div>';
+                     echo '</li>';
+                  }
+               ?>
                </ul>
             </div>
          </div>
@@ -351,39 +364,47 @@ foreach ($users as $user) {
       </div>
       <!-- Edit Modal -->
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="edit_booking.php">
-                            <input type="hidden" id="bookingId" name="booking_id">
-                            <input type="hidden" id="userId" name="user_id">
-                            <label for="username">User</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="text" class="form-control" id="username" name="username" value="" readonly>
-                            </div>
-                            <label>Start Time</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                            </div>
-                            <label>End Time</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" name="confirm" class="btn btn-primary">Confirm Edit</button>
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action="edit_booking.php">
+                        <input type="hidden" id="bookingId" name="booking_id">
+                        <input type="hidden" id="userId" name="user_id">
+                        <label for="username">User</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                        </div>
+                        <label>Start Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                        </div>
+                        <label>End Time</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                        </div>
+                        <label>Amount</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" name="amount" id="editAmount" class="form-control" readonly>
+                        </div>
+                        <label>Payment Method</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" name="payment_method" id="editPaymentMethod" class="form-control" readonly>
+                        </div>
+                        <div class="modal-footer">
+                              <button type="submit" name="confirm" class="btn btn-primary">Confirm Edit</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                        </div>
+                     </form>
+                  </div>
             </div>
-        </div>
+         </div>
+      </div>
         <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -395,15 +416,17 @@ foreach ($users as $user) {
 
         const userData = <?php echo json_encode($userMap); ?>;
 
-        function openEditModal(bookingId, userId, startTime, endTime) {
-            document.getElementById('bookingId').value = bookingId;
-            document.getElementById('userId').value = userId;
-            document.getElementById('username').value = userData[userId];
-            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
-            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
+        function openEditModal(booking) {
+            document.getElementById('bookingId').value = booking.booking_id;
+            document.getElementById('userId').value = booking.user_id;
+            document.getElementById('username').value = userData[booking.user_id];
+            document.getElementById('editStartTime').value = booking.start_time.replace(' ', 'T');
+            document.getElementById('editEndTime').value = booking.end_time.replace(' ', 'T');
+            document.getElementById('editAmount').value = booking.amount;
+            document.getElementById('editPaymentMethod').value = booking.payment_method;
 
             $('#bookingModal').modal('show');
-        }
+         }
         </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
