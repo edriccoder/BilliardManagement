@@ -5,7 +5,27 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     // Redirect to login page if session variables are not set
     header("Location: index.php");
     exit();
+    
 }
+
+function getCount($conn, $sql) {
+   $stmt = $conn->prepare($sql);
+   $stmt->execute();
+   $result = $stmt->fetch(PDO::FETCH_ASSOC);
+   return $result ? $result['total'] : 0;
+}
+
+// Fetch total users
+$sql_users = "SELECT COUNT(*) as total FROM users";
+$total_users = getCount($conn, $sql_users);
+
+// Fetch total billiard tables
+$sql_tables = "SELECT COUNT(*) as total FROM tables";
+$total_tables = getCount($conn, $sql_tables);
+
+// Fetch total bookings
+$sql_bookings = "SELECT COUNT(*) as total FROM bookings";
+$total_bookings = getCount($conn, $sql_bookings);
 
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
@@ -66,7 +86,7 @@ foreach ($users as $user) {
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">Admin</span>
+            <span class="ms-1 font-weight-bold text-white">Cashier</span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">
@@ -215,34 +235,34 @@ foreach ($users as $user) {
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-                  <?php
-                     if (!empty($bookings)) {
-                        foreach ($bookings as $booking) {
-                           echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                           echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                           echo '<div class="d-flex flex-column">';
-                           echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                           echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
-                           echo '</div>';
-                           echo '<div class="ms-auto text-end">';
-                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
-                           echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                           echo '</div>';
-                           echo '</li>';
-                        }
-                     } else {
+               <?php
+                  if (!empty($bookings)) {
+                     foreach ($bookings as $booking) {
                         echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
                         echo '<div class="d-flex flex-column">';
-                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                        echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
+                        echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+                        echo '</div>';
+                        echo '<div class="ms-auto text-end">';
+                        echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                        echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
+                        echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
                         echo '</div>';
                         echo '</li>';
                      }
-                  ?>
+                  } else {
+                     echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                     echo '<div class="d-flex flex-column">';
+                     echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                     echo '</div>';
+                     echo '</li>';
+                  }
+               ?>
                </ul>
             </div>
          </div>
@@ -339,54 +359,54 @@ foreach ($users as $user) {
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="manage_booking.php">
-                        <input type="hidden" id="bookingId" name="booking_id">
-                        <input type="hidden" id="userId" name="user_id">
-                        <label for="username">User</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" class="form-control" id="username" name="username" value="" readonly>
-                        </div>
-                        <label>Start Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                        </div>
-                        <label>End Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                        </div>
-                        <label>Amount</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="amount" id="editAmount" class="form-control" readonly>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
-                              <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+               <div class="modal-header">
+                  <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">×</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form method="POST" action="manage_booking.php">
+                     <input type="hidden" id="bookingId" name="booking_id">
+                     <input type="hidden" id="userId" name="user_id">
+                     <label for="username">User</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                     </div>
+                     <label>Start Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                     </div>
+                     <label>End Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                     </div>
+                     <label>Amount</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" name="amount" id="editAmount" class="form-control" readonly>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
+                        <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                     </div>
+                  </form>
+               </div>
             </div>
          </div>
       </div>
       <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
+         var win = navigator.platform.indexOf('Win') > -1;
+         if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-                damping: '0.5'
+               damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
+         }
 
-        const userData = <?php echo json_encode($userMap); ?>;
+         const userData = <?php echo json_encode($userMap); ?>;
 
-        function openEditModal(booking) {
+         function openEditModal(booking) {
             document.getElementById('bookingId').value = booking.booking_id;
             document.getElementById('userId').value = booking.user_id;
             document.getElementById('username').value = userData[booking.user_id];
@@ -396,8 +416,7 @@ foreach ($users as $user) {
 
             $('#bookingModal').modal('show');
          }
-        </script>
-
+      </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

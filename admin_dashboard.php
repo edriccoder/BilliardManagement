@@ -238,7 +238,6 @@ $total_bookings = getCount($conn, $sql_bookings);
          </div>
          <!-- Content Row -->
          <div class="row">
-
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card  mb-2">
                 <div class="card-header p-3 pt-2">
