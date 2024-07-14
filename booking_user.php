@@ -233,43 +233,7 @@ foreach ($users as $user) {
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-               <?php
-                  if (!empty($bookings)) {
-                     foreach ($bookings as $booking) {
-                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                        echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                        echo '<div class="d-flex flex-column">';
-                        echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                        echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                        echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                        echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                        echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                        echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
-                        echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
-                        echo '</div>';
-                        echo '<div class="ms-auto text-end">';
-                        echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                        echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
-                        echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-
-                        // Add conditional check for status
-                        if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
-                              echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
-                        } else {
-                              echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_receipt.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
-                        }
-
-                        echo '</div>';
-                        echo '</li>';
-                     }
-                  } else {
-                     echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                     echo '<div class="d-flex flex-column">';
-                     echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
-                     echo '</div>';
-                     echo '</li>';
-                  }
-               ?>
+ 
                </ul>
             </div>
          </div>

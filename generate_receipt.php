@@ -12,7 +12,7 @@ if (!isset($_GET['booking_id'])) {
     die("Booking ID is required.");
 }
 
-$booking_id = htmlspecialchars($_GET['booking_id']);
+$booking_id = htmlspecialchars($_GET['booking_id'], ENT_QUOTES, 'UTF-8');
 
 // Fetch booking details
 $sqlBooking = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method
@@ -29,8 +29,8 @@ if (!$booking) {
 }
 
 // Check if the booking status is cancelled or pending
-if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
-    echo "<script>alert('Cannot generate receipt for a booking with status: " . htmlspecialchars($booking['status']) . "');</script>";
+if ($booking['status'] == 'Canceled' || $booking['status'] == 'Pending') {
+    echo "<script>alert('Cannot generate receipt for a booking with status: " . htmlspecialchars($booking['status'], ENT_QUOTES, 'UTF-8') . "');</script>";
     echo "<script>window.history.back();</script>";
     exit();
 }
@@ -63,14 +63,14 @@ if (!file_exists($font)) {
 
 // Add text to the image
 imagettftext($image, 16, 0, 10, 30, $black, $font, 'Booking Receipt');
-imagettftext($image, 12, 0, 10, 60, $grey, $font, 'Booking ID: ' . $booking['booking_id']);
-imagettftext($image, 12, 0, 10, 90, $grey, $font, 'User ID: ' . $booking['user_id']);
-imagettftext($image, 12, 0, 10, 120, $grey, $font, 'Table Name: ' . $booking['table_name']);
-imagettftext($image, 12, 0, 10, 150, $grey, $font, 'Start Time: ' . $booking['start_time']);
-imagettftext($image, 12, 0, 10, 180, $grey, $font, 'End Time: ' . $booking['end_time']);
-imagettftext($image, 12, 0, 10, 210, $grey, $font, 'Status: ' . $booking['status']);
-imagettftext($image, 12, 0, 10, 240, $grey, $font, 'Amount: ' . $booking['amount']);
-imagettftext($image, 12, 0, 10, 270, $grey, $font, 'Payment Method: ' . $booking['payment_method']);
+imagettftext($image, 12, 0, 10, 60, $grey, $font, 'Booking ID: ' . htmlspecialchars($booking['booking_id'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 90, $grey, $font, 'User ID: ' . htmlspecialchars($booking['user_id'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 120, $grey, $font, 'Table Name: ' . htmlspecialchars($booking['table_name'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 150, $grey, $font, 'Start Time: ' . htmlspecialchars($booking['start_time'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 180, $grey, $font, 'End Time: ' . htmlspecialchars($booking['end_time'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 210, $grey, $font, 'Status: ' . htmlspecialchars($booking['status'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 240, $grey, $font, 'Amount: ' . htmlspecialchars($booking['amount'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 270, $grey, $font, 'Payment Method: ' . htmlspecialchars($booking['payment_method'], ENT_QUOTES, 'UTF-8'));
 
 // Check if the receipts directory exists and is writable; if not, create it
 $receiptsDir = 'receipts';
@@ -79,7 +79,7 @@ if (!is_dir($receiptsDir)) {
 }
 
 // Save the image as PNG
-$filename = $receiptsDir . '/receipt_' . $booking['booking_id'] . '.png';
+$filename = $receiptsDir . '/receipt_' . htmlspecialchars($booking['booking_id'], ENT_QUOTES, 'UTF-8') . '.png';
 imagepng($image, $filename);
 
 // Clean up
