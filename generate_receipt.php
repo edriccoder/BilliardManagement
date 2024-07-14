@@ -2,12 +2,6 @@
 session_start();
 include 'conn.php';
 
-if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-    // Redirect to login page if session variables are not set
-    header("Location: index.php");
-    exit();
-}
-
 if (!isset($_GET['booking_id'])) {
     die("Booking ID is required.");
 }
@@ -27,6 +21,19 @@ $booking = $stmtBooking->fetch(PDO::FETCH_ASSOC);
 if (!$booking) {
     die("Booking not found.");
 }
+
+// Fetch username
+$sqlUser = "SELECT username FROM users WHERE user_id = :user_id";
+$stmtUser = $conn->prepare($sqlUser);
+$stmtUser->bindParam(':user_id', $booking['user_id'], PDO::PARAM_INT);
+$stmtUser->execute();
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    die("User not found.");
+}
+
+$username = htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8');
 
 // Check if the booking status is cancelled or pending
 if ($booking['status'] == 'Canceled' || $booking['status'] == 'Pending') {
@@ -64,7 +71,7 @@ if (!file_exists($font)) {
 // Add text to the image
 imagettftext($image, 16, 0, 10, 30, $black, $font, 'Booking Receipt');
 imagettftext($image, 12, 0, 10, 60, $grey, $font, 'Booking ID: ' . htmlspecialchars($booking['booking_id'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 90, $grey, $font, 'User ID: ' . htmlspecialchars($booking['user_id'], ENT_QUOTES, 'UTF-8'));
+imagettftext($image, 12, 0, 10, 90, $grey, $font, 'Username: ' . $username);
 imagettftext($image, 12, 0, 10, 120, $grey, $font, 'Table Name: ' . htmlspecialchars($booking['table_name'], ENT_QUOTES, 'UTF-8'));
 imagettftext($image, 12, 0, 10, 150, $grey, $font, 'Start Time: ' . htmlspecialchars($booking['start_time'], ENT_QUOTES, 'UTF-8'));
 imagettftext($image, 12, 0, 10, 180, $grey, $font, 'End Time: ' . htmlspecialchars($booking['end_time'], ENT_QUOTES, 'UTF-8'));
