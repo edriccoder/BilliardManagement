@@ -94,6 +94,14 @@ echo "<script>
                   </a>
                </li> 
             <li class="nav-item">
+               <a class="nav-link text-white " href="feedback.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">feedback</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Feedback</span>
+               </a>
+            </li>
+            <li class="nav-item">
                <a class="nav-link text-white " href="./notifications.html">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">notifications</i>
@@ -469,8 +477,8 @@ echo "<script>
 
             document.getElementById('bookingTableId').value = table.table_id;
             document.getElementById('bookingTableName').value = table.table_number;
-            document.getElementById('username').value = userData.username;  // Ensure the username is filled correctly
-            document.getElementById('userId').value = userData.user_id;    // Ensure the user ID is filled correctly
+            document.getElementById('username').value = userData.username; 
+            document.getElementById('userId').value = userData.user_id;    
             $('#bookingModal').modal('show');
          }
       </script>

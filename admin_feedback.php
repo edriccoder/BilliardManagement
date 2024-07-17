@@ -1,32 +1,27 @@
-<?php
-session_start();
-include 'conn.php';
-if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-    // Redirect to login page if session variables are not set
-    header("Location: index.php");
-    exit();
-}
-
-// Escape and encode session variables for safe output
-$user_id = htmlspecialchars($_SESSION['user_id']);
-
-$sqlBookings = "SELECT booking_id, user_id, table_id, table_name, start_time, end_time, status FROM bookings";
-$stmtBookings = $conn->prepare($sqlBookings);
-$stmtBookings->execute();
-$bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
-
-// Create a map for user_id to username (if needed)
-$sqlUsers = "SELECT user_id, username FROM users";
-$stmtUsers = $conn->prepare($sqlUsers);
-$stmtUsers->execute();
-$users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
-
-$userMap = [];
-foreach ($users as $user) {
-    $userMap[$user['user_id']] = $user['username'];
-}
-?>
 <!DOCTYPE html>
+<?php
+// Include database connection
+include 'conn.php';
+
+function getCount($conn, $sql) {
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['total'] : 0;
+}
+
+// Fetch total users
+$sql_users = "SELECT COUNT(*) as total FROM users";
+$total_users = getCount($conn, $sql_users);
+
+// Fetch total billiard tables
+$sql_tables = "SELECT COUNT(*) as total FROM tables";
+$total_tables = getCount($conn, $sql_tables);
+
+// Fetch total bookings
+$sql_bookings = "SELECT COUNT(*) as total FROM bookings";
+$total_bookings = getCount($conn, $sql_bookings);
+?>
 <html lang="en">
    <head>
       <meta charset="utf-8" />
@@ -34,7 +29,7 @@ foreach ($users as $user) {
       <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
       <link rel="icon" type="image/png" href="./assets/img/favicon.png">
       <title>
-        Billiard Management
+         Billiard Management
       </title>
       <!--     Fonts and icons     -->
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -56,7 +51,7 @@ foreach ($users as $user) {
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
-
+      
    </head>
    <body class="g-sidenav-show  bg-gray-100">
       <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -70,7 +65,7 @@ foreach ($users as $user) {
          <hr class="horizontal light mt-0 mb-2">
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
-         <li class="nav-item">
+            <li class="nav-item">
                <a class="nav-link text-white " href="admin_dashboard.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">dashboard</i>
@@ -134,7 +129,6 @@ foreach ($users as $user) {
                   <span class="nav-link-text ms-1">Notifications</span>
                </a>
             </li>
-            <li class="nav-item mt-3">
             <li class="nav-item mt-3">
          </ul>
       </aside>
@@ -246,44 +240,67 @@ foreach ($users as $user) {
          </nav>
          <!-- End Navbar -->        
          <div class="container-fluid">
-         <!-- Page Heading -->      
-         <!-- Table Row -->
-         <div class="card">
-            <div class="card-header pb-0 px-3">
-               <h6 class="mb-0">Booking Information</h6>
+         <!-- Page Heading -->
+         <!-- Content Row -->
+         <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                <h6 class="text-white text-capitalize ps-3">Feedback table</h6>
+                            </div>
+                        </div>
+                        <div class="card-body px-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Experience</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Feedback</th>
+                                            <th class="text-secondary opacity-7"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        include 'conn.php';
+                                        
+                                        try {
+                                            $stmt = $conn->query("SELECT name, email, experience, feedback FROM feedback");
+                                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                echo "<tr>
+                                                        <td>
+                                                            <div class='d-flex px-2 py-1'>
+                                                                <div class='d-flex flex-column justify-content-center'>
+                                                                    <h6 class='mb-0 text-sm'>{$row['name']}</h6>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <p class='text-xs font-weight-bold mb-0'>{$row['email']}</p>
+                                                        </td>
+                                                        <td class='align-middle text-center text-sm'>
+                                                            <span class='badge badge-sm bg-gradient-success'>{$row['experience']}</span>
+                                                        </td>
+                                                        <td class='align-middle text-center'>
+                                                            <span class='text-secondary text-xs font-weight-bold'>{$row['feedback']}</span>
+                                                        </td>
+                                                    </tr>";
+                                            }
+                                        } catch (Exception $e) {
+                                            echo "<tr><td colspan='5' class='text-center'>Error fetching feedback: " . $e->getMessage() . "</td></tr>";
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body pt-4 p-3">
-               <ul class="list-group">
-                     <?php
-                     if (!empty($bookings)) {
-                        foreach ($bookings as $booking) {
-                           echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                           echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                           echo '<div class="d-flex flex-column">';
-                           echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                           echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                           echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                           echo '</div>';
-                           echo '<div class="ms-auto text-end">';
-                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking["booking_id"])) . ', ' . htmlspecialchars(json_encode($booking["user_id"])) . ', ' . htmlspecialchars(json_encode($booking["start_time"])) . ', ' . htmlspecialchars(json_encode($booking["end_time"])) . ')\'>';
-                           echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                           echo '</div>';
-                           echo '</li>';
-                        }
-                     } else {
-                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                        echo '<div class="d-flex flex-column">';
-                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
-                        echo '</div>';
-                        echo '</li>';
-                     }
-                     ?>
-               </ul>
-            </div>
-         </div>
+        </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -299,166 +316,15 @@ foreach ($users as $user) {
             </footer>
          </div>
       </main>
-      <div class="fixed-plugin">
-         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-         <i class="material-icons py-2">settings</i>
-         </a>
-         <div class="card shadow-lg">
-            <div class="card-header pb-0 pt-3">
-               <div class="float-start">
-                  <h5 class="mt-3 mb-0">Material UI Configurator</h5>
-                  <p>See our dashboard options.</p>
-               </div>
-               <div class="float-end mt-4">
-                  <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                  <i class="material-icons">clear</i>
-                  </button>
-               </div>
-               <!-- End Toggle Button -->
-            </div>
-            <hr class="horizontal dark my-1">
-            <div class="card-body pt-sm-3 pt-0">
-               <!-- Sidebar Backgrounds -->
-               <div>
-                  <h6 class="mb-0">Sidebar Colors</h6>
-               </div>
-               <a href="javascript:void(0)" class="switch-trigger background-color">
-                  <div class="badge-colors my-2 text-start">
-                     <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
-                     <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
-                     <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
-                     <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
-                     <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
-                     <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
-                  </div>
-               </a>
-               <!-- Sidenav Type -->
-               <div class="mt-3">
-                  <h6 class="mb-0">Sidenav Type</h6>
-                  <p class="text-sm">Choose between 2 different sidenav types.</p>
-               </div>
-               <div class="d-flex">
-                  <button class="btn bg-gradient-dark px-3 mb-2 active" data-class="bg-gradient-dark" onclick="sidebarType(this)">Dark</button>
-                  <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
-                  <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-               </div>
-               <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-               <!-- Navbar Fixed -->
-               <div class="mt-3 d-flex">
-                  <h6 class="mb-0">Navbar Fixed</h6>
-                  <div class="form-check form-switch ps-0 ms-auto my-auto">
-                     <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
-                  </div>
-               </div>
-               <hr class="horizontal dark my-3">
-               <div class="mt-2 d-flex">
-                  <h6 class="mb-0">Light / Dark</h6>
-                  <div class="form-check form-switch ps-0 ms-auto my-auto">
-                     <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
-                  </div>
-               </div>
-               <hr class="horizontal dark my-sm-4">
-               <a class="btn bg-gradient-info w-100" href="https://www.creative-tim.com/product/material-dashboard-pro">Free Download</a>
-               <a class="btn btn-outline-dark w-100" href="https://www.creative-tim.com/learning-lab/bootstrap/overview/material-dashboard">View documentation</a>
-               <div class="w-100 text-center">
-                  <a class="github-button" href="https://github.com/creativetimofficial/material-dashboard" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star creativetimofficial/material-dashboard on GitHub">Star</a>
-                  <h6 class="mt-3">Thank you for sharing!</h6>
-                  <a href="https://twitter.com/intent/tweet?text=Check%20Material%20UI%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fsoft-ui-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-                  <i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
-                  </a>
-                  <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard" class="btn btn-dark mb-0 me-2" target="_blank">
-                  <i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
-                  </a>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- Edit Modal -->
-        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="manage_booking.php">
-                            <input type="hidden" id="bookingId" name="booking_id">
-                            <input type="hidden" id="userId" name="user_id">
-                            <label for="username">User</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="text" class="form-control" id="username" name="username" value="" readonly>
-                            </div>
-                            <label>Start Time</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                            </div>
-                            <label>End Time</label>
-                            <div class="input-group input-group-outline my-3">
-                                <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
-                                <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
       <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-
-        const userData = <?php echo json_encode($userMap); ?>;
-
-        function openEditModal(bookingId, userId, startTime, endTime) {
-            document.getElementById('bookingId').value = bookingId;
-            document.getElementById('userId').value = userId;
-            document.getElementById('username').value = userData[userId];
-            document.getElementById('editStartTime').value = startTime.replace(' ', 'T');
-            document.getElementById('editEndTime').value = endTime.replace(' ', 'T');
-
-            $('#bookingModal').modal('show');
-        }
-        </script>
-
-      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-      <!-- Bootstrap core JavaScript-->
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- jQuery -->
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-
-      <!-- Core plugin JavaScript-->
-      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-      <!-- Custom scripts for all pages-->
-      <script src="js/sb-admin-2.min.js"></script>
-
-      <!-- Page level plugins -->
-      <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-         
-      <!-- Page level custom scripts -->
-      <script src="js/demo/datatables-demo.js"></script>
-
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+         var win = navigator.platform.indexOf('Win') > -1;
+         if (win && document.querySelector('#sidenav-scrollbar')) {
+           var options = {
+             damping: '0.5'
+           }
+           Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+         }
+      </script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
 </html>
