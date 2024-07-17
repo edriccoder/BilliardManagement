@@ -21,9 +21,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $bookingId = $conn->lastInsertId();
 
-    $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp) VALUES (?, ?, ?, 'Pending', NOW())";
+    // Handle file upload if payment method is GCash
+    $proofOfPayment = '';
+    if ($paymentMethod === 'gcash' && isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = 'payments/';
+        $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
+        if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
+            $proofOfPayment = $uploadFile;
+        } else {
+            // Handle file upload error
+            // You can redirect back with an error message or handle it as needed
+            die('Failed to upload proof of payment.');
+        }
+    }
+
+    $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) VALUES (?, ?, ?, 'Pending', NOW(), ?)";
     $stmtTransaction = $conn->prepare($sqlTransaction);
-    $stmtTransaction->execute([$bookingId, $amount, $paymentMethod]);
+    $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPayment]);
 
     header("Location: user_table.php");
     exit();

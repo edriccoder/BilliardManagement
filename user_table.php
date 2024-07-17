@@ -386,10 +386,20 @@ echo "<script>
                         </div>
                         <label>Payment Method</label>
                         <div class="input-group input-group-outline my-3">
-                              <select name="payment_method" class="form-control">
+                              <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
                                  <option value="cash">Cash</option>
-                                 <option value="credit_card">Gcash</option>
+                                 <option value="gcash">GCash</option>
                               </select>
+                        </div>
+                        <div id="gcashFields" style="display: none;">
+                              <label>GCash QR Code</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                              </div>
+                              <label>Proof of Payment</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+                              </div>
                         </div>
                         <label>Total Amount</label>
                         <div class="input-group input-group-outline my-3">
@@ -420,8 +430,8 @@ echo "<script>
             if (startTime && endTime) {
                var start = new Date(startTime);
                var end = new Date(endTime);
-               var diff = (end - start) / (1000 * 60 * 60); // Convert difference to hours
-               var amount = diff * 30; // Assuming the rate is $30 per hour
+               var diff = (end - start) / (1000 * 60 * 60); 
+               var amount = diff * 30; 
                document.getElementById('totalAmount').value = amount.toFixed(2);
                document.getElementById('amount').value = amount.toFixed(2);
             }
@@ -432,8 +442,17 @@ echo "<script>
             document.getElementById('bookingTableName').value = table.table_number;
             document.getElementById('username').value = userData.username;
             document.getElementById('userId').value = userData.user_id;
-            document.getElementById('totalAmount').value = ''; // Reset total amount
+            document.getElementById('totalAmount').value = ''; 
             $('#bookingModal').modal('show');
+         }
+         function toggleGcashFields() {
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            var gcashFields = document.getElementById('gcashFields');
+            if (paymentMethod === 'gcash') {
+               gcashFields.style.display = 'block';
+            } else {
+               gcashFields.style.display = 'none';
+            }
          }
       </script>
 

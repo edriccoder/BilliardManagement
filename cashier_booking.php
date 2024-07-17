@@ -30,7 +30,7 @@ $total_bookings = getCount($conn, $sql_bookings);
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount
+$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id";
 $stmtBookings = $conn->prepare($sqlBookings);
@@ -247,6 +247,15 @@ foreach ($users as $user) {
                         echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
                         echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
                         echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+
+                        if (!empty($booking["proof_of_payment"])) {
+                        echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                        echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                        echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                        echo '</a>';
+                        echo '</span></span>';
+                        }
+
                         echo '</div>';
                         echo '<div class="ms-auto text-end">';
                         echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
@@ -262,7 +271,23 @@ foreach ($users as $user) {
                      echo '</div>';
                      echo '</li>';
                   }
-               ?>
+                  ?>
+                  </ul>
+                  <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Proof of Payment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body text-center">
+                        <img id="imageModalContent" src="" alt="Proof of Payment" style="max-width: 100%; max-height: 500px;">
+                        </div>
+                     </div>
+                  </div>
+                  </div>
                </ul>
             </div>
          </div>
@@ -415,6 +440,10 @@ foreach ($users as $user) {
             document.getElementById('editAmount').value = booking.amount;
 
             $('#bookingModal').modal('show');
+         }
+         function openImageModal(imageUrl) {
+            $('#imageModalContent').attr('src', imageUrl);
+            $('#imageModal').modal('show');
          }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

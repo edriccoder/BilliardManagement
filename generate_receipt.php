@@ -79,6 +79,13 @@ imagettftext($image, 12, 0, 10, 210, $grey, $font, 'Status: ' . htmlspecialchars
 imagettftext($image, 12, 0, 10, 240, $grey, $font, 'Amount: ' . htmlspecialchars($booking['amount'], ENT_QUOTES, 'UTF-8'));
 imagettftext($image, 12, 0, 10, 270, $grey, $font, 'Payment Method: ' . htmlspecialchars($booking['payment_method'], ENT_QUOTES, 'UTF-8'));
 
+// Add payment confirmation based on the payment method
+if ($booking['payment_method'] == 'gcash') {
+    imagettftext($image, 12, 0, 10, 300, $grey, $font, 'Payment Status: Paid');
+} else if ($booking['payment_method'] == 'cash') {
+    imagettftext($image, 12, 0, 10, 300, $grey, $font, 'Payment Status: Pending');
+}
+
 // Check if the receipts directory exists and is writable; if not, create it
 $receiptsDir = 'receipts';
 if (!is_dir($receiptsDir)) {

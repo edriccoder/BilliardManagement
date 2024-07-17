@@ -300,7 +300,7 @@ $total_bookings = getCount($conn, $sql_bookings);
                     </div>
                 </div>
             </div>
-        </div>
+         </div>
          <!-- Content Row -->
          <div class="column">
          </div>

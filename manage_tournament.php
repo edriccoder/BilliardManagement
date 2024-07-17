@@ -253,6 +253,7 @@
                                  <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
                                  <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
                                  <span class="mb-2 text-xs">Prizes: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
+                                 <span class="mb-2 text-xs">Tournament fee: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['fee']); ?></span></span>
                                  <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
                               </div>
                               <div class="ms-auto text-end">
@@ -409,45 +410,49 @@
       <div class="modal fade" id="addTournamentModal" tabindex="-1" role="dialog" aria-labelledby="addTournamentModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
+               <div class="modal-header">
+               <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <div class="modal-body">
+               <form id="addTournamentForm" method="POST" action="add_tournament.php">
+                  <label for="tournamentName">Tournament Name</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="text" class="form-control" id="tournamentName" name="name" required>
                   </div>
-                  <div class="modal-body">
-                     <form id="addTournamentForm" method="POST" action="add_tournament.php">
-                        <label for="tournamentName">Tournament Name</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" class="form-control" id="tournamentName" name="name" required>
-                        </div>
-                        <label for="startDate">Start Date</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="date" class="form-control" id="startDate" name="start_date" required>
-                        </div>
-                        <label for="endDate">End Date</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="date" class="form-control" id="endDate" name="end_date" required>
-                        </div>
-                        <label for="maxPlayers">Max Players</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
-                        </div>
-                        <label for="maxPlayers">Prizes</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" class="form-control" id="prize" name="prize" required>
-                        </div>
-                        <label for="status">Status</label>
-                        <div class="input-group input-group-outline my-3">                          
-                              <select class="form-control" id="status" name="status" required>
-                                 <option value="upcoming">Upcoming</option>
-                                 <option value="ongoing">Ongoing</option>
-                                 <option value="completed">Completed</option>
-                              </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Tournament</button>
-                     </form>
+                  <label for="startDate">Start Date</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="date" class="form-control" id="startDate" name="start_date" required>
                   </div>
+                  <label for="endDate">End Date</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="date" class="form-control" id="endDate" name="end_date" required>
+                  </div>
+                  <label for="maxPlayers">Max Players</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
+                  </div>
+                  <label for="prize">Prizes</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="text" class="form-control" id="prize" name="prize" required>
+                  </div>
+                  <label for="fee">Tournament Fee</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="number" step="0.01" class="form-control" id="fee" name="fee" required>
+                  </div>
+                  <label for="status">Status</label>
+                  <div class="input-group input-group-outline my-3">
+                     <select class="form-control" id="status" name="status" required>
+                     <option value="upcoming">Upcoming</option>
+                     <option value="ongoing">Ongoing</option>
+                     <option value="completed">Completed</option>
+                     </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Tournament</button>
+               </form>
+               </div>
             </div>
          </div>
       </div>
@@ -483,6 +488,10 @@
                      <label for="editPrize">Prize</label>
                      <div class="input-group input-group-outline my-3">
                         <input type="text" class="form-control" id="editPrize" name="prize" required>
+                     </div>
+                     <label for="editPrize">Tournament Fee</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="editFee" name="fee" required>
                      </div>
                      <label for="editStatus">Status</label>
                      <div class="input-group input-group-outline my-3">
@@ -779,6 +788,7 @@
             document.getElementById('editMaxPlayers').value = tournament.max_player;
             document.getElementById('editPrize').value = tournament.prize;
             document.getElementById('editStatus').value = tournament.status;
+            document.getElementById('editFee').value = tournament.fee;
 
             $('#editTournamentModal').modal('show');
          }

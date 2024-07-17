@@ -10,7 +10,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method
+$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
                 WHERE b.user_id = :user_id";
@@ -253,6 +253,13 @@ foreach ($users as $user) {
                            echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
                            echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
                            echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+                           if (!empty($booking["proof_of_payment"])) {
+                              echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                              echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                              echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                              echo '</a>';
+                              echo '</span></span>';
+                              }
                            echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
                            echo '</div>';
                            echo '<div class="ms-auto text-end">';
@@ -279,6 +286,20 @@ foreach ($users as $user) {
                      }
                   ?>
                </ul>
+               <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Proof of Payment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body text-center">
+                        <img id="imageModalContent" src="" alt="Proof of Payment" style="max-width: 100%; max-height: 500px;">
+                        </div>
+                     </div>
+                  </div>
             </div>
          </div>
          <!-- Content Row -->
@@ -434,6 +455,10 @@ foreach ($users as $user) {
             document.getElementById('editPaymentMethod').value = booking.payment_method;
 
             $('#bookingModal').modal('show');
+         }
+         function openImageModal(imageUrl) {
+            $('#imageModalContent').attr('src', imageUrl);
+            $('#imageModal').modal('show');
          }
         </script>
 
