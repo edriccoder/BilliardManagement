@@ -521,6 +521,8 @@
                               <tr>
                                  <th scope="col">User ID</th>
                                  <th scope="col">Username</th>
+                                 <th scope="col">Proof of payment</th>
+                                 <th scope="col">Status</th>
                               </tr>
                         </thead>
                         <tbody id="playersTableBody">
@@ -552,6 +554,21 @@
             </div>
          </div>
       </div>
+      <!-- Modal to display proof of payment image -->
+      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="imageModalLabel">Proof of Payment</h5>
+                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body" id="imageModalContent">
+                     <!-- Image will be displayed here dynamically -->
+                  </div>
+            </div>
+         </div>
+      </div>
+
 
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
@@ -563,17 +580,18 @@
          let currentTournamentId = null;
          document.addEventListener('DOMContentLoaded', function() {
             let currentTournamentId = null;
-
             const showPlayersButtons = document.querySelectorAll('.show-players');
+
             showPlayersButtons.forEach(button => {
                button.addEventListener('click', function(event) {
                      event.preventDefault();
                      currentTournamentId = this.getAttribute('data-tournament-id');
+                     
                      fetch(`fetch_players.php?tournament_id=${currentTournamentId}`)
                         .then(response => response.json())
                         .then(players => {
                            const playersTableBody = document.getElementById('playersTableBody');
-                           playersTableBody.innerHTML = ''; // Clear existing rows
+                           playersTableBody.innerHTML = '';
 
                            if (players.success && players.players.length > 0) {
                                  players.players.forEach(player => {
@@ -581,20 +599,44 @@
                                        <tr>
                                              <td>${player.user_id}</td>
                                              <td>${player.username}</td>
+                                             <td><img src="${player.proof_of_payment}" alt="Proof of Payment" style="max-width: 200px; max-height: 300px;"></td>
+                                             <td>${player.status}</td>
+                                             <td>
+                                                <button class="btn btn-sm btn-primary edit-confirm" data-player-id="${player.player_id}" data-status="confirmed">Confirm</button>
+                                                <button class="btn btn-sm btn-primary edit-cancel" data-player-id="${player.player_id}" data-status="cancelled">Cancel</button>
+                                             </td>
                                        </tr>
                                     `;
                                     playersTableBody.innerHTML += row;
                                  });
+
+                                 // Add event listeners for Confirm and Cancel buttons
+                                 const confirmButtons = document.querySelectorAll('.edit-confirm');
+                                 confirmButtons.forEach(button => {
+                                    button.addEventListener('click', function() {
+                                       const playerId = this.getAttribute('data-player-id');
+                                       const newStatus = this.getAttribute('data-status');
+                                       updatePlayerStatus(playerId, newStatus);
+                                    });
+                                 });
+
+                                 const cancelButtons = document.querySelectorAll('.edit-cancel');
+                                 cancelButtons.forEach(button => {
+                                    button.addEventListener('click', function() {
+                                       const playerId = this.getAttribute('data-player-id');
+                                       const newStatus = this.getAttribute('data-status');
+                                       updatePlayerStatus(playerId, newStatus);
+                                    });
+                                 });
                            } else {
                                  const row = `
                                     <tr>
-                                       <td colspan="2">${players.message || 'No players found.'}</td>
+                                       <td colspan="5">${players.message || 'No players found.'}</td>
                                     </tr>
                                  `;
                                  playersTableBody.innerHTML += row;
                            }
 
-                           // Show the modal
                            const playersModal = new bootstrap.Modal(document.getElementById('playersModal'));
                            playersModal.show();
                         })
@@ -603,6 +645,33 @@
                         });
                });
             });
+
+            // Function to update player status via AJAX
+            function updatePlayerStatus(playerId, newStatus) {
+               fetch('update_player_status.php', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({
+                        player_id: playerId,
+                        new_status: newStatus
+                     })
+               })
+               .then(response => response.json())
+               .then(data => {
+                     if (data.success) {
+                        // Optionally update UI to reflect status change
+                        console.log(`Player ${playerId} status updated to ${newStatus}`);
+                        // You can update the UI here if needed
+                     } else {
+                        console.error('Failed to update player status:', data.message);
+                     }
+               })
+               .catch(error => {
+                     console.error('Error updating player status:', error);
+               });
+            }
 
             document.getElementById('createBracketBtn').addEventListener('click', function() {
                if (currentTournamentId !== null) {

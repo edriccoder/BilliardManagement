@@ -225,41 +225,98 @@ echo "<script>
          <!-- Table Row -->
          <?php
             include 'conn.php';
+
+            // Fetch all tournaments
             $sqlTournaments = "SELECT * FROM tournaments";
             $stmtTournaments = $conn->prepare($sqlTournaments);
             $stmtTournaments->execute();
             $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
+
+            $sqlJoinTournaments = "SELECT players.*, tournaments.name AS tournament_name 
+                       FROM players 
+                       INNER JOIN tournaments ON players.tournament_id = tournaments.tournament_id
+                       WHERE players.user_id = :user_id";
+            $stmtJoinTournaments = $conn->prepare($sqlJoinTournaments);
+            $stmtJoinTournaments->execute(['user_id' => $user_id]);
+            $joinedTournaments = $stmtJoinTournaments->fetchAll(PDO::FETCH_ASSOC);
          ?>
-         <div class="card">
-            <div class="card-header pb-0 px-3">
-               <h6 class="mb-0">Tournament</h6>
+         <div class="row">
+            <div class="col-lg-8">
+               <div class="card">
+                     <div class="card-header pb-0 px-3">
+                        <h6 class="mb-0">Tournament</h6>
+                     </div>
+                     <div class="card-body pt-4 p-3">
+                        <ul class="list-group">
+                           <?php if (!empty($tournaments)) : ?>
+                                 <?php foreach ($tournaments as $tournament) : ?>
+                                    <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                       <div class="d-flex flex-column">
+                                             <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                             <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                             <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                             <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                             <span class="mb-2 text-xs">Prize: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
+                                             <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                                       </div>
+                                       <div class="ms-auto text-end">
+                                             <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
+                                       </div>
+                                    </li>
+                                 <?php endforeach; ?>
+                           <?php else : ?>
+                                 <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                                    <div class="d-flex flex-column">
+                                       <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                                    </div>
+                                 </li>
+                           <?php endif; ?>
+                        </ul>
+                     </div>
+               </div>
             </div>
-            <div class="card-body pt-4 p-3">
-               <ul class="list-group">
-               <?php if (!empty($tournaments)) : ?>
-                     <?php foreach ($tournaments as $tournament) : ?>
-                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                           <div class="d-flex flex-column">
-                                 <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                 <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                 <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                 <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                                 <span class="mb-2 text-xs">Prize: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
-                                 <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+            <div class="col-lg-4">
+               <div class="card h-100">
+                  <div class="card-header pb-0 p-3">
+                        <div class="row">
+                           <div class="col-6 d-flex align-items-center">
+                              <h6 class="mb-0">Joined Tournaments</h6>
                            </div>
-                           <div class="ms-auto text-end">
-                                 <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
+                           <div class="col-6 text-end">
+                              <button class="btn btn-outline-primary btn-sm mb-0">View All</button>
                            </div>
-                        </li>
-                     <?php endforeach; ?>
-               <?php else : ?>
-                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                        <div class="d-flex flex-column">
-                           <h6 class="mb-3 text-sm">No tournaments found.</h6>
                         </div>
-                     </li>
-               <?php endif; ?>
-               </ul>
+                  </div>
+                  <div class="card-body p-3 pb-0">
+                        <ul class="list-group">
+                           <?php
+                           if (!empty($joinedTournaments)) {
+                              foreach ($joinedTournaments as $tournament) {
+                           ?>
+                                    <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                       <div class="d-flex flex-column">
+                                          <h6 class="mb-1 text-dark font-weight-bold text-sm"><?php echo htmlspecialchars($tournament['username']); ?></h6>
+                                          <span class="text-xs"><?php echo htmlspecialchars($tournament['tournament_name']); ?></span>
+                                       </div>
+                                       <div class="d-flex align-items-center text-sm">
+                                          Status: <?php echo htmlspecialchars($tournament['status']); ?>
+                                       </div>
+                                    </li>
+                           <?php
+                              }
+                           } else {
+                           ?>
+                              <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                    <div class="d-flex flex-column">
+                                       <h6 class="text-dark mb-1 font-weight-bold text-sm">No tournaments joined yet.</h6>
+                                    </div>
+                              </li>
+                           <?php
+                           }
+                           ?>
+                        </ul>
+                  </div>
+               </div>
             </div>
          </div>
          <!-- Content Row -->
