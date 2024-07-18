@@ -229,40 +229,39 @@ echo "<script>
             $stmtTournaments = $conn->prepare($sqlTournaments);
             $stmtTournaments->execute();
             $tournaments = $stmtTournaments->fetchAll(PDO::FETCH_ASSOC);
-            ?>
-            <div class="card">
-                <div class="card-header pb-0 px-3">
-                    <h6 class="mb-0">Tournament</h6>
-                </div>
-                <div class="card-body pt-4 p-3">
-                    <ul class="list-group">
-                    <?php if (!empty($tournaments)) : ?>
-                        <?php foreach ($tournaments as $tournament) : ?>
-                            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                                <div class="d-flex flex-column">
-                                    <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                    <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                    <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                                    <span class="mb-2 text-xs">Prize: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
-                                    <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                                </div>
-                                <div class="ms-auto text-end">
-                                    <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
-                                </div>
-                            </li>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                            <div class="d-flex flex-column">
-                                <h6 class="mb-3 text-sm">No tournaments found.</h6>
-                            </div>
-                        </li>
-                    <?php endif; ?>
-                    </ul>
-                </div>
+         ?>
+         <div class="card">
+            <div class="card-header pb-0 px-3">
+               <h6 class="mb-0">Tournament</h6>
             </div>
- 
+            <div class="card-body pt-4 p-3">
+               <ul class="list-group">
+               <?php if (!empty($tournaments)) : ?>
+                     <?php foreach ($tournaments as $tournament) : ?>
+                        <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                           <div class="d-flex flex-column">
+                                 <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                                 <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
+                                 <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                 <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                 <span class="mb-2 text-xs">Prize: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
+                                 <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                           </div>
+                           <div class="ms-auto text-end">
+                                 <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
+                           </div>
+                        </li>
+                     <?php endforeach; ?>
+               <?php else : ?>
+                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                           <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                        </div>
+                     </li>
+               <?php endif; ?>
+               </ul>
+            </div>
+         </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -352,40 +351,86 @@ echo "<script>
             </div>
          </div>
       </div>
+      <!-- Modal -->
+      <div class="modal fade" id="joinTournamentModal" tabindex="-1" role="dialog" aria-labelledby="joinTournamentModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="joinTournamentModalLabel">Join Tournament</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <img src="img/gcashqr.jpg" alt="GCash QR" class="img-fluid mb-3">
+                     <form id="joinTournamentForm">
+                        <div class="form-group">
+                              <label for="proofOfPayment">Proof of Payment</label>
+                              <input type="file" class="form-control" id="proofOfPayment" name="proof_of_payment" required>
+                        </div>
+                        <input type="hidden" id="tournamentId" name="tournament_id">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-        document.querySelectorAll('.join-tournament').forEach(button => {
+         var win = navigator.platform.indexOf('Win') > -1;
+         if (win && document.querySelector('#sidenav-scrollbar')) {
+               var options = {
+                  damping: '0.5'
+               }
+               Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+         }
+         document.querySelectorAll('.join-tournament').forEach(button => {
             button.addEventListener('click', function() {
-                const tournamentId = this.getAttribute('data-tournament-id');
+               const tournamentId = this.getAttribute('data-tournament-id');
+               document.getElementById('tournamentId').value = tournamentId;
 
-                fetch('join_tournament.php', {
-                    method: 'POST',
-                    headers: {
+               fetch('check_tournament_status.php', {
+                     method: 'POST',
+                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+                     },
+                     body: JSON.stringify({
                         user_id: userData.user_id,
-                        username: userData.username,
                         tournament_id: tournamentId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Joined the tournament successfully!');
-                        location.reload(); // Reload to update the list
-                    } else {
+                     })
+               })
+               .then(response => response.json())
+               .then(data => {
+                     if (data.success) {
+                        $('#joinTournamentModal').modal('show');
+                     } else {
                         alert(data.message);
-                    }
-                });
+                     }
+               })
+               .catch(error => console.error('Error:', error));
             });
-        });
+         });
+
+         document.getElementById('joinTournamentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            formData.append('user_id', userData.user_id);
+            formData.append('username', userData.username);
+
+            fetch('join_tournament.php', {
+               method: 'POST',
+               body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+               if (data.success) {
+                     alert('Joined the tournament successfully!');
+                     location.reload();
+               } else {
+                     alert(data.message);
+               }
+            })
+            .catch(error => console.error('Error:', error));
+         });
         </script>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
