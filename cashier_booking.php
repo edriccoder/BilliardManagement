@@ -30,7 +30,7 @@ $total_bookings = getCount($conn, $sql_bookings);
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method, t.proof_of_payment
+$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id";
 $stmtBookings = $conn->prepare($sqlBookings);
@@ -246,6 +246,7 @@ foreach ($users as $user) {
                         echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
                         echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
                         echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                        echo '<span class="mb-2 text-xs">Number of matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_matches"]) . '</span></span>';
                         echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
 
                         if (!empty($booking["proof_of_payment"])) {

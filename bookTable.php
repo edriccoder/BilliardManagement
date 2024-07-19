@@ -4,8 +4,7 @@ include 'conn.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tableId = $_POST['table_id'];
     $userId = $_POST['user_id'];
-    $startTime = $_POST['start_time'];
-    $endTime = $_POST['end_time'];
+    $bookingType = $_POST['booking_type'];
     $amount = $_POST['amount'];
     $paymentMethod = $_POST['payment_method'];
 
@@ -15,9 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $table = $stmtTable->fetch(PDO::FETCH_ASSOC);
     $tableName = $table['table_number']; // Get the table_number
 
-    $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status) VALUES (?, ?, ?, ?, ?, 'Pending')";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
+    if ($bookingType === 'hour') {
+        $startTime = $_POST['start_time'];
+        $endTime = $_POST['end_time'];
+        $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, ?, ?, NULL, 'Pending')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
+    } else if ($bookingType === 'match') {
+        $numMatches = $_POST['num_matches'];
+        $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, NULL, NULL, ?, 'Pending')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$tableId, $tableName, $userId, $numMatches]);
+    }
 
     $bookingId = $conn->lastInsertId();
 
@@ -30,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $proofOfPayment = $uploadFile;
         } else {
             // Handle file upload error
-            // You can redirect back with an error message or handle it as needed
             die('Failed to upload proof of payment.');
         }
     }

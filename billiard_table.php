@@ -247,7 +247,6 @@
                                                          '<p class="card-text">' . htmlspecialchars($row["table_number"]) . '</p>' .
                                                          '<div class="d-flex justify-content-between align-items-center">' .
                                                             '<div class="btn-group">' .
-                                                                  '<button type="button" class="btn btn-sm btn-outline-secondary">View</button>' .
                                                                   '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'openEditModal('. json_encode($row) .')\'>Edit</button>' .
                                                             '</div>' .
                                                             '<small class="text-muted">' . htmlspecialchars($row["status"]) . '</small>' .

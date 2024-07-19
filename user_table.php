@@ -372,18 +372,38 @@ echo "<script>
                         <input type="hidden" id="bookingTableName" name="table_name">
                         <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
                         <input type="hidden" id="amount" name="amount">
+
                         <label for="username">User</label>
                         <div class="input-group input-group-outline my-3">
                               <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
                         </div>
-                        <label>Start Time</label>
+
+                        <label for="bookingType">Booking Type</label>
                         <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
+                                 <option value="hour">Per Hour</option>
+                                 <option value="match">Per Match</option>
+                              </select>
                         </div>
-                        <label>End Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+
+                        <div id="perHourFields">
+                              <label>Start Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
+                              <label>End Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
                         </div>
+
+                        <div id="perMatchFields" style="display: none;">
+                              <label>Number of Matches</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()"/>
+                              </div>
+                        </div>
+
                         <label>Payment Method</label>
                         <div class="input-group input-group-outline my-3">
                               <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
@@ -391,6 +411,7 @@ echo "<script>
                                  <option value="gcash">GCash</option>
                               </select>
                         </div>
+
                         <div id="gcashFields" style="display: none;">
                               <label>GCash QR Code</label>
                               <div class="input-group input-group-outline my-3">
@@ -401,10 +422,12 @@ echo "<script>
                                  <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
                               </div>
                         </div>
+
                         <label>Total Amount</label>
                         <div class="input-group input-group-outline my-3">
                               <input type="text" id="totalAmount" class="form-control" readonly>
                         </div>
+
                         <div class="modal-footer">
                               <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
                               <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
@@ -414,7 +437,6 @@ echo "<script>
             </div>
          </div>
       </div>
-
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -424,17 +446,39 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function calculateAmount() {
-            var startTime = document.getElementById('startTime').value;
-            var endTime = document.getElementById('endTime').value;
-            if (startTime && endTime) {
-               var start = new Date(startTime);
-               var end = new Date(endTime);
-               var diff = (end - start) / (1000 * 60 * 60); 
-               var amount = diff * 30; 
-               document.getElementById('totalAmount').value = amount.toFixed(2);
-               document.getElementById('amount').value = amount.toFixed(2);
+         function toggleBookingType() {
+            var bookingType = document.getElementById('bookingType').value;
+            var perHourFields = document.getElementById('perHourFields');
+            var perMatchFields = document.getElementById('perMatchFields');
+            if (bookingType === 'hour') {
+               perHourFields.style.display = 'block';
+               perMatchFields.style.display = 'none';
+            } else {
+               perHourFields.style.display = 'none';
+               perMatchFields.style.display = 'block';
             }
+         }
+
+         function calculateAmount() {
+            var bookingType = document.getElementById('bookingType').value;
+            var amount = 0;
+            if (bookingType === 'hour') {
+               var startTime = document.getElementById('startTime').value;
+               var endTime = document.getElementById('endTime').value;
+               if (startTime && endTime) {
+                     var start = new Date(startTime);
+                     var end = new Date(endTime);
+                     var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+                     amount = diff * 80; // Assuming 80 is the hourly rate
+               }
+            } else if (bookingType === 'match') {
+               var numMatches = document.getElementById('numMatches').value;
+               if (numMatches) {
+                     amount = numMatches * 50; // Assuming 50 is the rate per match
+               }
+            }
+            document.getElementById('totalAmount').value = amount.toFixed(2);
+            document.getElementById('amount').value = amount.toFixed(2);
          }
 
          function openBookingModal(table) {

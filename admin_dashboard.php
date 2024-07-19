@@ -21,6 +21,20 @@ $total_tables = getCount($conn, $sql_tables);
 // Fetch total bookings
 $sql_bookings = "SELECT COUNT(*) as total FROM bookings";
 $total_bookings = getCount($conn, $sql_bookings);
+
+$sql_feedback = "SELECT COUNT(*) as total FROM feedback";
+$total_feedback = getCount($conn, $sql_feedback);
+
+
+try {
+   $stmt = $conn->prepare("SELECT amount, payment_method, status, timestamp FROM transactions");
+   $stmt->execute();
+
+   // Set the resulting array to associative
+   $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+   echo "Failed " . $e->getMessage();
+}
 ?>
 <html lang="en">
    <head>
@@ -243,6 +257,7 @@ $total_bookings = getCount($conn, $sql_bookings);
          <!-- Page Heading -->
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addAnnouncement'>Add Announcement</button>
          </div>
          <!-- Content Row -->
          <div class="row">
@@ -305,8 +320,8 @@ $total_bookings = getCount($conn, $sql_bookings);
                       <i class="material-icons opacity-10">report</i>
                    </div>
                    <div class="text-end pt-1">
-                      <p class="text-sm mb-0 text-capitalize ">Reports</p>
-                      <h4 class="mb-0 ">0</h4>
+                      <p class="text-sm mb-0 text-capitalize ">Feedback</p>
+                      <h4 class="mb-0 "><?php echo $total_feedback; ?></h4>
                    </div>
                 </div>
                 <hr class="horizontal my-0 dark">
@@ -316,152 +331,63 @@ $total_bookings = getCount($conn, $sql_bookings);
              </div>
             </div>
          </div>
-
          <div class="row mt-4">
-          <div class="col-lg-5 mb-lg-0 mb-4">
-             <div class="card z-index-2 mt-4">
-                <div class="card-body mt-n5 px-3">
-                   <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1 mb-3">
-                      <div class="chart">
-                         <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-                      </div>
-                   </div>
-                   <h6 class="ms-2 mt-4 mb-0"> Active Users </h6>
-                   <p class="text-sm ms-2"> (<span class="font-weight-bolder">+11%</span>) than last week </p>
-                   <div class="container border-radius-lg">
-                      <div class="row">
-                         <div class="col-3 py-3 ps-0">
-                            <div class="d-flex mb-2">
-                               <div class="icon icon-shape icon-xxs shadow border-radius-sm bg-gradient-primary text-center me-2 d-flex align-items-center justify-content-center">
-                                  <i class="material-icons opacity-10">groups</i>
-                               </div>
-                               <p class="text-xs my-auto font-weight-bold">Users</p>
+            <div class="col-lg-4 col-md-6 mt-4 mb-4">
+                <div class="card z-index-2">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+                            <div class="chart">
+                                <canvas id="transaction-chart" class="chart-canvas" height="170"></canvas>
                             </div>
-                            <h4 class="font-weight-bolder">42K</h4>
-                            <div class="progress w-75">
-                               <div class="progress-bar bg-dark w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                         </div>
-                         <div class="col-3 py-3 ps-0">
-                            <div class="d-flex mb-2">
-                               <div class="icon icon-shape icon-xxs shadow border-radius-sm bg-gradient-info text-center me-2 d-flex align-items-center justify-content-center">
-                                  <i class="material-icons opacity-10">ads_click</i>
-                               </div>
-                               <p class="text-xs mt-1 mb-0 font-weight-bold">Clicks</p>
-                            </div>
-                            <h4 class="font-weight-bolder">1.7m</h4>
-                            <div class="progress w-75">
-                               <div class="progress-bar bg-dark w-90" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                         </div>
-                         <div class="col-3 py-3 ps-0">
-                            <div class="d-flex mb-2">
-                               <div class="icon icon-shape icon-xxs shadow border-radius-sm bg-gradient-warning text-center me-2 d-flex align-items-center justify-content-center">
-                                  <i class="material-icons opacity-10">receipt</i>
-                               </div>
-                               <p class="text-xs mt-1 mb-0 font-weight-bold">Sales</p>
-                            </div>
-                            <h4 class="font-weight-bolder">399$</h4>
-                            <div class="progress w-75">
-                               <div class="progress-bar bg-dark w-30" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                         </div>
-                         <div class="col-3 py-3 ps-0">
-                            <div class="d-flex mb-2">
-                               <div class="icon icon-shape icon-xxs shadow border-radius-sm bg-gradient-danger text-center me-2 d-flex align-items-center justify-content-center">
-                                  <i class="material-icons opacity-10">category</i>
-                               </div>
-                               <p class="text-xs mt-1 mb-0 font-weight-bold">Items</p>
-                            </div>
-                            <h4 class="font-weight-bolder">74</h4>
-                            <div class="progress w-75">
-                               <div class="progress-bar bg-dark w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0">Daily Transactions</h6>
+                        <p class="text-sm">(<span class="font-weight-bolder">+15%</span>) increase in today's transactions.</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm"> updated 4 min ago </p>
+                        </div>
+                    </div>
                 </div>
-             </div>
-          </div>
-          <div class="col-lg-7">
-             <div class="card z-index-2">
-                <div class="card-header pb-0">
-                   <h6>Sales overview</h6>
-                   <p class="text-sm">
-                      <i class="fa fa-arrow-up text-success"></i>
-                      <span class="font-weight-bold">4% more</span> in 2021
-                   </p>
-                </div>
-                <div class="card-body p-3">
-                   <div class="chart">
-                      <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-                   </div>
-                </div>
-             </div>
-          </div>
-       </div>
-       <div class="row mt-4">
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
-          <div class="card z-index-2 ">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                <div class="chart">
-                  <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-                </div>
-              </div>
             </div>
-            <div class="card-body">
-              <h6 class="mb-0 ">Website Views</h6>
-              <p class="text-sm ">Last Campaign Performance</p>
-              <hr class="dark horizontal">
-              <div class="d-flex ">
-                <i class="material-icons text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
-              </div>
+            <div class="col-lg-7">
+               <div class="card z-index-2">
+                  <div class="card-header pb-0">
+                        <h6>Sales Overview</h6>
+                        <p class="text-sm">
+                           <i class="fa fa-arrow-up text-success"></i>
+                           <span class="font-weight-bold">4% more</span> in 2024
+                        </p>
+                  </div>
+                  <div class="card-body p-3">
+                        <div class="table-responsive" style="max-height: 325px; overflow-y: auto;">
+                           <table class="table">
+                              <thead>
+                                    <tr>
+                                       <th scope="col">Amount</th>
+                                       <th scope="col">Payment Method</th>
+                                       <th scope="col">Status</th>
+                                       <th scope="col">Timestamp</th>
+                                    </tr>
+                              </thead>
+                              <tbody>
+                                    <?php foreach ($transactions as $transaction): ?>
+                                       <tr>
+                                          <td><?php echo htmlspecialchars($transaction['amount']); ?></td>
+                                          <td><?php echo htmlspecialchars($transaction['payment_method']); ?></td>
+                                          <td><?php echo htmlspecialchars($transaction['status']); ?></td>
+                                          <td><?php echo htmlspecialchars($transaction['timestamp']); ?></td>
+                                       </tr>
+                                    <?php endforeach; ?>
+                              </tbody>
+                           </table>
+                        </div>
+                  </div>
+               </div>
             </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
-          <div class="card z-index-2  ">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
-                <div class="chart">
-                  <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <h6 class="mb-0 "> Daily Sales </h6>
-              <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
-              <hr class="dark horizontal">
-              <div class="d-flex ">
-                <i class="material-icons text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> updated 4 min ago </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 mt-4 mb-3">
-          <div class="card z-index-2 ">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-              <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
-                <div class="chart">
-                  <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <h6 class="mb-0 ">Completed Tasks</h6>
-              <p class="text-sm ">Last Campaign Performance</p>
-              <hr class="dark horizontal">
-              <div class="d-flex ">
-                <i class="material-icons text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm">just updated</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+         </div>
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -551,6 +477,32 @@ $total_bookings = getCount($conn, $sql_bookings);
             </div>
          </div>
       </div>
+      <!-- Modal -->
+      <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog" aria-labelledby="addAnnouncementLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addAnnouncementLabel">Add Announcement</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action = "add_announcement.php" enctype="multipart/form-data">
+                     <label for="announcementTitle">Title</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="announcementTitle" name="title" required>
+                        </div>
+                        <label for="announcementBody">Body</label>
+                        <div class="input-group input-group-outline my-3">
+                              <textarea class="form-control" id="announcementBody" name="body" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" name="save" class="btn btn-primary">Submit</button>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -559,7 +511,53 @@ $total_bookings = getCount($conn, $sql_bookings);
            }
            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+         document.addEventListener("DOMContentLoaded", function() {
+            fetch('fetch-transactions.php')
+               .then(response => response.json())
+               .then(data => {
+                     const labels = data.map(item => item.date);
+                     const transactions = data.map(item => item.transactions);
+
+                     const ctx = document.getElementById('transaction-chart').getContext('2d');
+                     new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                           labels: labels,
+                           datasets: [{
+                                 label: 'Daily Transactions',
+                                 data: transactions,
+                                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                 borderColor: 'rgba(75, 192, 192, 1)',
+                                 borderWidth: 1
+                           }]
+                        },
+                        options: {
+                           scales: {
+                                 y: {
+                                    beginAtZero: true
+                                 }
+                           }
+                        }
+                     });
+               });
+         });
       </script>
-      <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
+      <!-- Required Scripts -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+      <!-- Optional Plugins for Other Functionalities -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+      <script src="vendor/datatables/jquery.dataTables.min.js"></script>
+      <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+      <script src="js/sb-admin-2.min.js"></script>
+      <script src="js/demo/datatables-demo.js"></script>
+      <script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
+         
    </body>
 </html>

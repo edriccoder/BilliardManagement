@@ -1,18 +1,62 @@
 <?php
+include 'conn.php'; 
 session_start();
+
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     // Redirect to login page if session variables are not set
     header("Location: index.php");
     exit();
 }
+
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
+
+// Fetch recent transactions
+try {
+    $stmt = $conn->prepare("
+        SELECT t.amount, t.timestamp, b.table_name 
+        FROM transactions t 
+        JOIN bookings b ON t.booking_id = b.booking_id 
+        WHERE b.user_id = :user_id
+        ORDER BY t.timestamp DESC
+        LIMIT 5
+    ");
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Failed " . $e->getMessage();
+}
+
+// Fetch announcements
+try {
+    $stmt = $conn->prepare("SELECT id, title, body, created_at FROM announcements ORDER BY created_at DESC");
+    $stmt->execute();
+    $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Failed " . $e->getMessage();
+}
+
+// Fetch tournaments for the logged-in user
+try {
+    $stmt = $conn->prepare("
+        SELECT t.tournament_id, t.name, t.start_date, t.end_date, t.status, t.prize, t.fee
+        FROM tournaments t
+        JOIN players p ON t.tournament_id = p.tournament_id
+        WHERE p.user_id = :user_id
+    ");
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Failed " . $e->getMessage();
+}
 
 // Output JSON encoded user data for JavaScript to use
 echo "<script>
         const userData = {
-            username: '{$username}',
-            user_id: '{$user_id}'
+            username: '" . addslashes($username) . "',
+            user_id: '" . addslashes($user_id) . "'
         };
       </script>";
 ?>
@@ -47,6 +91,12 @@ echo "<script>
          rel="stylesheet">
 
       <!-- Custom styles for this template-->
+      <style>
+        .custom-alert {
+            background-color: #17a2b8; /* Customize as needed */
+            color: white; /* Text color set to white */
+        }
+      </style>
 
    </head>
    <body class="g-sidenav-show  bg-gray-100">
@@ -229,110 +279,91 @@ echo "<script>
             <img class="card-img-top" src="./img/background_bil.png" alt="Card image cap">
          </div>
          <!-- Table Row -->
-            <div class="card shadow mb-4">
-               <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Billiard Table</h6>
+         <div class="card shadow mb-4">
+            <div class="card-header pb-0 px-3">
+               <div class="row">
+                     <div class="col-md-6">
+                        <h6 class="mb-0">Your Transactions</h6>
                      </div>
-                        <div class="card-body">
-                           <div class="row">
-                           <?php
-                              include 'conn.php';
-
-                              if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                                 $tableId = $_POST['table_id'];
-                                 $tableName = $_POST['table_name'];
-                                 $userId = $_POST['user_id'];
-                                 $startTime = $_POST['start_time'];
-                                 $endTime = $_POST['end_time'];
-
-                                 $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status) VALUES (?, ?, ?, ?, ?, 'Pending')";
-                                 $stmt = $conn->prepare($sql);
-                                 $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
-
-                              }
-                              $sqlTables = "SELECT table_number, status, table_id FROM tables";
-                              $stmtTables = $conn->prepare($sqlTables);
-                              $stmtTables->execute();
-                              $tables = $stmtTables->fetchAll(PDO::FETCH_ASSOC);
-
-                              ?>
-
-                              <div class="container">
-                                 <div class="row">
-                                    <?php
-                                    if (!empty($tables)) {
-                                          foreach ($tables as $row) {
-                                             echo '<div class="col-md-3 mb-4">';
-                                             echo '<div class="card">';
-                                             echo '<img class="card-img-top" src="./img/billiardtable.png" alt="Card image cap">';
-                                             echo '<div class="card-body">';
-                                             echo '<h5 class="card-title">'. htmlspecialchars($row["table_number"]) . '</h5>';
-                                             echo '<p class="card-text">Status: ' . htmlspecialchars($row["status"]) . '</p>';
-                                             echo '<div class="btn-group">';
-                                             echo '<button type="button" class="btn btn-primary" onclick=\'openBookingModal('. json_encode($row) .')\'>Book</button>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                             echo '</div>';
-                                          }
-                                    } else {
-                                          echo "0 results";
-                                    }
-                                    ?>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                     <div class="col-md-6 d-flex justify-content-start justify-content-md-end align-items-center">
+                        <i class="material-icons me-2 text-lg">date_range</i>
+                        <small>Recent Transactions</small>
                      </div>
-                  </div>
                </div>
             </div>
-            <div class="container-fluid">
-               <div class="card shadow mb-4">
-                     <div class="card-header pb-0 px-3">
-                     <div class="row">
-                        <div class="col-md-6">
-                           <h6 class="mb-0">Your Transaction's</h6>
-                        </div>
-                        <div class="col-md-6 d-flex justify-content-start justify-content-md-end align-items-center">
-                           <i class="material-icons me-2 text-lg">date_range</i>
-                           <small>23 - 30 March 2020</small>
-                        </div>
-                     </div>
-                     </div>
-                     <div class="card-body pt-4 p-3">
-                     <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Newest</h6>
-                     <ul class="list-group">
-                        <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                           <div class="d-flex align-items-center">
-                           <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i class="material-icons text-lg">expand_more</i></button>
+            <div class="card-body pt-4 p-3">
+               <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Newest</h6>
+               <ul class="list-group" style="max-height: 200px; overflow-y: auto;">
+                     <?php foreach ($transactions as $transaction): ?>
+                     <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                        <div class="d-flex align-items-center">
+                           <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center">
+                                 <i class="material-icons text-lg">expand_more</i>
+                           </button>
                            <div class="d-flex flex-column">
-                              <h6 class="mb-1 text-dark text-sm">Table 1</h6>
-                              <span class="text-xs">27 March 2020, at 12:30 PM</span>
+                                 <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($transaction['table_name']); ?></h6>
+                                 <span class="text-xs"><?php echo date("d F Y, at h:i A", strtotime($transaction['timestamp'])); ?></span>
                            </div>
-                           </div>
-                           <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                           $ 100
-                           </div>
-                        </li>
-                        <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                           <div class="d-flex align-items-center">
-                           <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 p-3 btn-sm d-flex align-items-center justify-content-center"><i class="material-icons text-lg">expand_less</i></button>
-                           <div class="d-flex flex-column">
-                              <h6 class="mb-1 text-dark text-sm">Table 2</h6>
-                              <span class="text-xs">27 March 2020, at 04:30 AM</span>
-                           </div>
-                           </div>
-                           <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                           $100
-                           </div>
-                        </li>
-                     </div>
-                  </div>
-               </div>
+                        </div>
+                        <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+                           $<?php echo htmlspecialchars($transaction['amount']); ?>
+                        </div>
+                     </li>
+                     <?php endforeach; ?>
+               </ul>
             </div>
          </div>
-                                    
+         <div class="card mt-4">
+            <div class="card-header p-3">
+               <h5 class="mb-0">Announcements</h5>
+            </div>
+            <div class="card-body p-3 pb-0">
+               <?php foreach ($announcements as $announcement): ?>
+                     <div class="alert alert-info alert-dismissible fade show custom-alert" role="alert">
+                        <strong><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
+                        <?php echo htmlspecialchars($announcement['body']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                     </div>
+               <?php endforeach; ?>
+            </div>
+         </div>
+         <div class="card mt-4">
+            <div class="card-header p-3">
+               <h5 class="mb-0">Tournaments</h5>
+            </div>
+            <div class="card-body p-3 pb-0">
+               <?php if (!empty($tournaments)): ?>
+                     <table class="table table-striped">
+                        <thead>
+                           <tr>
+                                 <th>Name</th>
+                                 <th>Start Date</th>
+                                 <th>End Date</th>
+                                 <th>Status</th>
+                                 <th>Prize</th>
+                                 <th>Fee</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <?php foreach ($tournaments as $tournament): ?>
+                                 <tr>
+                                    <td><?php echo htmlspecialchars($tournament['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($tournament['start_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($tournament['end_date']); ?></td>
+                                    <td><?php echo htmlspecialchars($tournament['status']); ?></td>
+                                    <td><?php echo htmlspecialchars($tournament['prize']); ?></td>
+                                    <td><?php echo htmlspecialchars($tournament['fee']); ?></td>
+                                 </tr>
+                           <?php endforeach; ?>
+                        </tbody>
+                     </table>
+               <?php else: ?>
+                     <div class="alert alert-warning" role="alert">
+                        No tournaments found for the user.
+                     </div>
+               <?php endif; ?>
+            </div>
+         </div>                          
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -481,6 +512,13 @@ echo "<script>
             document.getElementById('userId').value = userData.user_id;    
             $('#bookingModal').modal('show');
          }
+
+         document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                  return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+         });
       </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
