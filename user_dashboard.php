@@ -59,6 +59,10 @@ echo "<script>
             user_id: '" . addslashes($user_id) . "'
         };
       </script>";
+
+echo "<script>
+        const tournaments = " . json_encode($tournaments) . ";
+      </script>";
 ?>
 
 <!DOCTYPE html>
@@ -329,41 +333,35 @@ echo "<script>
          </div>
          <div class="card mt-4">
             <div class="card-header p-3">
-               <h5 class="mb-0">Tournaments</h5>
+                  <h5 class="mb-0">Tournaments</h5>
             </div>
             <div class="card-body p-3 pb-0">
-               <?php if (!empty($tournaments)): ?>
-                     <table class="table table-striped">
+                  <?php if (!empty($tournaments)): ?>
+                     <table id="tournamentTable" class="table table-striped">
                         <thead>
-                           <tr>
+                              <tr>
                                  <th>Name</th>
                                  <th>Start Date</th>
-                                 <th>End Date</th>
                                  <th>Status</th>
-                                 <th>Prize</th>
-                                 <th>Fee</th>
-                           </tr>
+                              </tr>
                         </thead>
                         <tbody>
-                           <?php foreach ($tournaments as $tournament): ?>
-                                 <tr>
+                              <?php foreach ($tournaments as $tournament): ?>
+                                 <tr data-start-date="<?php echo htmlspecialchars($tournament['start_date']); ?>" data-end-date="<?php echo htmlspecialchars($tournament['end_date']); ?>">
                                     <td><?php echo htmlspecialchars($tournament['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($tournament['start_date']); ?></td>
-                                    <td><?php echo htmlspecialchars($tournament['end_date']); ?></td>
+                                    <td class="start-time"></td>
                                     <td><?php echo htmlspecialchars($tournament['status']); ?></td>
-                                    <td><?php echo htmlspecialchars($tournament['prize']); ?></td>
-                                    <td><?php echo htmlspecialchars($tournament['fee']); ?></td>
                                  </tr>
-                           <?php endforeach; ?>
+                              <?php endforeach; ?>
                         </tbody>
                      </table>
-               <?php else: ?>
+                  <?php else: ?>
                      <div class="alert alert-warning" role="alert">
                         No tournaments found for the user.
                      </div>
-               <?php endif; ?>
+                  <?php endif; ?>
             </div>
-         </div>                          
+         </div>                
          <!-- Content Row -->
          <div class="column">
          </div>
@@ -519,6 +517,37 @@ echo "<script>
                   return new bootstrap.Tooltip(tooltipTriggerEl)
             })
          });
+
+         document.addEventListener('DOMContentLoaded', function () {
+            function updateTournamentTimes() {
+                const rows = document.querySelectorAll('#tournamentTable tbody tr');
+                const now = new Date();
+
+                rows.forEach(row => {
+                    const startDate = new Date(row.dataset.startDate);
+                    const endDate = new Date(row.dataset.endDate);
+                    const startTimeDiff = startDate - now;
+                    const endTimeDiff = endDate - now;
+
+                    if (endTimeDiff <= 0) {
+                        row.querySelector('.start-time').textContent = 'Ended';
+                    } else if (startTimeDiff <= 0) {
+                        row.querySelector('.start-time').textContent = 'Started';
+                    } else if (startTimeDiff <= 3 * 60 * 60 * 1000) {
+                        const hours = Math.floor(startTimeDiff / (1000 * 60 * 60));
+                        const minutes = Math.floor((startTimeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                        row.querySelector('.start-time').textContent = `Starts in ${hours}h ${minutes}m`;
+                    } else {
+                        row.querySelector('.start-time').textContent = startDate.toLocaleString();
+                    }
+                });
+            }
+
+            if (tournaments.length > 0) {
+                setInterval(updateTournamentTimes, 60000);
+                updateTournamentTimes();
+            }
+        });
       </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
