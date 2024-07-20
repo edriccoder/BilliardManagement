@@ -290,33 +290,43 @@
                         </div>
                   </div>
                   <div class="card-body p-3 pb-0">
-                        <ul class="list-group">
-                           <?php
-                           // Fetch available brackets
-                           $stmt = $conn->prepare('SELECT DISTINCT tournament_id FROM bracket');
-                           $stmt->execute();
-                           $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                           ?>
-                           <?php if (!empty($tournaments)) : ?>
+                     <ul class="list-group">
+                        <?php
+                        // Fetch available tournaments with their names
+                        $stmt = $conn->prepare('
+                           SELECT DISTINCT b.tournament_id, name 
+                           FROM bracket b
+                           JOIN tournaments t ON b.tournament_id = t.tournament_id
+                        ');
+                        $stmt->execute();
+                        $tournaments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        ?>
+                        <?php if (!empty($tournaments)) : ?>
                               <?php foreach ($tournaments as $tournament) : ?>
-                                    <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                                       <div class="d-flex flex-column">
-                                          <h6 class="mb-1 text-dark font-weight-bold text-sm">Tournament ID: <?php echo htmlspecialchars($tournament['tournament_id']); ?></h6>
-                                       </div>
-                                       <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" data-toggle="modal" data-target="#bracketModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-lg position-relative me-1"></i> Show Players</button>
-                                    </li>
-                              <?php endforeach; ?>
-                           <?php else : ?>
-                              <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                     <div class="d-flex flex-column">
-                                       <h6 class="mb-1 text-dark font-weight-bold text-sm">No tournaments available.</h6>
+                                          <h6 class="mb-1 text-dark font-weight-bold text-sm">
+                                             <?php echo htmlspecialchars($tournament['name']); ?>
+                                          </h6>
                                     </div>
+                                    <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" 
+                                             data-toggle="modal" 
+                                             data-target="#bracketModal" 
+                                             data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">
+                                          <i class="material-icons text-lg position-relative me-1"></i> Show Players
+                                    </button>
+                                 </li>
+                              <?php endforeach; ?>
+                        <?php else : ?>
+                              <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                                 <div class="d-flex flex-column">
+                                    <h6 class="mb-1 text-dark font-weight-bold text-sm">No tournaments available.</h6>
+                                 </div>
                               </li>
-                           <?php endif; ?>
-                        </ul>
+                        <?php endif; ?>
+                     </ul>
                   </div>
                </div>
-            </div>
          <!-- Content Row -->
          <div class="column">
          </div>

@@ -283,7 +283,6 @@ echo "<script>
                               <h6 class="mb-0">Joined Tournaments</h6>
                            </div>
                            <div class="col-6 text-end">
-                              <button class="btn btn-outline-primary btn-sm mb-0">View All</button>
                            </div>
                         </div>
                   </div>
@@ -300,6 +299,7 @@ echo "<script>
                                        </div>
                                        <div class="d-flex align-items-center text-sm">
                                           Status: <?php echo htmlspecialchars($tournament['status']); ?>
+                                          <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" data-toggle="modal" data-target="#bracketModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-lg position-relative me-1"></i> Show Players</button>
                                        </div>
                                     </li>
                            <?php
@@ -432,6 +432,23 @@ echo "<script>
             </div>
          </div>
       </div>
+      <!-- Modal for showing bracket -->
+      <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bracketModalLabel">Single Elimination Tournament Bracket</h5>
+                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                     <div class="bracket" id="bracketContainer">
+                        <!-- Bracket content will be loaded here -->
+                     </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -467,6 +484,84 @@ echo "<script>
             });
          });
 
+         document.querySelectorAll('.show-bracket').forEach(button => {
+               button.addEventListener('click', function () {
+                  currentTournamentId = this.getAttribute('data-tournament-id');
+
+                  fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                           const bracketContainer = document.getElementById('bracketContainer');
+                           bracketContainer.innerHTML = '';
+
+                           if (data.success && data.players.length > 0) {
+                              const players = data.players;
+                              const rounds = Math.ceil(Math.log2(players.length));
+                              let matchups = data.matchups || players.slice();
+
+                              for (let round = 1; round <= rounds; round++) {
+                                    const roundDiv = document.createElement('div');
+                                    roundDiv.className = 'round';
+                                    roundDiv.dataset.round = round;
+                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
+
+                                    const matches = Math.ceil(matchups.length / 2);
+                                    const newMatchups = [];
+
+                                    for (let match = 0; match < matches; match++) {
+                                       const matchDiv = document.createElement('div');
+                                       matchDiv.className = 'match';
+
+                                       const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
+                                       const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
+
+                                       matchDiv.innerHTML = `
+                                          <div class="team ${matchups[match * 2]?.selected ? 'selected' : ''}" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
+                                          <div class="team ${matchups[match * 2 + 1]?.selected ? 'selected' : ''}" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
+                                       
+                                       `;
+
+                                       roundDiv.appendChild(matchDiv);
+
+                                       // Placeholder for winners to advance to the next round
+                                       newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
+                                    }
+
+                                    if (round > 1) {
+                                       roundDiv.classList.add('vertical-center');
+                                    }
+
+                                    bracketContainer.appendChild(roundDiv);
+                                    matchups = newMatchups;
+                              }
+
+                              // Add the final winner placeholder if there are more than 1 player
+                              if (players.length > 1) {
+                                    const finalRoundDiv = document.createElement('div');
+                                    finalRoundDiv.className = 'vertical-center';
+                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
+
+                                    const winnerPlaceholder = document.createElement('div');
+                                    winnerPlaceholder.className = 'match winner-placeholder';
+                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
+
+                                    finalRoundDiv.appendChild(winnerPlaceholder);
+                                    bracketContainer.appendChild(finalRoundDiv);
+                              }
+
+                              // Show the modal
+                              const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
+                              playersModal.show();
+                           } else {
+                              alert(data.message);
+                           }
+                        })
+                        .catch(error => {
+                           console.error('Error fetching bracket:', error);
+                        });
+               });
+            });
+
          document.getElementById('joinTournamentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
@@ -489,6 +584,104 @@ echo "<script>
             .catch(error => console.error('Error:', error));
          });
         </script>
+
+<style>
+        .bracket {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .round h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .match {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .team {
+            width: 150px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .winner-placeholder {
+            height: 50px;
+        }
+
+        .round-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background-color: #ccc;
+        }
+
+        .match-line {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background-color: #ccc;
+            top: 50%;
+            left: 100%;
+        }
+
+        .vertical-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .final-round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .final-winner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            width: 200px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            background-color: #ddd;
+        }
+
+        .team.selected {
+            background-color: #e0f7fa;
+            border-radius: 10px;
+        }
+
+        .team.eliminated {
+            text-decoration: line-through;
+        }
+    </style>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

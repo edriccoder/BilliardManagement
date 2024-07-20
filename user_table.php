@@ -468,13 +468,13 @@ echo "<script>
                if (startTime && endTime) {
                      var start = new Date(startTime);
                      var end = new Date(endTime);
-                     var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
-                     amount = diff * 80; // Assuming 80 is the hourly rate
+                     var diff = (end - start) / (1000 * 60 * 60); 
+                     amount = diff * 80; 
                }
             } else if (bookingType === 'match') {
                var numMatches = document.getElementById('numMatches').value;
                if (numMatches) {
-                     amount = numMatches * 50; // Assuming 50 is the rate per match
+                     amount = numMatches * 20; 
                }
             }
             document.getElementById('totalAmount').value = amount.toFixed(2);
