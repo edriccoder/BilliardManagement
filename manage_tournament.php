@@ -587,6 +587,7 @@
             }
 
             let currentTournamentId = null;
+            let finalRound = 0;
             document.addEventListener('DOMContentLoaded', function() {
                const showPlayersButtons = document.querySelectorAll('.show-players');
 
@@ -700,83 +701,81 @@
 
                document.querySelectorAll('.show-bracket').forEach(button => {
                   button.addEventListener('click', function () {
-                     let currentTournamentId = this.getAttribute('data-tournament-id');
+                     currentTournamentId = this.getAttribute('data-tournament-id');
 
                      fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
                         .then(response => response.json())
                         .then(data => {
-                           const bracketContainer = document.getElementById('bracketContainer');
-                           bracketContainer.innerHTML = '';
+                              const bracketContainer = document.getElementById('bracketContainer');
+                              bracketContainer.innerHTML = '';
 
-                           if (data.success && data.players.length > 0) {
-                              const players = data.players;
-                              const rounds = Math.ceil(Math.log2(players.length));
-                              const finalRound = rounds; // Define finalRound here
-                              let matchups = data.matchups || players.slice();
+                              if (data.success && data.players.length > 0) {
+                                 const players = data.players;
+                                 const rounds = Math.ceil(Math.log2(players.length));
+                                 finalRound = rounds;
+                                 let matchups = data.matchups || players.slice();
 
-                              for (let round = 1; round <= rounds; round++) {
-                                 const roundDiv = document.createElement('div');
-                                 roundDiv.className = 'round';
-                                 roundDiv.dataset.round = round;
-                                 roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
+                                 for (let round = 1; round <= rounds; round++) {
+                                    const roundDiv = document.createElement('div');
+                                    roundDiv.className = 'round';
+                                    roundDiv.dataset.round = round;
+                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
 
-                                 const matches = Math.ceil(matchups.length / 2);
-                                 const newMatchups = [];
+                                    const matches = Math.ceil(matchups.length / 2);
+                                    const newMatchups = [];
 
-                                 for (let match = 0; match < matches; match++) {
-                                    const matchDiv = document.createElement('div');
-                                    matchDiv.className = 'match';
+                                    for (let match = 0; match < matches; match++) {
+                                          const matchDiv = document.createElement('div');
+                                          matchDiv.className = 'match';
 
-                                    const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
-                                    const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
+                                          const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
+                                          const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
 
-                                    matchDiv.innerHTML = `
-                                       <div class="team" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
-                                       <div class="team" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
-                                       <button class="win-btn" data-round="${round}" data-match="${match}">Select Winner</button>
-                                    `;
+                                          matchDiv.innerHTML = `
+                                             <div class="team" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
+                                             <div class="team" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
+                                             <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
+                                          `;
 
-                                    roundDiv.appendChild(matchDiv);
+                                          roundDiv.appendChild(matchDiv);
 
-                                    // Placeholder for winners to advance to the next round
-                                    newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
+                                          newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
+                                    }
+
+                                    if (round > 1) {
+                                          roundDiv.classList.add('vertical-center');
+                                    }
+
+                                    bracketContainer.appendChild(roundDiv);
+                                    matchups = newMatchups;
                                  }
 
-                                 if (round > 1) {
-                                    roundDiv.classList.add('vertical-center');
+                                 if (players.length > 1) {
+                                    const finalRoundDiv = document.createElement('div');
+                                    finalRoundDiv.className = 'vertical-center';
+                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
+
+                                    const winnerPlaceholder = document.createElement('div');
+                                    winnerPlaceholder.className = 'match winner-placeholder';
+                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
+
+                                    finalRoundDiv.appendChild(winnerPlaceholder);
+                                    bracketContainer.appendChild(finalRoundDiv);
                                  }
 
-                                 bracketContainer.appendChild(roundDiv);
-                                 matchups = newMatchups;
+                                 const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
+                                 playersModal.show();
+                              } else {
+                                 alert(data.message);
                               }
-
-                              if (players.length > 1) {
-                                 const finalRoundDiv = document.createElement('div');
-                                 finalRoundDiv.className = 'vertical-center';
-                                 finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
-
-                                 const winnerPlaceholder = document.createElement('div');
-                                 winnerPlaceholder.className = 'match winner-placeholder';
-                                 winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
-
-                                 finalRoundDiv.appendChild(winnerPlaceholder);
-                                 bracketContainer.appendChild(finalRoundDiv);
-                              }
-
-                              // Show the modal
-                              const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
-                              playersModal.show();
-                           } else {
-                              alert(data.message);
-                           }
                         })
                         .catch(error => {
-                           console.error('Error fetching bracket:', error);
+                              console.error('Error fetching bracket:', error);
                         });
                   });
-               });
-               
-               document.getElementById('bracketContainer').addEventListener('click', function (event) {
+            });
+
+            document.getElementById('bracketContainer').addEventListener('click', function (event) {
                   if (event.target.classList.contains('win-btn')) {
                      const round = event.target.getAttribute('data-round');
                      const match = event.target.getAttribute('data-match');
@@ -785,40 +784,39 @@
                      if (winnerElement) {
                         const winnerId = winnerElement.getAttribute('data-player-id');
                         fetch(`update_bracket.php`, {
-                           method: 'POST',
-                           headers: {
-                              'Content-Type': 'application/x-www-form-urlencoded',
-                           },
-                           body: new URLSearchParams({
-                              tournament_id: currentTournamentId,
-                              round: round,
-                              match: match,
-                              winner_id: winnerId,
-                           })
+                              method: 'POST',
+                              headers: {
+                                 'Content-Type': 'application/x-www-form-urlencoded',
+                              },
+                              body: new URLSearchParams({
+                                 tournament_id: currentTournamentId,
+                                 round: round,
+                                 match: match,
+                                 winner_id: winnerId,
+                              })
                         })
                         .then(response => response.json())
                         .then(data => {
-                           if (data.success) {
-                              winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
-                              winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
-                                 if (team !== winnerElement) {
-                                    team.classList.add('eliminated');
-                                 }
-                              });
-                              console.log('Winner updated successfully');
+                              if (data.success) {
+                                 winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
+                                 winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
+                                    if (team !== winnerElement) {
+                                          team.classList.add('eliminated');
+                                    }
+                                 });
+                                 console.log('Winner updated successfully');
 
-                              moveWinnerToNextRound(winnerElement, round, match);
-                              announceWinner(winnerElement.textContent, currentTournamentId, round);
-
-                              if (parseInt(round) === parseInt(finalRound)) {
+                                 moveWinnerToNextRound(winnerElement, round, match);
                                  announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 if (parseInt(round) === parseInt(finalRound)) {
+                                    announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 }
+                              } else {
+                                 alert('Error: ' + data.message);
                               }
-                           } else {
-                              alert('Error: ' + data.message);
-                           }
                         })
                         .catch(error => {
-                           console.error('Error updating winner:', error);
+                              console.error('Error updating winner:', error);
                         });
                      } else {
                         alert('Please select a winner.');
@@ -827,9 +825,9 @@
                      event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
                      event.target.classList.add('selected');
                   }
-               });
+            });
 
-               function moveWinnerToNextRound(winnerElement, round, match) {
+            function moveWinnerToNextRound(winnerElement, round, match) {
                   const nextRound = parseInt(round) + 1;
                   const nextMatch = Math.floor(match / 2);
 
@@ -841,16 +839,15 @@
                      nextTeamDiv.textContent = winnerElement.textContent;
                      nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
                   } else {
-                     // This means it's the final winner bracket
                      const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
                      if (winnerPlaceholder) {
                         winnerPlaceholder.textContent = winnerElement.textContent;
                         winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
                      }
                   }
-               }
+            }
 
-               function announceWinner(winnerName, tournamentId, round) {
+            function announceWinner(winnerName, tournamentId, round) {
                   if (!tournamentId) {
                      console.error('Tournament ID is missing.');
                      return;
@@ -878,7 +875,7 @@
                   .catch(error => {
                      console.error('Error announcing winner:', error);
                   });
-               }
+            }
 
                function deleteTournament(tournamentId) {
                   if (confirm('Are you sure you want to delete this tournament?')) {

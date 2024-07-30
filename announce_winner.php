@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['winner_name']) && isse
     $body = "{$winnerName} has won the {$tournamentName} tournament!";
 
     // Insert the announcement into the database
-    $stmt = $conn->prepare('INSERT INTO announcements (title, body, tournament_id, round) VALUES (?, ?, ?, ?)');
+    $stmt = $conn->prepare('INSERT INTO announcements (title, body, tournament_id, round, created_at) VALUES (?, ?, ?, ?, NOW())');
     $result = $stmt->execute([$title, $body, $tournamentId, $round]);
 
     if ($result) {

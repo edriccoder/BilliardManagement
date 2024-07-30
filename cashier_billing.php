@@ -232,6 +232,7 @@ foreach ($users as $user) {
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Billing and Payments</h6>
+               <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Reports</button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
@@ -396,6 +397,9 @@ foreach ($users as $user) {
          function openImageModal(imageUrl) {
             $('#imageModalContent').attr('src', imageUrl);
             $('#imageModal').modal('show');
+         }
+         function generateReport(){
+            window.location.href = 'generate_report.php'
          }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
