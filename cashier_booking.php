@@ -2,7 +2,6 @@
 session_start();
 include 'conn.php';
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-    // Redirect to login page if session variables are not set
     header("Location: index.php");
     exit();
     
@@ -19,25 +18,22 @@ function getCount($conn, $sql) {
 $sql_users = "SELECT COUNT(*) as total FROM users";
 $total_users = getCount($conn, $sql_users);
 
-// Fetch total billiard tables
 $sql_tables = "SELECT COUNT(*) as total FROM tables";
 $total_tables = getCount($conn, $sql_tables);
 
-// Fetch total bookings
 $sql_bookings = "SELECT COUNT(*) as total FROM bookings";
 $total_bookings = getCount($conn, $sql_bookings);
 
-// Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
 $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
-                LEFT JOIN transactions t ON b.booking_id = t.booking_id";
+                LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                ORDER BY b.booking_id DESC";
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->execute();
 $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
 
-// Create a map for user_id to username (if needed)
 $sqlUsers = "SELECT user_id, username FROM users";
 $stmtUsers = $conn->prepare($sqlUsers);
 $stmtUsers->execute();
