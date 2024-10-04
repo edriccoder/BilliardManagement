@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bindParam(':user_id', $user_id);
     $stmt->execute();
 
-    header("Location: cashier_booking.php");
+    header("Location: admin_booking.php");
     exit();
 }
 ?>

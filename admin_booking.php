@@ -10,15 +10,26 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
+
 $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                WHERE b.archive = 0
                 ORDER BY b.booking_id DESC";
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->execute();
 $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
 
-// Create a map for user_id to username (if needed)
+$archiveBooking = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
+                FROM bookings b
+                LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                WHERE b.archive = 1
+                ORDER BY b.booking_id DESC";
+$stmtArchive = $conn->prepare($archiveBooking);
+$stmtArchive->execute();
+$archive = $stmtArchive->fetchAll(PDO::FETCH_ASSOC);
+
+
 $sqlUsers = "SELECT user_id, username FROM users";
 $stmtUsers = $conn->prepare($sqlUsers);
 $stmtUsers->execute();
@@ -251,6 +262,11 @@ foreach ($users as $user) {
          <div class="container-fluid">
          <!-- Page Heading -->      
          <!-- Table Row -->
+
+         <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#showarchive'>Show archive</button>
+         </div>
+
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Booking Information</h6>
@@ -281,7 +297,7 @@ foreach ($users as $user) {
 
                            echo '</div>';
                            echo '<div class="ms-auto text-end">';
-                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Archive</a>';
                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
                            echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
                            echo '</div>';
@@ -423,6 +439,60 @@ foreach ($users as $user) {
                 </div>
             </div>
         </div>
+
+        <!-- Archive Modal -->
+      <div class="modal fade" id="showarchive" tabindex="-1" role="dialog" aria-labelledby="archiveModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="archiveModalLabel">Archived Bookings</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <ul class="list-group" id="archiveList">
+                        <?php
+                        if (!empty($archive)) {
+                              foreach ($archive as $archivedBooking) {
+                                 echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                                 echo '<div class="d-flex flex-column">';
+                                 echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$archivedBooking["user_id"]]) . '</h6>';
+                                 echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($archivedBooking["table_name"]) . '</span></span>';
+                                 echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($archivedBooking["start_time"]) . '</span></span>';
+                                 echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($archivedBooking["end_time"]) . '</span></span>';
+                                 echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($archivedBooking["status"]) . '</span></span>';
+                                 echo '<span class="mb-2 text-xs">Number of matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($archivedBooking["num_matches"]) . '</span></span>';
+                                 echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($archivedBooking["amount"]) . '</span></span>';
+
+                                 if (!empty($archivedBooking["proof_of_payment"])) {
+                                    echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($archivedBooking["proof_of_payment"]) . '\'); return false;">';
+                                    echo '<img src="' . htmlspecialchars($archivedBooking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                    echo '</a>';
+                                    echo '</span></span>';
+                                 }
+
+                                 echo '</div>';
+                                 echo '</li>';
+                              }
+                        } else {
+                              echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                              echo '<div class="d-flex flex-column">';
+                              echo '<h6 class="mb-3 text-sm">No archived bookings found.</h6>';
+                              echo '</div>';
+                              echo '</li>';
+                        }
+                        ?>
+                     </ul>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+            </div>
+         </div>
+      </div>
+
       <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {

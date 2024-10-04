@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 21, 2024 at 04:22 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Oct 01, 2024 at 07:38 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -31,17 +32,18 @@ CREATE TABLE `announcements` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `body` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `tournament_id` int(11) NOT NULL,
+  `round` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expires_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `announcements`
 --
 
-INSERT INTO `announcements` (`id`, `title`, `body`, `created_at`) VALUES
-(2, 'Tournament', 'Tournament 1 will start now', '2024-07-19 14:48:28'),
-(3, 'Tournament', 'Tournament 1 will start now', '2024-07-19 14:48:45'),
-(4, 'Tournament 2 ready', 'Will start in one hour\r\n', '2024-07-19 14:49:25');
+INSERT INTO `announcements` (`id`, `title`, `body`, `tournament_id`, `round`, `created_at`, `expires_at`) VALUES
+(16, 'asd', 'asd', 0, 0, '2024-10-01 15:15:59', '2024-10-02 17:15:59');
 
 -- --------------------------------------------------------
 
@@ -57,25 +59,27 @@ CREATE TABLE `bookings` (
   `start_time` datetime DEFAULT NULL,
   `end_time` datetime DEFAULT NULL,
   `status` varchar(100) NOT NULL,
-  `num_matches` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `num_matches` int(11) DEFAULT NULL,
+  `archive` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`booking_id`, `user_id`, `table_id`, `table_name`, `start_time`, `end_time`, `status`, `num_matches`) VALUES
-(1, 1, 3, 'Table 1', '2024-07-13 23:42:00', '2024-07-13 23:42:00', 'Confirmed', 0),
-(2, 1, 3, 'Table 3', '2024-07-13 01:01:00', '2024-07-13 02:16:00', 'Confirmed', 0),
-(3, 1, 1, 'Table 2', '2024-07-14 22:57:00', '2024-07-14 23:57:00', 'Confirmed', 0),
-(4, 2, 2, 'Table 2', '2024-07-15 01:13:00', '2024-07-15 02:14:00', 'Confirmed', 0),
-(5, 2, 1, 'Table 1', '2024-07-15 01:18:00', '2024-07-15 02:19:00', 'Pending', 0),
-(6, 2, 1, 'Table 4', '2024-07-15 01:25:00', '2024-07-15 02:25:00', 'Confirmed', 0),
-(7, 1, 2, 'Table 4', '2024-07-17 23:07:00', '2024-07-18 00:08:00', 'Pending', 0),
-(8, 1, 1, 'Table 4', '2024-07-17 23:08:00', '2024-07-18 00:09:00', 'Confirmed', 0),
-(9, 1, 2, 'Table 1', '2024-07-18 00:54:00', '2024-07-18 01:55:00', 'Confirmed', 0),
-(10, 1, 2, 'Table 2', NULL, NULL, 'Pending', 1),
-(11, 1, 2, 'Table 2', '2024-07-20 08:46:00', '2024-07-20 09:47:00', 'Confirmed', NULL);
+INSERT INTO `bookings` (`booking_id`, `user_id`, `table_id`, `table_name`, `start_time`, `end_time`, `status`, `num_matches`, `archive`) VALUES
+(1, 1, 3, 'Table 1', '2024-07-13 23:42:00', '2024-07-13 23:42:00', 'Confirmed', 0, 0),
+(2, 1, 3, 'Table 3', '2024-07-13 01:01:00', '2024-07-13 02:16:00', 'Confirmed', 0, 0),
+(3, 1, 1, 'Table 2', '2024-07-14 22:57:00', '2024-07-14 23:57:00', 'Confirmed', 0, 0),
+(4, 2, 2, 'Table 2', '2024-07-15 01:13:00', '2024-07-15 02:14:00', 'Confirmed', 0, 0),
+(5, 2, 1, 'Table 1', '2024-07-15 01:18:00', '2024-07-15 02:19:00', 'Pending', 0, 0),
+(6, 2, 1, 'Table 4', '2024-07-15 01:25:00', '2024-07-15 02:25:00', 'Confirmed', 0, 0),
+(7, 1, 2, 'Table 4', '2024-07-17 23:07:00', '2024-07-18 00:08:00', 'Pending', 0, 0),
+(8, 1, 1, 'Table 4', '2024-07-17 23:08:00', '2024-07-18 00:09:00', 'Confirmed', 0, 0),
+(9, 1, 2, 'Table 1', '2024-07-18 00:54:00', '2024-07-18 01:55:00', 'Confirmed', 0, 0),
+(10, 1, 2, 'Table 2', NULL, NULL, 'Pending', 1, 0),
+(11, 1, 2, 'Table 2', '2024-07-20 08:46:00', '2024-07-20 09:47:00', 'Confirmed', NULL, 1),
+(12, 1, 1, 'Table 1', '2024-08-24 20:13:00', '2024-08-24 21:13:00', 'Confirmed', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -91,7 +95,7 @@ CREATE TABLE `bracket` (
   `round` int(11) NOT NULL,
   `match_number` int(11) NOT NULL,
   `winner_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bracket`
@@ -101,7 +105,7 @@ INSERT INTO `bracket` (`bracket_id`, `tournament_id`, `player1_id`, `player2_id`
 (1, 4, 1, 2, 0, 0, NULL),
 (2, 5, 1, 2, 0, 0, NULL),
 (3, 5, 7, 8, 0, 0, NULL),
-(44, 3, 9, 8, 1, 1, 9),
+(44, 3, 9, 8, 1, 1, 8),
 (45, 3, 2, 11, 1, 2, 7),
 (46, 3, 10, 7, 1, 3, 11),
 (47, 3, 1, 12, 1, 4, NULL);
@@ -119,7 +123,7 @@ CREATE TABLE `feedback` (
   `experience` enum('bad','average','good') NOT NULL,
   `feedback` text NOT NULL,
   `submitted_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `feedback`
@@ -142,7 +146,7 @@ CREATE TABLE `inventory` (
   `quantity` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `inventory`
@@ -171,7 +175,7 @@ CREATE TABLE `matches` (
   `end_time` datetime DEFAULT NULL,
   `status` varchar(100) DEFAULT NULL,
   `created_at` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -186,7 +190,7 @@ CREATE TABLE `players` (
   `username` varchar(255) DEFAULT NULL,
   `proof_of_payment` varchar(255) DEFAULT NULL,
   `status` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `players`
@@ -230,7 +234,7 @@ CREATE TABLE `tables` (
   `table_id` int(11) NOT NULL,
   `table_number` varchar(100) NOT NULL,
   `status` enum('Available','Occupied','Under Maintenance') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tables`
@@ -254,7 +258,7 @@ CREATE TABLE `tbl_user` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tbl_user`
@@ -282,23 +286,23 @@ CREATE TABLE `tournaments` (
   `created_at` varchar(100) NOT NULL,
   `prize` text NOT NULL,
   `fee` decimal(10,2) NOT NULL DEFAULT 0.00
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tournaments`
 --
 
 INSERT INTO `tournaments` (`tournament_id`, `name`, `max_player`, `start_date`, `end_date`, `status`, `created_at`, `prize`, `fee`) VALUES
-(2, 'Tournament 2', 6, '2024-07-04', '2024-07-05', 'upcoming', '2024-07-04 23:02:51', '10000', 100.00),
-(3, 'Tournament 3', 8, '2024-07-08', '2024-07-09', 'upcoming', '2024-07-08 18:44:03', '10000', 100.00),
-(4, 'Tournament 4', 2, '2024-07-09', '2024-07-10', 'upcoming', '2024-07-09 23:53:18', '10000', 100.00),
-(5, 'Tournament 5', 4, '2024-07-10', '2024-07-11', 'upcoming', '2024-07-10 00:12:23', '10000', 100.00),
-(6, 'tournament 6', 4, '2024-07-10', '2024-07-11', 'upcoming', '2024-07-10 00:13:48', '10000', 100.00),
-(10, 'Tournament 7', 6, '2024-07-13', '2024-07-13', 'upcoming', '2024-07-13 22:33:39', '10000', 100.00),
-(11, 'Tournament 8', 8, '2024-07-17', '2024-07-17', 'upcoming', '2024-07-17 23:57:18', '100', 100.00),
-(12, 'Tournament 9', 8, '2024-07-18', '2024-07-18', 'upcoming', '2024-07-18 00:51:52', '10000', 100.00),
-(13, 'Tournament 10', 4, '2024-07-18', '2024-07-18', 'upcoming', '2024-07-18 00:53:40', '1000', 100.00),
-(14, 'Tournament 11', 4, '2024-07-31', '2024-08-01', 'upcoming', '2024-07-20 09:03:12', '10000', 100.00);
+(2, 'Tournament 2', 6, '2024-07-04', '2024-07-05', 'upcoming', '2024-07-04 23:02:51', '10000', '100.00'),
+(3, 'Tournament 3', 8, '2024-07-08', '2024-07-09', 'upcoming', '2024-07-08 18:44:03', '10000', '100.00'),
+(4, 'Tournament 4', 2, '2024-07-09', '2024-07-10', 'upcoming', '2024-07-09 23:53:18', '10000', '100.00'),
+(5, 'Tournament 5', 4, '2024-07-10', '2024-07-11', 'upcoming', '2024-07-10 00:12:23', '10000', '100.00'),
+(6, 'tournament 6', 4, '2024-07-10', '2024-07-11', 'upcoming', '2024-07-10 00:13:48', '10000', '100.00'),
+(10, 'Tournament 7', 6, '2024-07-13', '2024-07-13', 'upcoming', '2024-07-13 22:33:39', '10000', '100.00'),
+(11, 'Tournament 8', 8, '2024-07-17', '2024-07-17', 'upcoming', '2024-07-17 23:57:18', '100', '100.00'),
+(12, 'Tournament 9', 8, '2024-07-18', '2024-07-18', 'upcoming', '2024-07-18 00:51:52', '10000', '100.00'),
+(13, 'Tournament 10', 4, '2024-07-18', '2024-07-18', 'upcoming', '2024-07-18 00:53:40', '1000', '100.00'),
+(14, 'Tournament 11', 4, '2024-07-31', '2024-08-01', 'upcoming', '2024-07-20 09:03:12', '10000', '100.00');
 
 -- --------------------------------------------------------
 
@@ -314,23 +318,24 @@ CREATE TABLE `transactions` (
   `status` varchar(50) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `proof_of_payment` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `transactions`
 --
 
 INSERT INTO `transactions` (`transaction_id`, `booking_id`, `amount`, `payment_method`, `status`, `timestamp`, `proof_of_payment`) VALUES
-(1, 1, 0.00, 'Pending', 'Pending', '2024-07-13 15:42:47', NULL),
-(2, 2, 37.50, 'cash', 'Pending', '2024-07-13 16:01:06', NULL),
-(3, 3, 30.00, 'cash', 'Pending', '2024-07-14 14:57:28', NULL),
-(4, 4, 30.50, 'cash', 'Pending', '2024-07-14 17:13:39', NULL),
-(5, 5, 30.50, 'cash', 'Pending', '2024-07-14 17:18:57', NULL),
-(6, 6, 30.00, 'cash', 'Pending', '2024-07-14 17:25:13', NULL),
-(7, 8, 30.50, 'gcash', 'Pending', '2024-07-17 15:09:08', 'payments/proof.jpg'),
-(8, 9, 30.50, 'gcash', 'Pending', '2024-07-17 16:54:58', 'payments/receipt_3 (4).png'),
-(9, 10, 50.00, 'cash', 'Pending', '2024-07-19 13:44:10', ''),
-(10, 11, 81.33, 'gcash', 'Pending', '2024-07-20 00:46:31', 'payments/receipt_9 (1).png');
+(1, 1, '0.00', 'Pending', 'Pending', '2024-07-13 15:42:47', NULL),
+(2, 2, '37.50', 'cash', 'Pending', '2024-07-13 16:01:06', NULL),
+(3, 3, '30.00', 'cash', 'Pending', '2024-07-14 14:57:28', NULL),
+(4, 4, '30.50', 'cash', 'Pending', '2024-07-14 17:13:39', NULL),
+(5, 5, '30.50', 'cash', 'Pending', '2024-07-14 17:18:57', NULL),
+(6, 6, '30.00', 'cash', 'Pending', '2024-07-14 17:25:13', NULL),
+(7, 8, '30.50', 'gcash', 'Pending', '2024-07-17 15:09:08', 'payments/proof.jpg'),
+(8, 9, '30.50', 'gcash', 'Pending', '2024-07-17 16:54:58', 'payments/receipt_3 (4).png'),
+(9, 10, '50.00', 'cash', 'Pending', '2024-07-19 13:44:10', ''),
+(10, 11, '81.33', 'gcash', 'Pending', '2024-07-20 00:46:31', 'payments/receipt_9 (1).png'),
+(11, 12, '80.00', 'gcash', 'Pending', '2024-08-24 12:13:57', 'payments/666f352d-cef3-4fb6-a38f-19c63d7223d3.jpg');
 
 -- --------------------------------------------------------
 
@@ -344,27 +349,28 @@ CREATE TABLE `users` (
   `email` text NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `role` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+  `role` varchar(100) NOT NULL,
+  `archive` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `email`, `username`, `password`, `role`) VALUES
-(1, 'jakezyrus', 'jakezyrus@gmail.com', 'jake', 'jake', 'user'),
-(2, 'sam', 'sam', 'sam', 'sam', 'user'),
-(3, 'admin', 'admin@admin.com', 'admin', 'admin', 'admin'),
-(4, 'cashier', 'cashier@cashier.com', 'cashier', 'cashier', 'cashier'),
-(5, 'was', 'was', 'was', 'was', 'cashier'),
-(6, 'jake zyrus', 'jake@gmail.com', 'zyrus', 'zyrus', 'user'),
-(7, 'asd', 'asd', 'asd', 'asd', 'user'),
-(8, 'qwe', 'qwe', 'qwe', 'qwe', 'user'),
-(9, 'car', 'car', 'car', 'car', 'user'),
-(10, 'pop', 'pop', 'pop', 'pop', 'user'),
-(11, 'son', 'son', 'son', 'son', 'user'),
-(12, 'sad', 'sad', 'sad', 'sad', 'user'),
-(13, 'lol', 'lol', 'lol', 'lol', 'user');
+INSERT INTO `users` (`user_id`, `name`, `email`, `username`, `password`, `role`, `archive`) VALUES
+(1, 'jakezyrus', 'jakezyrus@gmail.com', 'jake', 'jake', 'user', 0),
+(2, 'sam', 'sam', 'sam', 'sam', 'user', 0),
+(3, 'admin', 'admin@admin.com', 'admin', 'admin', 'admin', 0),
+(4, 'cashier', 'cashier@cashier.com', 'cashier', 'cashier', 'cashier', 0),
+(5, 'was', 'was', 'was', 'was', 'cashier', 0),
+(6, 'jake zyrus', 'jake@gmail.com', 'zyrus', 'zyrus', 'user', 0),
+(7, 'asd', 'asd', 'asd', 'asd', 'user', 0),
+(8, 'qwe', 'qwe', 'qwe', 'qwe', 'user', 0),
+(9, 'car', 'car', 'car', 'car', 'user', 0),
+(10, 'pop', 'pop', 'pop', 'pop', 'user', 0),
+(11, 'son', 'son', 'son', 'son', 'user', 0),
+(12, 'sad', 'sad', 'sad', 'sad', 'user', 0),
+(13, 'lol', 'lol', 'lol', 'lol', 'user', 0);
 
 --
 -- Indexes for dumped tables
@@ -459,13 +465,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `bracket`
@@ -519,7 +525,7 @@ ALTER TABLE `tournaments`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`

@@ -157,7 +157,7 @@ if (isset($_SESSION['user_id'])) {
 
     <?php
 } else {
-    header("Location: http://localhost/BilliardManagement/");
+    header("Location: index.php");
 }
 
 ?>

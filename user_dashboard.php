@@ -30,12 +30,13 @@ try {
 
 // Fetch announcements
 try {
-    $stmt = $conn->prepare("SELECT id, title, body, created_at FROM announcements ORDER BY created_at DESC");
-    $stmt->execute();
-    $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+   $stmt = $conn->prepare("SELECT id, title, body, created_at, expires_at FROM announcements WHERE expires_at IS NULL OR expires_at > NOW() ORDER BY created_at DESC");
+   $stmt->execute();
+   $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    echo "Failed " . $e->getMessage();
+   echo "Failed: " . $e->getMessage();
 }
+
 
 // Fetch tournaments for the logged-in user
 try {
@@ -114,6 +115,15 @@ echo "<script>
          </div>
          <hr class="horizontal light mt-0 mb-2">
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+         <ul class="navbar-nav">
+            <li class="nav-item">
+               <a class="nav-link text-white " href="userprofile/user.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10"></i>
+                  </div>
+                  <span class="nav-link-text ms-1">User Profile</span>
+               </a>
+            </li>
          <ul class="navbar-nav">
             <li class="nav-item">
                <a class="nav-link text-white " href="user_dashboard.php">
@@ -322,13 +332,20 @@ echo "<script>
                <h5 class="mb-0">Announcements</h5>
             </div>
             <div class="card-body p-3 pb-0">
+            <?php if (!empty($announcements)): ?>
                <?php foreach ($announcements as $announcement): ?>
-                     <div class="alert alert-info alert-dismissible fade show custom-alert" role="alert">
+                  <div class="alert alert-info alert-dismissible fade show custom-alert" role="alert">
                         <strong><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
                         <?php echo htmlspecialchars($announcement['body']); ?>
+                        <p>This announcement will expire at: <?php echo htmlspecialchars($announcement['expires_at']); ?></p>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                     </div>
+                  </div>
                <?php endforeach; ?>
+               <?php else: ?>
+                  <div class="alert alert-warning" role="alert">
+                     No announcements found.
+                  </div>
+               <?php endif; ?>
             </div>
          </div>
          <div class="card mt-4">
