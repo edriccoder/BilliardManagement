@@ -117,11 +117,11 @@ echo "<script>
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
             <li class="nav-item">
-               <a class="nav-link text-white " href="user_profile.php">
+               <a class="nav-link text-white " href="userprofile/user.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">person</i>
+                     <i class="material-icons opacity-10"></i>
                   </div>
-                  <span class="nav-link-text ms-1">My Profile</span>
+                  <span class="nav-link-text ms-1">User Profile</span>
                </a>
             </li>
          <ul class="navbar-nav">
@@ -130,7 +130,7 @@ echo "<script>
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">dashboard</i>
                   </div>
-                  <span class="nav-link-text ms-1">My Dashboard</span>
+                  <span class="nav-link-text ms-1">Dashboard</span>
                </a>
             </li>
             <li class="nav-item">
@@ -138,7 +138,7 @@ echo "<script>
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">table_view</i>
                   </div>
-                  <span class="nav-link-text ms-1">My Billiard Tables</span>
+                  <span class="nav-link-text ms-1">Billiard Tables</span>
                </a>
             </li>
             <li class="nav-item">
@@ -154,7 +154,7 @@ echo "<script>
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">flag</i>
                      </div>
-                     <span class="nav-link-text ms-1">My Tournament</span>
+                     <span class="nav-link-text ms-1">Tournament</span>
                   </a>
                </li> 
             <li class="nav-item">
@@ -162,7 +162,7 @@ echo "<script>
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">feedback</i>
                   </div>
-                  <span class="nav-link-text ms-1">My Feedback</span>
+                  <span class="nav-link-text ms-1">Feedback</span>
                </a>
             </li>
             <li class="nav-item">
