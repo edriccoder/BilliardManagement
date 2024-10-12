@@ -56,7 +56,6 @@
                 <a href="#contact" class="nav-item nav-link">Contact</a>
             </div>
             <div class=" d-none d-lg-flex">
-                
                 </div>  
             </div>
         </div>
@@ -364,6 +363,21 @@
         </div>
     </div>
     <!-- Copyright End -->
+
+    <script>
+        // Get all the nav links
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                // Remove 'active' class from all links
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                // Add 'active' class to the clicked link
+                this.classList.add('active');
+            });
+        });
+    </script>
+
 
 
     <!-- Back to Top -->

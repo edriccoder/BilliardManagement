@@ -60,45 +60,54 @@ echo "<script>
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
             <li class="nav-item">
-                  <a class="nav-link text-white " href="user_dashboard.php">
+               <a class="nav-link text-white " href="user_profile.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">person</i>
+                  </div>
+                  <span class="nav-link-text ms-1">My Profile</span>
+               </a>
+            </li>
+         <ul class="navbar-nav">
+            <li class="nav-item">
+               <a class="nav-link text-white " href="user_dashboard.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">dashboard</i>
+                  </div>
+                  <span class="nav-link-text ms-1">My Dashboard</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="user_table.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">table_view</i>
+                  </div>
+                  <span class="nav-link-text ms-1">My Billiard Tables</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="booking_user.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">book</i>
+                  </div>
+                  <span class="nav-link-text ms-1">My Booking</span>
+               </a>
+            </li>
+            <li class="nav-item">
+                  <a class="nav-link text-white " href="user_tournament.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">dashboard</i>
+                        <i class="material-icons opacity-10">flag</i>
                      </div>
-                     <span class="nav-link-text ms-1">Dashboard</span>
+                     <span class="nav-link-text ms-1">My Tournament</span>
                   </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="user_table.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">table_view</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Billiard Tables</span>
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="booking_user.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">book</i>
-                     </div>
-                     <span class="nav-link-text ms-1">My Booking</span>
-                  </a>
-               </li>
-               <li class="nav-item">
-                     <a class="nav-link text-white " href="user_tournament.php">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                           <i class="material-icons opacity-10">flag</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Tournament</span>
-                     </a>
-                  </li> 
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="feedback.php">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">feedback</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Feedback</span>
-                  </a>
-               </li>
+               </li> 
+            <li class="nav-item">
+               <a class="nav-link text-white " href="feedback.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">feedback</i>
+                  </div>
+                  <span class="nav-link-text ms-1">My Feedback</span>
+               </a>
+            </li>
                <li class="nav-item">
                   <a class="nav-link text-white " href="./notifications.html">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
