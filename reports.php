@@ -361,6 +361,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Form submission to the same file -->
                         <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
@@ -377,26 +378,38 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             <div id="itemDamageSection" class="report-section" style="display: none;">
                                 <h6>Item Damage Report</h6>
                                 <label for="item_damage_description" class="form-label">Description of the damage:</label>
-                                <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
+                                </div>
                                 <label for="item_damage_datetime" class="form-label">Date & Time:</label>
-                                <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
+                                </div>
                                 <label for="item_damage_photo" class="form-label">Upload Photo:</label>
-                                <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
+                                </div>
                             </div>
 
                             <!-- Incident Report Section -->
                             <div id="incidentReportSection" class="report-section" style="display: none;">
                                 <h6>Incident Report</h6>
                                 <label for="incident_report_name" class="form-label">Name of the person to report:</label>
-                                <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
+                                </div>
                                 <label for="incident_report_description" class="form-label">Description of the incident:</label>
-                                <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
+                                </div>
                                 <label for="incident_report_datetime" class="form-label">Date & Time:</label>
-                                <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
+                                </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
+                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button> <!-- Correct name attribute -->
                             </div>
                         </form>
                     </div>
@@ -417,33 +430,6 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                 } else if (reportType === 'incident_report') {
                     incidentReportSection.style.display = 'block';
                 }
-            }
-
-            function validateForm() {
-                const itemDamageSection = document.getElementById('itemDamageSection');
-                const incidentReportSection = document.getElementById('incidentReportSection');
-
-                if (itemDamageSection.style.display === 'block') {
-                    const description = document.getElementById('item_damage_description').value.trim();
-                    const dateTime = document.getElementById('item_damage_datetime').value;
-                    const photo = document.getElementById('item_damage_photo').files.length;
-
-                    if (!description || !dateTime || photo === 0) {
-                        alert('Please fill in all fields for Item Damage Report.');
-                        return false; // Prevent form submission
-                    }
-                } else if (incidentReportSection.style.display === 'block') {
-                    const name = document.getElementById('incident_report_name').value.trim();
-                    const description = document.getElementById('incident_report_description').value.trim();
-                    const dateTime = document.getElementById('incident_report_datetime').value;
-
-                    if (!name || !description || !dateTime) {
-                        alert('Please fill in all fields for Incident Report.');
-                        return false; // Prevent form submission
-                    }
-                }
-
-                return true; // Allow form submission
             }
         </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
