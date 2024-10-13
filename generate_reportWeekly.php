@@ -10,8 +10,6 @@ $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.star
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
                 WHERE DATE(b.start_time) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
 
-
-
 try {
     $stmt = $conn->prepare($sqlBookings);
     $stmt->execute();
