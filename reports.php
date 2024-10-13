@@ -17,7 +17,7 @@ $username = htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
 $user_id = htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8');
 
 // Fetch reports from the database
-$sql = "SELECT item_id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
+$sql = "SELECT id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
