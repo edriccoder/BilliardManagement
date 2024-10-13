@@ -224,8 +224,8 @@ foreach ($users as $user) {
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Billing and Payments</h6>
-               <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Reports Today</button>
-               <button class='btn btn-primary editBtn' onclick='generateReportWeek()'>Generate Reports Weekly</button>
+               <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Invoice Today</button>
+               <button class='btn btn-primary editBtn' onclick='generateReportWeek()'>Generate Invoice Weekly</button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
