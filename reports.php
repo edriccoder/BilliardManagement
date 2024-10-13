@@ -416,45 +416,48 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
             </div>
         </div>
 
+        <script>
+            function showSection(reportType) {
+                const itemDamageSection = document.getElementById('itemDamageSection');
+                const incidentReportSection = document.getElementById('incidentReportSection');
 
+                itemDamageSection.style.display = 'none';
+                incidentReportSection.style.display = 'none';
 
-    <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-
-        function showSection(reportType) {
-            const itemDamageSection = document.getElementById('itemDamageSection');
-            const incidentReportSection = document.getElementById('incidentReportSection');
-
-            itemDamageSection.style.display = 'none';
-            incidentReportSection.style.display = 'none';
-
-            if (reportType === 'item_damage') {
-                itemDamageSection.style.display = 'block';
-            } else if (reportType === 'incident_report') {
-                incidentReportSection.style.display = 'block';
-            }
-        }
-
-        function validateForm() {
-            const itemDamageSection = document.getElementById('itemDamageSection');
-            const incidentReportSection = document.getElementById('incidentReportSection');
-
-            if (itemDamageSection.style.display === 'block') {
-                return document.getElementById('item_damage_description').value.trim() !== '';
-            } else if (incidentReportSection.style.display === 'block') {
-                return document.getElementById('incident_report_name').value.trim() !== '';
+                if (reportType === 'item_damage') {
+                    itemDamageSection.style.display = 'block';
+                } else if (reportType === 'incident_report') {
+                    incidentReportSection.style.display = 'block';
+                }
             }
 
-            alert('Please select a report type.');
-            return false; // Prevent form submission
-        }
-    </script>
+            function validateForm() {
+                const itemDamageSection = document.getElementById('itemDamageSection');
+                const incidentReportSection = document.getElementById('incidentReportSection');
+
+                if (itemDamageSection.style.display === 'block') {
+                    const description = document.getElementById('item_damage_description').value.trim();
+                    const dateTime = document.getElementById('item_damage_datetime').value;
+                    const photo = document.getElementById('item_damage_photo').files.length;
+
+                    if (!description || !dateTime || photo === 0) {
+                        alert('Please fill in all fields for Item Damage Report.');
+                        return false; // Prevent form submission
+                    }
+                } else if (incidentReportSection.style.display === 'block') {
+                    const name = document.getElementById('incident_report_name').value.trim();
+                    const description = document.getElementById('incident_report_description').value.trim();
+                    const dateTime = document.getElementById('incident_report_datetime').value;
+
+                    if (!name || !description || !dateTime) {
+                        alert('Please fill in all fields for Incident Report.');
+                        return false; // Prevent form submission
+                    }
+                }
+
+                return true; // Allow form submission
+            }
+        </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
