@@ -422,15 +422,39 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                 const itemDamageSection = document.getElementById('itemDamageSection');
                 const incidentReportSection = document.getElementById('incidentReportSection');
 
+                // Get the form fields that need to be required or not
+                const itemDamageDescription = document.getElementById('item_damage_description');
+                const itemDamageDateTime = document.getElementById('item_damage_datetime');
+                const itemDamagePhoto = document.getElementById('item_damage_photo');
+
+                const incidentReportName = document.getElementById('incident_report_name');
+                const incidentReportDescription = document.getElementById('incident_report_description');
+                const incidentReportDateTime = document.getElementById('incident_report_datetime');
+
                 // Hide both sections initially
                 itemDamageSection.style.display = 'none';
                 incidentReportSection.style.display = 'none';
 
-                // Show the selected section
+                // Remove the 'required' attribute from all fields
+                itemDamageDescription.removeAttribute('required');
+                itemDamageDateTime.removeAttribute('required');
+                itemDamagePhoto.removeAttribute('required');
+
+                incidentReportName.removeAttribute('required');
+                incidentReportDescription.removeAttribute('required');
+                incidentReportDateTime.removeAttribute('required');
+
+                // Show the selected section and add 'required' attributes
                 if (reportType === 'item_damage') {
                     itemDamageSection.style.display = 'block';
+                    itemDamageDescription.setAttribute('required', 'required');
+                    itemDamageDateTime.setAttribute('required', 'required');
+                    itemDamagePhoto.setAttribute('required', 'required');
                 } else if (reportType === 'incident_report') {
                     incidentReportSection.style.display = 'block';
+                    incidentReportName.setAttribute('required', 'required');
+                    incidentReportDescription.setAttribute('required', 'required');
+                    incidentReportDateTime.setAttribute('required', 'required');
                 }
             }
         </script>
