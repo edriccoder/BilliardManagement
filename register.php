@@ -117,6 +117,7 @@
     }
 
     .checkbox-label-group {
+        margin-left: 0px;
         display: flex;
     }
 
