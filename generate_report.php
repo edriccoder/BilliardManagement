@@ -3,10 +3,12 @@ require('fpdf/fpdf.php');
 require('conn.php'); // Include the database connection
 
 // SQL query
+// SQL query to fetch today's bookings only
 $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
-                LEFT JOIN transactions t
-                ON b.booking_id = t.booking_id";
+                LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                WHERE DATE(b.start_time) = CURDATE()";
+
 
 try {
     $stmt = $conn->prepare($sqlBookings);
