@@ -11,45 +11,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-function getCount($conn, $sql) {
-   $stmt = $conn->prepare($sql);
-   $stmt->execute();
-   $result = $stmt->fetch(PDO::FETCH_ASSOC);
-   return $result ? $result['total'] : 0;
-}
 
-// Fetch total users
-$sql_users = "SELECT COUNT(*) as total FROM users";
-$total_users = getCount($conn, $sql_users);
-
-// Fetch total billiard tables
-$sql_tables = "SELECT COUNT(*) as total FROM tables";
-$total_tables = getCount($conn, $sql_tables);
-
-// Fetch total bookings
-$sql_bookings = "SELECT COUNT(*) as total FROM bookings";
-$total_bookings = getCount($conn, $sql_bookings);
-
-// Escape and encode session variables for safe output
-$user_id = htmlspecialchars($_SESSION['user_id']);
-
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
-                FROM bookings b
-                LEFT JOIN transactions t ON b.booking_id = t.booking_id";
-$stmtBookings = $conn->prepare($sqlBookings);
-$stmtBookings->execute();
-$bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
-
-// Create a map for user_id to username (if needed)
-$sqlUsers = "SELECT user_id, username FROM users";
-$stmtUsers = $conn->prepare($sqlUsers);
-$stmtUsers->execute();
-$users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
-
-$userMap = [];
-foreach ($users as $user) {
-    $userMap[$user['user_id']] = $user['username'];
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -234,9 +196,8 @@ foreach ($users as $user) {
          <!-- Table Row -->
          <div class="card">
             <div class="card-header pb-0 px-3">
-               <h6 class="mb-0">Billing and Payments</h6>
-               <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Invoice Today</button>
-               <button class='btn btn-primary editBtn' onclick='generateReportWeek()'>Generate Invoice Weekly</button>
+               <h6 class="mb-0">Reports</h6>
+               <button class='btn btn-primary editBtn' onclick='createReport()'>Create Report/button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
@@ -390,6 +351,56 @@ foreach ($users as $user) {
             </div>
          </div>
       </div>
+
+      <!-- Button to trigger modal -->
+    <button class="btn btn-primary editBtn" data-bs-toggle="modal" data-bs-target="#reportModal">Create Report</button>
+
+    <!-- Modal Structure -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Choose Report Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Select the type of report you want to create:</p>
+                    <div class="dropdown mb-3">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Create Report
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Item Damage Section -->
+                    <div id="itemDamageSection" class="report-section" style="display: none;">
+                        <h6>Item Damage Report</h6>
+                        <img src="path/to/your/image.jpg" alt="Item Damage" class="img-fluid mb-2">
+                        <p>Description of the damage:</p>
+                        <textarea class="form-control" rows="3" placeholder="Describe the damage..."></textarea>
+                        <p>Date & Time:</p>
+                        <input type="datetime-local" class="form-control">
+                    </div>
+
+                    <!-- Incident Report Section -->
+                    <div id="incidentReportSection" class="report-section" style="display: none;">
+                        <h6>Incident Report</h6>
+                        <p>Name of the person to report:</p>
+                        <input type="text" class="form-control" placeholder="Name">
+                        <p>Description of the incident:</p>
+                        <textarea class="form-control" rows="3" placeholder="Describe the incident..."></textarea>
+                        <p>Date & Time:</p>
+                        <input type="datetime-local" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -398,6 +409,19 @@ foreach ($users as $user) {
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+
+         function showSection(reportType) {
+            const itemDamageSection = document.getElementById('itemDamageSection');
+            const incidentReportSection = document.getElementById('incidentReportSection');
+            
+            if (reportType === 'item_damage') {
+                itemDamageSection.style.display = 'block';
+                incidentReportSection.style.display = 'none';
+            } else if (reportType === 'incident_report') {
+                itemDamageSection.style.display = 'none';
+                incidentReportSection.style.display = 'block';
+            }
+        }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
