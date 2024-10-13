@@ -195,7 +195,6 @@
                 </div>
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="h-100">
-                        <p class="text-primary text-uppercase mb-2">Tables  </p>
                         <h1 class="display-6 mb-4">We play for our dream</h1>
                         <p>T James Sports Bar opened its doors with a vision to create a vibrant and welcoming environment for sports enthusiasts and community members alike. The bar quickly became a local favorite, known for its lively atmosphere, extensive drink menu, and passion for sports. With numerous large-screen TVs, patrons could enjoy live broadcasts of their favorite games while savoring delicious food and drinks.</p>
                         <p>Over the years, T James Sports Bar has expanded its offerings, becoming a hub for not only watching sports but also for hosting various events and tournaments. The bar has built a reputation for excellent customer service and a strong community presence, making it a go-to destination for both casual outings and special occasions.</p>
