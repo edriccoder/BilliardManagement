@@ -226,6 +226,10 @@ foreach ($users as $user) {
                <h6 class="mb-0">Billing and Payments</h6>
                <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Reports Today</button>
             </div>
+            <div class="card-header pb-0 px-3">
+               <h6 class="mb-0">Billing and Payments</h6>
+               <button class='btn btn-primary editBtn' onclick='generateReportWeek()'>Generate Reports Weekly</button>
+            </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
                     <?php
@@ -393,6 +397,10 @@ foreach ($users as $user) {
          function generateReport(){
             window.location.href = 'generate_report.php'
          }
+
+        function generateReportWeek(){ 
+         window.location.href = 'generate_reportWeekly.php'
+        }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
