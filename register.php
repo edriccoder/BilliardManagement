@@ -156,9 +156,9 @@
             <h2 class="text-center">Forgot Password</h2>
             <p class="text-center">Enter your email to receive OTP.</p>
             <form action="forgot_password.php" method="POST">
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberCheck">
-                    <label class="form-check-label" for="rememberCheck">Remember Password</label>
+                <div class="form-group">
+                    <label for="forgotEmail">Email:</label>
+                    <input type="email" class="form-control" id="forgotEmail" name="email" required>
                 </div>
                 <div class="form-group">
                     <small class="show-form" onclick="showForm('login')">Remembered your password? Login Here.</small>
