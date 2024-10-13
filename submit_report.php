@@ -7,7 +7,7 @@ $photoPath = "";
 $reportType = "";
 
 // Check which report type is being submitted
-if (isset($_POST['item_damage_description'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['item_damage_description'])) {
     $description = trim($_POST['item_damage_description']);
     $datetime = $_POST['item_damage_datetime'];
     $reportType = 'item_damage';
@@ -36,7 +36,7 @@ if (isset($_POST['item_damage_description'])) {
         }
     }
 
-} elseif (isset($_POST['incident_report_name'])) {
+} elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['incident_report_name'])) {
     $description = trim($_POST['incident_report_description']);
     $datetime = $_POST['incident_report_datetime'];
     $name = trim($_POST['incident_report_name']);
