@@ -77,6 +77,7 @@
 
         .form-check-input {
             margin-right: 8px; /* Space between checkbox and label */
+            cursor: pointer; /* Change cursor on hover */
         }
 
         .show-form {
@@ -185,6 +186,7 @@
                     <input type="checkbox" class="form-check-input" id="rememberCheck">
                     <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
+
                 <div class="form-group">
                     <small class="show-form" onclick="showForm('forgot')">Forgot Password?</small>
                     <small class="show-form" onclick="showForm('registration')">No Account? Register Here.</small>
