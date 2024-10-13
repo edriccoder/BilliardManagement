@@ -209,39 +209,39 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <button class='btn btn-primary editBtn' data-toggle="modal" data-target="#reportModal">Create Report</button>
             </div>
             <div class="card-body pt-4 p-3">
-               <ul class="list-group">
+                <ul class="list-group">
                     <?php   
-                        if (!empty($reports)) {
-                            foreach ($reports as $report) {
-                                echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                                echo '<div class="d-flex flex-column">';
-                                echo '<h6 class="mb-3 text-sm">Type: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["type"]) . '</span></h6>';
-                                echo '<span class="mb-2 text-xs">Description: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["description"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Date & Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["datetime"]) . '</span></span>';
-                                if (!empty($report["photo"])) {
-                                    echo '<span class="mb-2 text-xs">Photo: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($report["photo"]) . '\'); return false;">';
-                                    echo '<img src="' . htmlspecialchars($report["photo"]) . '" alt="Report Photo" style="max-width: 100px; max-height: 100px;">';
-                                    echo '</a>';
-                                    echo '</span></span>';
-                                }
-                                echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"]) . '</span></span>';
-                                echo '</div>';
-                                echo '<div class="ms-auto text-end">';
-                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["report_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report)) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                                echo '</div>';
-                                echo '</li>';
-                            }
-                        } else {
+                    if (!empty($reports)) {
+                        foreach ($reports as $report) {
                             echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
                             echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">No reports found.</h6>';
+                            echo '<h6 class="mb-3 text-sm">Type: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["type"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></h6>';
+                            echo '<span class="mb-2 text-xs">Description: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["description"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Date & Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["datetime"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
+                            if (!empty($report["photo"])) {
+                                echo '<span class="mb-2 text-xs">Photo: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '\'); return false;">';
+                                echo '<img src="' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '" alt="Report Photo" style="max-width: 100px; max-height: 100px;">';
+                                echo '</a>';
+                                echo '</span></span>';
+                            }
+                            echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
+                            echo '</div>';
+                            echo '<div class="ms-auto text-end">';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["report_id"], ENT_QUOTES, 'UTF-8') . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report), ENT_QUOTES, 'UTF-8') . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
                             echo '</div>';
                             echo '</li>';
                         }
-                        ?>
-               </ul>
+                    } else {
+                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<div class="d-flex flex-column">';
+                        echo '<h6 class="mb-3 text-sm">No reports found.</h6>';
+                        echo '</div>';
+                        echo '</li>';
+                    }
+                    ?>
+                </ul>
                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                      <div class="modal-content">
