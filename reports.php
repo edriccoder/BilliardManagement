@@ -361,7 +361,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="reportForm" action="submit_report.php" method="post" enctype="multipart/form-data">
+                        <form id="reportForm" action="submit_report.php" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -377,7 +377,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             <div id="itemDamageSection" class="report-section" style="display: none;">
                                 <h6>Item Damage Report</h6>
                                 <label for="item_damage_description" class="form-label">Description of the damage:</label>
-                                <div class="input-group input-group-outline my-3">     
+                                <div class="input-group input-group-outline my-3">
                                     <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
                                 </div>
                                 <label for="item_damage_datetime" class="form-label">Date & Time:</label>
@@ -386,7 +386,6 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                                 </div>
                                 <label for="item_damage_photo" class="form-label">Upload Photo:</label>
                                 <div class="input-group input-group-outline my-3">
-                                    
                                     <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
                                 </div>
                             </div>
@@ -403,7 +402,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                                     <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
                                 </div>
                                 <label for="incident_report_datetime" class="form-label">Date & Time:</label>
-                                <div class="input-group input-group-outline my-3">                          
+                                <div class="input-group input-group-outline my-3">
                                     <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
                                 </div>
                             </div>
@@ -431,14 +430,29 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
         function showSection(reportType) {
             const itemDamageSection = document.getElementById('itemDamageSection');
             const incidentReportSection = document.getElementById('incidentReportSection');
-            
+
+            itemDamageSection.style.display = 'none';
+            incidentReportSection.style.display = 'none';
+
             if (reportType === 'item_damage') {
                 itemDamageSection.style.display = 'block';
-                incidentReportSection.style.display = 'none';
             } else if (reportType === 'incident_report') {
-                itemDamageSection.style.display = 'none';
                 incidentReportSection.style.display = 'block';
             }
+        }
+
+        function validateForm() {
+            const itemDamageSection = document.getElementById('itemDamageSection');
+            const incidentReportSection = document.getElementById('incidentReportSection');
+
+            if (itemDamageSection.style.display === 'block') {
+                return document.getElementById('item_damage_description').value.trim() !== '';
+            } else if (incidentReportSection.style.display === 'block') {
+                return document.getElementById('incident_report_name').value.trim() !== '';
+            }
+
+            alert('Please select a report type.');
+            return false; // Prevent form submission
         }
     </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
