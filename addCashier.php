@@ -21,9 +21,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveCashier'])) {
 
     // Execute the statement
     if ($stmt->execute()) {
-        echo "Account created successfully!";
+        echo "
+            <script>
+                alert('Account created successfully!');
+                window.location.href = 'manage_user.php';
+            </script>
+        ";
+
     } else {
         echo "Error: " . $stmt->errorInfo()[2];
+
+        echo "
+            <script>
+                alert('Error: " . addslashes($stmt->errorInfo()[2]) . "');
+                window.location.href = 'manage_user.php';
+            </script>
+        ";
+
     }
 }
 ?>
