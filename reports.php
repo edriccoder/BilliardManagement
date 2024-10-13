@@ -197,7 +197,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Reports</h6>
-               <button class='btn btn-primary editBtn' onclick='createReport()'>Create Report</button>
+                    <button class='btn btn-primary editBtn' data-bs-toggle="modal" data-bs-target="#reportModal">Create Report</button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
@@ -398,16 +398,16 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
     </div>
 
 
-      <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
+    <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
-               damping: '0.5'
+                damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
+        }
 
-         function showSection(reportType) {
+        function showSection(reportType) {
             const itemDamageSection = document.getElementById('itemDamageSection');
             const incidentReportSection = document.getElementById('incidentReportSection');
             
@@ -419,7 +419,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                 incidentReportSection.style.display = 'block';
             }
         }
-      </script>
+    </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
