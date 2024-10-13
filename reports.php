@@ -201,7 +201,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-                    <?php
+                    <?php   
                         if (!empty($bookings)) {
                             foreach ($bookings as $booking) {
                                 echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
@@ -351,9 +351,6 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
             </div>
          </div>
       </div>
-
-      <!-- Button to trigger modal -->
-    <button class="btn btn-primary editBtn" data-bs-toggle="modal" data-bs-target="#reportModal">Create Report</button>
 
     <!-- Modal Structure -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
