@@ -361,7 +361,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
