@@ -8,127 +8,129 @@
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
 
-        body {
-            background-image: url("img/background.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            height: 100vh;
-        }
+    body {
+        background-image: url("img/background.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        height: 100vh;
+    }
 
-        .main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.4);
-            height: 100vh;
-        }
+    .main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.4);
+        height: 100vh;
+    }
 
-        .login-container, .registration-container, .forgot-password-container {
-            width: 500px;
-            box-shadow: rgba(255, 255, 255, 0.24) 0px 3px 8px;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            color: rgba(255, 255, 255, 0.7);
-        }
+    .login-container, .registration-container, .forgot-password-container {
+        width: 500px;
+        box-shadow: rgba(255, 255, 255, 0.24) 0px 3px 8px;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 30px;
+        color: rgba(255, 255, 255, 0.7);
+    }
 
-        .title-container > h1 {
-            font-size: 90px !important;
-            color: rgb(255, 255, 255);
-            text-shadow: 2px 4px 2px rgba(255, 255, 255, 0.7);
-        }
+    .title-container > h1 {
+        font-size: 90px !important;
+        color: rgb(255, 255, 255);
+        text-shadow: 2px 4px 2px rgba(255, 255, 255, 0.7);
+    }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
 
-        .form-group label {
-            margin-bottom: 5px; /* Space between label and input */
-            color: white; /* Make label text white */
-        }
+    .form-group label {
+        margin-bottom: 5px; /* Space between label and input */
+        color: white; /* Make label text white */
+    }
 
-        .form-control {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white; /* Set input text color to white */
-        }
+    .form-control {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white; /* Set input text color to white */
+        transition: color 0.3s; /* Smooth transition for color change */
+    }
 
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6); /* Placeholder text color */
-        }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6); /* Placeholder text color */
+    }
 
-        .form-control:focus {
-            border-color: #007bff; /* Change border color on focus */
-            background-color: rgba(255, 255, 255, 0.2);
-        }
+    .form-control:focus {
+        border-color: #007bff; /* Change border color on focus */
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #e0e0e0; /* Darker text color when focused */
+    }
 
-        .form-check {
-            display: flex;
-            align-items: center; /* Center checkbox and label vertically */
-            margin-bottom: 15px; /* Space below the checkbox */
-        }
+    .form-check {
+        display: flex;
+        align-items: center; /* Center checkbox and label vertically */
+        margin-bottom: 15px; /* Space below the checkbox */
+    }
 
-        .form-check-input {
-            margin-right: 8px; /* Space between checkbox and label */
-            cursor: pointer; /* Change cursor on hover */
-        }
+    .form-check-input {
+        margin-right: 8px; /* Space between checkbox and label */
+        cursor: pointer; /* Change cursor on hover */
+    }
 
-        .show-form {
-            cursor: pointer;
-            margin-top: 10px;
-            color: #007bff;
-            text-decoration: underline;
-        }
+    .show-form {
+        cursor: pointer;
+        margin-top: 10px;
+        color: #007bff;
+        text-decoration: underline;
+    }
 
-        .show-form:hover {
-            text-decoration: none;
-        }
+    .show-form:hover {
+        text-decoration: none;
+    }
 
-        button.btn {
-            background-color: #007bff; /* Button color */
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    button.btn {
+        background-color: #007bff; /* Button color */
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-        button.btn:hover {
-            background-color: #0056b3; /* Darker on hover */
-        }
+    button.btn:hover {
+        background-color: #0056b3; /* Darker on hover */
+    }
 
-        .text-center {
-            text-align: center;
-            margin-bottom: 20px; /* Space below headings */
-        }
+    .text-center {
+        text-align: center;
+        margin-bottom: 20px; /* Space below headings */
+    }
 
-        .checkbox-label-group {
-            display: flex;              
-            margin-bottom: 15px;         /* Space below the checkbox */
-        }
+    .checkbox-label-group {
+        display: flex;              
+        align-items: center; /* Aligns checkbox and label vertically */
+        margin-bottom: 15px; /* Space below the checkbox */
+    }
 
-        .checkbox-label-group .form-check-input {
-            margin-right: 8px;           /* Space between checkbox and label */
-            cursor: pointer;             /* Change cursor on hover */
-            transform: scale(1.2);       /* Optionally scale the checkbox for better visibility */
-        }
+    .checkbox-label-group .form-check-input {
+        margin: 0 8px 0 0; /* Remove margin below and set right margin */
+        cursor: pointer; /* Change cursor on hover */
+        transform: scale(1.2); /* Optionally scale the checkbox for better visibility */
+    }
 
-        .checkbox-label-group .form-check-label {
-            color: white;                /* Make label text white */
-        }
-
-    </style>
+    .checkbox-label-group .form-check-label {
+        color: white; /* Make label text white */
+    }
+</style>
 
 </head>
 <body>
