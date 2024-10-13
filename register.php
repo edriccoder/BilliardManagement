@@ -64,6 +64,10 @@
             color: white; /* Set input text color to white */
         }
 
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6); /* Placeholder text color */
+        }
+
         .form-control:focus {
             border-color: #007bff; /* Change border color on focus */
             background-color: rgba(255, 255, 255, 0.2);
@@ -202,7 +206,6 @@
                     <input type="checkbox" class="form-check-input" id="rememberCheck">
                     <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
-
                 <div class="form-group">
                     <small class="show-form" onclick="showForm('forgot')">Forgot Password?</small>
                     <small class="show-form" onclick="showForm('registration')">No Account? Register Here.</small>
