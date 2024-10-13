@@ -218,6 +218,10 @@
          <!-- End Navbar -->        
          <!-- Page Heading -->
          <!-- Content Row -->
+         <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Manage Users and Cashiers</h1>
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addCashier'>Add Cashier Account</button>
+         </div>
          <?php
             include 'conn.php';
 
