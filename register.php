@@ -137,9 +137,10 @@
                     <div class="form-group form-check col-6">
                         <input type="checkbox" class="form-check-input" id="rememberCheck">
                         <label class="form-check-label" for="rememberCheck">Remember Password</label>
+                        
+                        <small class="show-form col-6 text-center pl-4" onclick="showForm('forgot')">Forgot Password?</small>
+                        <small class="show-form col-6 text-center pl-4" onclick="showForm('registration')">No Account? Register Here.</small>
                     </div>
-                    <small class="show-form col-6 text-center pl-4" onclick="showForm('forgot')">Forgot Password?</small>
-                    <small class="show-form col-6 text-center pl-4" onclick="showForm('registration')">No Account? Register Here.</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary form-control">Login</button>
