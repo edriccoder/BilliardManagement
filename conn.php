@@ -2,7 +2,7 @@
 
 $servername = "localhost";
 $username = "u330488542_billiard";
-$password = "billiard_123";
+$password = "billiard123";
 $db = "u330488542_billiard";
 
 try {
