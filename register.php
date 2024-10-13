@@ -46,18 +46,31 @@
             text-shadow: 2px 4px 2px rgba(200,200,200,0.6);
         }
 
-        .show-form {
-            color: rgb(100, 100, 200);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .show-form:hover {
-            color: rgb(100, 100, 255);
-        }
 
         .form-group.float-right {
             margin-top: 15px; /* Add spacing between elements */
+        }
+
+            .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Aligns the checkbox and labels to the left */
+            margin-bottom: 20px; /* Adds space below the form group */
+        }
+
+        .form-check-label {
+            margin-left: 8px; /* Adds some space between checkbox and label */
+        }
+
+        .show-form {
+            cursor: pointer; /* Changes cursor to pointer for better UX */
+            margin-top: 10px; /* Adds space above each link */
+            color: #007bff; /* Makes the text look like a link */
+            text-decoration: underline; /* Underlines the text */
+        }
+
+        .show-form:hover {
+            text-decoration: none; /* Removes underline on hover */
         }
     </style>
 </head>
