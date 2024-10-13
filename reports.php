@@ -398,17 +398,6 @@ foreach ($users as $user) {
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
-         function openImageModal(imageUrl) {
-            $('#imageModalContent').attr('src', imageUrl);
-            $('#imageModal').modal('show');
-         }
-         function generateReport(){
-            window.location.href = 'generate_report.php'
-         }
-
-        function generateReportWeek(){ 
-         window.location.href = 'generate_reportWeekly.php'
-        }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
