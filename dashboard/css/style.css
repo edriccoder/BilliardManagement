@@ -120,6 +120,7 @@ h6,
 .navbar .navbar-nav .nav-link.active {
     background-color: #fbc02d; /* Darker active link color */
     color: #333;
+    margin-right: 15px;
 }
 
 
