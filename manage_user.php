@@ -618,7 +618,7 @@
 
                $.ajax({
                      type: 'POST',
-                     url: 'your_backend_script.php', // Update with your backend script URL
+                     url: 'addCashier.php', // Update with your backend script URL
                      data: formData,
                      success: function(response) {
                         // Handle success (e.g., show a success message, refresh user list, etc.)
