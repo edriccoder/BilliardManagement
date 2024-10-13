@@ -110,8 +110,7 @@
         }
 
         .checkbox-label-group {
-            display: flex;                /* Use flexbox for alignment */
-            align-items: center;         /* Center vertically */
+            display: flex;                /* Use flexbox for alignment */      
             margin-bottom: 15px;         /* Space below the checkbox */
         }
 
@@ -198,7 +197,7 @@
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <div class="form-group checkbox-label-group">
+                <div class="form-group">
                     <input type="checkbox" class="form-check-input" id="rememberCheck">
                     <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
