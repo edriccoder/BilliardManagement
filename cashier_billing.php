@@ -274,7 +274,7 @@ foreach ($users as $user) {
                                 if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
                                     echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
                                 } else {
-                                    echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_invoice.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Invoice</a>';
+                                    echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_invoice.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Reciept</a>';
                                 }
 
                                 echo '</div>';
@@ -449,6 +449,7 @@ foreach ($users as $user) {
         function generateReportWeek(){ 
          window.location.href = 'generate_reportWeekly.php'
         }
+        const userData = <?php echo json_encode($userMap); ?>;
 
         function openEditModal(booking) {
             document.getElementById('bookingId').value = booking.booking_id;
