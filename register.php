@@ -53,6 +53,7 @@
 
     .form-group label {
         margin-bottom: 5px; /* Space between label and input */
+        margin-left: 20px;
         color: white; /* Make label text white */
     }
 
@@ -120,7 +121,6 @@
     }
 
     .checkbox-label-group .form-check-input {
-        margin-right: 10px; /* Space between checkbox and label */
         cursor: pointer; /* Change cursor on hover */
     }
 
