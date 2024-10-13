@@ -228,7 +228,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
                             echo '</div>';
                             echo '<div class="ms-auto text-end">';
-                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["report_id"], ENT_QUOTES, 'UTF-8') . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8') . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
                             echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report), ENT_QUOTES, 'UTF-8') . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
                             echo '</div>';
                             echo '</li>';
