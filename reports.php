@@ -363,9 +363,6 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                     <div class="modal-body">
                         <p>Select the type of report you want to create:</p>
                         <div class="dropdown mb-3">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Create Report
-                            </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
