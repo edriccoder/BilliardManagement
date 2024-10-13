@@ -2,9 +2,13 @@
 session_start();
 
 if (isset($_SESSION['username']) && isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
-    $username = $_SESSION['username'];
-    $user_id = $_SESSION['user_id'];
-    $role = $_SESSION['role'];
+    $username = htmlspecialchars($_SESSION['username']);
+    $user_id = htmlspecialchars($_SESSION['user_id']);
+    $role = htmlspecialchars($_SESSION['role']);
+
+    // Display the username in the navbar
+    echo '<img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">';
+    echo '<span class="ms-1 font-weight-bold text-white">Log in as ' . $username . '</span>';
 
     // Based on the user role, redirect to the appropriate dashboard
     if ($role == 'admin') {

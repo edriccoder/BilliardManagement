@@ -8,6 +8,9 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     
 }
 
+$username = htmlspecialchars($_SESSION['username']);
+$user_id = htmlspecialchars($_SESSION['user_id']);
+
 function getCount($conn, $sql) {
    $stmt = $conn->prepare($sql);
    $stmt->execute();
