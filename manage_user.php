@@ -542,6 +542,44 @@
          </div>
       </div>
 
+      <!-- Modal for Adding Cashier Account -->
+      <div class="modal fade" id="addCashier" tabindex="-1" role="dialog" aria-labelledby="addCashierLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addCashierLabel">Add Cashier Account</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form id="addCashierForm">
+                        <div class="form-group">
+                              <label for="cashierName">Name</label>
+                              <input type="text" class="form-control" id="cashierName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                              <label for="cashierEmail">Email</label>
+                              <input type="email" class="form-control" id="cashierEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                              <label for="cashierUsername">Username</label>
+                              <input type="text" class="form-control" id="cashierUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                              <label for="cashierPassword">Password</label>
+                              <input type="password" class="form-control" id="cashierPassword" name="password" required>
+                        </div>
+                        <input type="hidden" name="role" value="cashier">
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     <button type="submit" class="btn btn-primary" id="saveCashierBtn">Save Account</button>
+                  </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -571,6 +609,28 @@
                         $('#players-list').html(response);
                      }
                   });
+            });
+
+            $('#saveCashierBtn').click(function(event) {
+               event.preventDefault(); // Prevent the default form submission
+
+               var formData = $('#addCashierForm').serialize(); // Serialize the form data
+
+               $.ajax({
+                     type: 'POST',
+                     url: 'your_backend_script.php', // Update with your backend script URL
+                     data: formData,
+                     success: function(response) {
+                        // Handle success (e.g., show a success message, refresh user list, etc.)
+                        alert('Cashier account added successfully!');
+                        $('#addCashier').modal('hide'); // Hide the modal
+                        // Optionally, refresh the user list or perform other actions
+                     },
+                     error: function(xhr, status, error) {
+                        // Handle error
+                        alert('An error occurred: ' + error);
+                     }
+               });
             });
          });
       </script>
