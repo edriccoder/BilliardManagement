@@ -1,16 +1,16 @@
 <?php
 include 'conn.php'; 
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $description = "";
 $datetime = "";
 $photoPath = "";
 $reportType = "";
 
-// Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Check which report type is being submitted
+// Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
 
     // Item Damage Report
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
             $fileName = basename($_FILES['item_damage_photo']['name']);
             $targetFilePath = $targetDir . $fileName;
 
-            // Validate file type
+            // Validate file type (only images)
             $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
@@ -41,21 +41,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
                 exit();
             }
         }
-    } 
-    // Incident Report
+    }
+
+    // Incident Report (Ensure fields are correctly captured)
     elseif (isset($_POST['incident_report_name'])) {
         $description = trim($_POST['incident_report_description']);
         $datetime = $_POST['incident_report_datetime'];
         $name = trim($_POST['incident_report_name']);
         $reportType = 'incident_report';
 
-        // Debugging: Check if the fields are populated correctly
+        // Debugging: Display captured input values
         echo "<script>console.log('Incident Report Name: $name');</script>";
         echo "<script>console.log('Incident Report Description: $description');</script>";
         echo "<script>console.log('Incident Report Datetime: $datetime');</script>";
     }
 
-    // Prepare the SQL statement
+    // Prepare SQL statement for the correct report type
     if ($reportType === 'item_damage') {
         $sql = $conn->prepare("INSERT INTO reports (type, description, datetime, photo) VALUES (?, ?, ?, ?)");
         $sql->bindValue(1, $reportType);
@@ -70,13 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
         $sql->bindValue(4, $name);
     }
 
-    // Execute the query
+    // Execute the SQL query and handle potential errors
     try {
         $sql->execute();
         echo "<script>alert('Report submitted successfully.'); window.location.href='reports.php';</script>";
     } catch (PDOException $e) {
+        // Log the error and display an alert to the user
+        error_log($e->getMessage());
         echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href='reports.php';</script>";
-        error_log($e->getMessage()); // Log the error for server-side debugging
     }
 
     // Close the connection

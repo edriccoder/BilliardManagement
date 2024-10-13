@@ -361,6 +361,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Form submission to the same file -->
                         <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
@@ -377,26 +378,38 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             <div id="itemDamageSection" class="report-section" style="display: none;">
                                 <h6>Item Damage Report</h6>
                                 <label for="item_damage_description" class="form-label">Description of the damage:</label>
-                                <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
+                                </div>
                                 <label for="item_damage_datetime" class="form-label">Date & Time:</label>
-                                <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
+                                </div>
                                 <label for="item_damage_photo" class="form-label">Upload Photo:</label>
-                                <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
+                                </div>
                             </div>
 
                             <!-- Incident Report Section -->
                             <div id="incidentReportSection" class="report-section" style="display: none;">
                                 <h6>Incident Report</h6>
                                 <label for="incident_report_name" class="form-label">Name of the person to report:</label>
-                                <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
+                                </div>
                                 <label for="incident_report_description" class="form-label">Description of the incident:</label>
-                                <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
+                                </div>
                                 <label for="incident_report_datetime" class="form-label">Date & Time:</label>
-                                <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
+                                </div>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
+                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button> <!-- Correct name attribute -->
                             </div>
                         </form>
                     </div>
@@ -409,9 +422,11 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                 const itemDamageSection = document.getElementById('itemDamageSection');
                 const incidentReportSection = document.getElementById('incidentReportSection');
 
+                // Hide both sections initially
                 itemDamageSection.style.display = 'none';
                 incidentReportSection.style.display = 'none';
 
+                // Show the selected section
                 if (reportType === 'item_damage') {
                     itemDamageSection.style.display = 'block';
                 } else if (reportType === 'incident_report') {
