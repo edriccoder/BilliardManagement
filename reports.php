@@ -11,6 +11,11 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
+$sql = "SELECT report_id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 ?>
 <!DOCTYPE html>
@@ -202,45 +207,32 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
                     <?php   
-                        if (!empty($bookings)) {
-                            foreach ($bookings as $booking) {
+                        if (!empty($reports)) {
+                            foreach ($reports as $report) {
                                 echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                                echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
                                 echo '<div class="d-flex flex-column">';
-                                echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                                echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Number Of matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_matches"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
-                                if (!empty($booking["proof_of_payment"])) {
-                                    echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                    echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                echo '<h6 class="mb-3 text-sm">Type: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["type"]) . '</span></h6>';
+                                echo '<span class="mb-2 text-xs">Description: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["description"]) . '</span></span>';
+                                echo '<span class="mb-2 text-xs">Date & Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["datetime"]) . '</span></span>';
+                                if (!empty($report["photo"])) {
+                                    echo '<span class="mb-2 text-xs">Photo: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($report["photo"]) . '\'); return false;">';
+                                    echo '<img src="' . htmlspecialchars($report["photo"]) . '" alt="Report Photo" style="max-width: 100px; max-height: 100px;">';
                                     echo '</a>';
                                     echo '</span></span>';
                                 }
-                                echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
+                                echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"]) . '</span></span>';
                                 echo '</div>';
                                 echo '<div class="ms-auto text-end">';
-                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
-                                echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-
-                                if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
-                                    echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
-                                } else {
-                                    echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_invoice.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Invoice</a>';
-                                }
-
+                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["report_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report)) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
                                 echo '</div>';
                                 echo '</li>';
                             }
                         } else {
                             echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
                             echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                            echo '<h6 class="mb-3 text-sm">No reports found.</h6>';
                             echo '</div>';
                             echo '</li>';
                         }
