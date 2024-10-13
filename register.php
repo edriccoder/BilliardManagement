@@ -36,7 +36,7 @@
             border-radius: 10px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 30px;
-            color: rgb(255, 255, 255);
+            color: rgba(255, 255, 255, 0.7)
         }
 
         .title-container > h1 {
