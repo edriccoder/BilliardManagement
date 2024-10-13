@@ -116,15 +116,12 @@
     }
 
     .checkbox-label-group {
-        display: flex;              
-        align-items: center; /* Aligns checkbox and label vertically */
-        margin-bottom: 15px; /* Space below the checkbox */
+        display: flex;
     }
 
     .checkbox-label-group .form-check-input {
-        margin: 0 8px 0 0; /* Remove margin below and set right margin */
+        margin-right: 10px; /* Space between checkbox and label */
         cursor: pointer; /* Change cursor on hover */
-        transform: scale(1.2); /* Optionally scale the checkbox for better visibility */
     }
 
     .checkbox-label-group .form-check-label {
