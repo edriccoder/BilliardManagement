@@ -363,6 +363,10 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                     <div class="modal-body">
                         <p>Select the type of report you want to create:</p>
                         <div class="dropdown mb-3">
+                            <!-- Dropdown Button -->
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Create Report
+                            </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
@@ -417,6 +421,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
             }
         }
     </script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
