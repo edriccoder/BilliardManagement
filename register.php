@@ -18,11 +18,10 @@
             background-image: url("img/background.jpg");
             background-size: cover;
             background-repeat: no-repeat;
-            background-attachment: fixed;        
-            overflow: hidden;
+            background-attachment: fixed;
             height: 100vh;
         }
-        
+
         .main {
             display: flex;
             justify-content: center;
@@ -43,34 +42,69 @@
         .title-container > h1 {
             font-size: 90px !important;
             color: rgb(255, 255, 255);
-            text-shadow: 2px 4px 2px rgba(200,200,200,0.6);
+            text-shadow: 2px 4px 2px rgba(200, 200, 200, 0.6);
         }
 
-
-        .form-group.float-right {
-            margin-top: 15px; /* Add spacing between elements */
-        }
-
-            .form-group {
+        .form-group {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Aligns the checkbox and labels to the left */
-            margin-bottom: 20px; /* Adds space below the form group */
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            margin-bottom: 5px; /* Space between label and input */
+        }
+
+        .form-control {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* Change border color on focus */
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Space below the checkbox */
         }
 
         .form-check-label {
-            margin-left: 8px; /* Adds some space between checkbox and label */
+            margin-left: 8px; /* Space between checkbox and label */
         }
 
         .show-form {
-            cursor: pointer; /* Changes cursor to pointer for better UX */
-            margin-top: 10px; /* Adds space above each link */
-            color: #007bff; /* Makes the text look like a link */
-            text-decoration: underline; /* Underlines the text */
+            cursor: pointer;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: underline;
         }
 
         .show-form:hover {
-            text-decoration: none; /* Removes underline on hover */
+            text-decoration: none;
+        }
+
+        button.btn {
+            background-color: #007bff; /* Button color */
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button.btn:hover {
+            background-color: #0056b3; /* Darker on hover */
+        }
+
+        .text-center {
+            text-align: center;
+            margin-bottom: 20px; /* Space below headings */
         }
     </style>
 </head>
@@ -83,7 +117,7 @@
     </div>
 
     <div class="main-container col-4">
-        <!-- Registration Area -->
+        <!-- Registration Form -->
         <div class="registration-container" id="registrationForm">
             <h2 class="text-center">Register Your Account!</h2>
             <p class="text-center">Please enter your personal details.</p>
@@ -108,10 +142,10 @@
                     <label for="confirmPassword">Confirm Password:</label>
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
                 </div>
-                <div class="form-group float-right">
+                <div class="form-group">
                     <small class="show-form" onclick="showForm('login')">Already have an account? Login Here.</small>
                 </div>
-                <button type="submit" class="btn btn-primary form-control">Register</button>
+                <button type="submit" class="btn form-control">Register</button>
             </form>
         </div>
 
@@ -124,11 +158,11 @@
                     <label for="forgotEmail">Email:</label>
                     <input type="email" class="form-control" id="forgotEmail" name="email" required>
                 </div>
-                <div class="form-group float-right">
+                <div class="form-group">
                     <small class="show-form" onclick="showForm('login')">Remembered your password? Login Here.</small>
                     <small class="show-form" onclick="showForm('registration')">No Account? Register Here.</small>
                 </div>
-                <button type="submit" class="btn btn-primary form-control">Send OTP</button>
+                <button type="submit" class="btn form-control">Send OTP</button>
             </form>
         </div>
 
@@ -145,18 +179,15 @@
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                
-                <div class="row m-auto">
-                    <div class="form-group form-check col-6">
-                        <input type="checkbox" class="form-check-input" id="rememberCheck">
-                        <label class="form-check-label" for="rememberCheck">Remember Password</label>
-                        
-                        <small class="show-form col-6 text-center pl-4" onclick="showForm('forgot')">Forgot Password?</small>
-                        <small class="show-form col-6 text-center pl-4" onclick="showForm('registration')">No Account? Register Here.</small>
-                    </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberCheck">
+                    <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
-
-                <button type="submit" class="btn btn-primary form-control">Login</button>
+                <div class="form-group">
+                    <small class="show-form" onclick="showForm('forgot')">Forgot Password?</small>
+                    <small class="show-form" onclick="showForm('registration')">No Account? Register Here.</small>
+                </div>
+                <button type="submit" class="btn form-control">Login</button>
             </form>
         </div>
     </div>
