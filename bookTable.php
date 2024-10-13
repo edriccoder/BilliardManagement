@@ -2,6 +2,8 @@
 include 'conn.php';
 session_start(); // Start the session at the top
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tableId = $_POST['table_id'];
     $userId = $_POST['user_id'];
@@ -29,9 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $isBooked = $stmtCheck->fetchColumn();
 
         if ($isBooked) {
-            $_SESSION['error'] = 'The selected table is already booked during this time. Please choose a different time.';
-            header("Location: user_table.php");
-            exit();
+            $error = 'The selected table is already booked during this time. Please choose a different time.';
         } else {
             // Proceed with booking
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, ?, ?, NULL, 'Pending')";
@@ -42,11 +42,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Other booking type logic
 }
 
-if (isset($_SESSION['error'])) {
-    echo "<script>alert('" . $_SESSION['error'] . "');</script>";
-    unset($_SESSION['error']); // Clear error after showing
+if (!empty($error)) {
+    echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '" . $error . "',
+            }).then(function() {
+                window.location = 'user_table.php';
+            });
+        }
+    </script>";
+} else {
+    header("Location: user_table.php");
+    exit();
 }
-header("Location: user_table.php");
-exit();
-
 ?>
