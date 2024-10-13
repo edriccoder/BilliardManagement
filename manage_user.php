@@ -612,24 +612,26 @@
             });
 
             $('#saveCashierBtn').click(function(event) {
-               event.preventDefault(); // Prevent the default form submission
+               event.preventDefault(); // Prevent the default button action
 
-               var formData = $('#addCashierForm').serialize(); // Serialize the form data
+               // Serialize the form data
+               var formData = $('#addCashierForm').serialize();
 
+               // Make AJAX request
                $.ajax({
-                     type: 'POST',
-                     url: 'addCashier.php', // Update with your backend script URL
-                     data: formData,
-                     success: function(response) {
-                        // Handle success (e.g., show a success message, refresh user list, etc.)
-                        alert('Cashier account added successfully!');
-                        $('#addCashier').modal('hide'); // Hide the modal
-                        // Optionally, refresh the user list or perform other actions
-                     },
-                     error: function(xhr, status, error) {
-                        // Handle error
-                        alert('An error occurred: ' + error);
-                     }
+                  type: 'POST',
+                  url: 'addCashier.php', // Ensure this points to your correct backend script
+                  data: formData,
+                  success: function(response) {
+                     // Handle success
+                     alert(response); // Alert the response from the server
+                     $('#addCashier').modal('hide'); // Hide the modal
+                     // Optionally, you could refresh the user list or do other actions here
+                  },
+                  error: function(xhr, status, error) {
+                     // Handle error
+                     alert('An error occurred: ' + error);
+                  }
                });
             });
          });
