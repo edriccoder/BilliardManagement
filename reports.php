@@ -357,7 +357,6 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Form submission to the same file -->
                         <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
@@ -405,7 +404,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button> <!-- Correct name attribute -->
+                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
                             </div>
                         </form>
                     </div>

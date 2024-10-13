@@ -9,6 +9,7 @@ $description = "";
 $datetime = "";
 $photoPath = "";
 $reportType = "";
+$name = ""; // Add this to capture the name for incident reports
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
@@ -43,17 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
         }
     }
 
-    // Incident Report (Ensure fields are correctly captured)
+    // Incident Report
     elseif (isset($_POST['incident_report_name'])) {
         $description = trim($_POST['incident_report_description']);
         $datetime = $_POST['incident_report_datetime'];
         $name = trim($_POST['incident_report_name']);
         $reportType = 'incident_report';
-
-        // Debugging: Display captured input values
-        echo "<script>console.log('Incident Report Name: $name');</script>";
-        echo "<script>console.log('Incident Report Description: $description');</script>";
-        echo "<script>console.log('Incident Report Datetime: $datetime');</script>";
     }
 
     // Prepare SQL statement for the correct report type
