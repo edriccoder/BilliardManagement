@@ -408,7 +408,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Submit Report</button>
+                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
                             </div>
                         </form>
                     </div>
