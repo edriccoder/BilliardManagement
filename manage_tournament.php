@@ -460,6 +460,14 @@
                      <option value="completed">Completed</option>
                      </select>
                   </div>
+                  <label for="qualification">Qualification</label>
+                  <div class="input-group input-group-outline my-3">
+                     <select class="form-control" id="qualification" name="qualification" required>
+                        <option value="all">All</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="pro">Pro</option>
+                     </select>
+                  </div>
                   <button type="submit" class="btn btn-primary">Add Tournament</button>
                </form>
                </div>

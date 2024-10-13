@@ -9,14 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $max_player = $_POST['max_player'];
     $prize = $_POST['prize'];
     $fee = $_POST['fee'];
+    $qualification = $_POST['qualification']; // New qualification field
 
     // Begin transaction
     $conn->beginTransaction();
 
     try {
         // Insert into tournaments table
-        $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at, prize, fee) 
-                VALUES (:name, :start_date, :end_date, :status, :max_player, NOW(), :prize, :fee)";
+        $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at, prize, fee, qualification) 
+                VALUES (:name, :start_date, :end_date, :status, :max_player, NOW(), :prize, :fee, :qualification)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':start_date', $start_date);
@@ -25,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':max_player', $max_player);
         $stmt->bindParam(':prize', $prize);
         $stmt->bindParam(':fee', $fee);
+        $stmt->bindParam(':qualification', $qualification); // Bind qualification
         $stmt->execute();
 
         // Get the last inserted tournament_id
@@ -32,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insert into announcements table
         $title = "New Tournament: " . $name;  // Announcement title
-        $body = "The tournament " . $name . " is starting on " . $start_date . " and will end on " . $end_date . ". Max players: " . $max_player;
+        $body = "The tournament " . $name . " is starting on " . $start_date . " and will end on " . $end_date . ". Max players: " . $max_player . ". Qualification: " . ucfirst($qualification); // Include qualification
         $expires_at = $end_date;  // You can set when this announcement will expire (e.g., at the end of the tournament)
 
         $sqlAnnouncement = "INSERT INTO announcements (title, body, tournament_id, created_at, expires_at) 
