@@ -197,7 +197,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Reports</h6>
-                    <button class='btn btn-primary editBtn' data-bs-toggle="modal" data-bs-target="#reportModal">Create Report</button>
+                    <button class='btn btn-primary editBtn' data-toggle="modal" data-target="#reportModal">Create Report</button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
@@ -352,50 +352,50 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
          </div>
       </div>
 
-    <!-- Modal Structure -->
-    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="reportModalLabel">Choose Report Type</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Select the type of report you want to create:</p>
-                    <div class="dropdown mb-3">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            Create Report
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
-                        </ul>
+        <!-- Modal Structure -->
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">Choose Report Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    
-                    <!-- Item Damage Section -->
-                    <div id="itemDamageSection" class="report-section" style="display: none;">
-                        <h6>Item Damage Report</h6>
-                        <img src="path/to/your/image.jpg" alt="Item Damage" class="img-fluid mb-2">
-                        <p>Description of the damage:</p>
-                        <textarea class="form-control" rows="3" placeholder="Describe the damage..."></textarea>
-                        <p>Date & Time:</p>
-                        <input type="datetime-local" class="form-control">
-                    </div>
+                    <div class="modal-body">
+                        <p>Select the type of report you want to create:</p>
+                        <div class="dropdown mb-3">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Create Report
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Item Damage Section -->
+                        <div id="itemDamageSection" class="report-section" style="display: none;">
+                            <h6>Item Damage Report</h6>
+                            <img src="path/to/your/image.jpg" alt="Item Damage" class="img-fluid mb-2">
+                            <p>Description of the damage:</p>
+                            <textarea class="form-control" rows="3" placeholder="Describe the damage..."></textarea>
+                            <p>Date & Time:</p>
+                            <input type="datetime-local" class="form-control">
+                        </div>
 
-                    <!-- Incident Report Section -->
-                    <div id="incidentReportSection" class="report-section" style="display: none;">
-                        <h6>Incident Report</h6>
-                        <p>Name of the person to report:</p>
-                        <input type="text" class="form-control" placeholder="Name">
-                        <p>Description of the incident:</p>
-                        <textarea class="form-control" rows="3" placeholder="Describe the incident..."></textarea>
-                        <p>Date & Time:</p>
-                        <input type="datetime-local" class="form-control">
+                        <!-- Incident Report Section -->
+                        <div id="incidentReportSection" class="report-section" style="display: none;">
+                            <h6>Incident Report</h6>
+                            <p>Name of the person to report:</p>
+                            <input type="text" class="form-control" placeholder="Name">
+                            <p>Description of the incident:</p>
+                            <textarea class="form-control" rows="3" placeholder="Describe the incident..."></textarea>
+                            <p>Date & Time:</p>
+                            <input type="datetime-local" class="form-control">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
     <script>
