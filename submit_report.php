@@ -6,8 +6,10 @@ $datetime = "";
 $photoPath = "";
 $reportType = "";
 
-// Check which report type is being submitted
+// Check which report type is being submitted (fixing name mismatch)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
+
+    // Check if it's an item damage report
     if (isset($_POST['item_damage_description'])) {
         $description = trim($_POST['item_damage_description']);
         $datetime = $_POST['item_damage_datetime'];
@@ -36,8 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
                 exit();
             }
         }
-
-    } elseif (isset($_POST['incident_report_name'])) {
+    } 
+    // Check if it's an incident report
+    elseif (isset($_POST['incident_report_name'])) {
         $description = trim($_POST['incident_report_description']);
         $datetime = $_POST['incident_report_datetime'];
         $name = trim($_POST['incident_report_name']);

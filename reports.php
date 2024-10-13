@@ -361,7 +361,8 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <!-- Form submission to the same file -->
+                        <form id="reportForm" action="" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                             <p>Select the type of report you want to create:</p>
                             <div class="dropdown mb-3">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -372,7 +373,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                                     <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
                                 </ul>
                             </div>
-                            
+
                             <!-- Item Damage Section -->
                             <div id="itemDamageSection" class="report-section" style="display: none;">
                                 <h6>Item Damage Report</h6>
@@ -408,7 +409,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
+                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button> <!-- Correct name attribute -->
                             </div>
                         </form>
                     </div>
