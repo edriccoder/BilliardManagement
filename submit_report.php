@@ -48,6 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
         $datetime = $_POST['incident_report_datetime'];
         $name = trim($_POST['incident_report_name']);
         $reportType = 'incident_report';
+
+        // Debugging: Check if the fields are populated correctly
+        echo "<script>console.log('Incident Report Name: $name');</script>";
+        echo "<script>console.log('Incident Report Description: $description');</script>";
+        echo "<script>console.log('Incident Report Datetime: $datetime');</script>";
     }
 
     // Prepare the SQL statement
@@ -71,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
         echo "<script>alert('Report submitted successfully.'); window.location.href='reports.php';</script>";
     } catch (PDOException $e) {
         echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href='reports.php';</script>";
+        error_log($e->getMessage()); // Log the error for server-side debugging
     }
 
     // Close the connection
