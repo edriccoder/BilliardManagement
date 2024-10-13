@@ -197,7 +197,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Reports</h6>
-               <button class='btn btn-primary editBtn' onclick='createReport()'>Create Report/button>
+               <button class='btn btn-primary editBtn' onclick='createReport()'>Create Report</button>
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
