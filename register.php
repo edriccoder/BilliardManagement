@@ -122,6 +122,7 @@
     }
 
     .checkbox-label-group .form-check-input {
+        margin-left: 0px;
         cursor: pointer; /* Change cursor on hover */
     }
 
