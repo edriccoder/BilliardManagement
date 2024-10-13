@@ -31,17 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $isBooked = $stmtCheck->fetchColumn();
 
         if ($isBooked) {
-            $error = 'The selected table is already booked during this time. Please choose a different time.';
-            $_SESSION['error'] = $error; // Store error in session
-            header("Location: user_table.php?error=1"); // Redirect with error flag
-            exit();
+            echo "
+            <script>
+                alert(The selected table is already booked during this time. Please choose a different time.');
+                window.location.href = 'user_table.php';
+            </script>
+            ";
         } else {
             // Proceed with booking
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, ?, ?, NULL, 'Pending')";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
-            $_SESSION['success'] = "Booking successful!";
-            header("Location: user_table.php"); // Redirect on success
+            echo "
+            <script>
+                alert(Booking Successful');
+                window.location.href = 'user_table.php';
+            </script>
+            ";
             exit();
         }
     }
