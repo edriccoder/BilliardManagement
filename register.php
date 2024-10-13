@@ -198,7 +198,7 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <div class="form-group">
-                    <input type="checkbox" class="form-check-input" id="rememberCheck">
+                    <input type="checkbox" class="form-control" id="rememberCheck">
                     <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
                 <div class="form-group">
