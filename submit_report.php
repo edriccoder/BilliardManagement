@@ -27,11 +27,11 @@ if (isset($_POST['item_damage_description'])) {
             if (move_uploaded_file($_FILES['item_damage_photo']['tmp_name'], $targetFilePath)) {
                 $photoPath = $targetFilePath;
             } else {
-                echo "Error uploading file.";
+                echo "<script>alert('Error uploading file.'); window.location.href='reports.php';</script>";
                 exit();
             }
         } else {
-            echo "Invalid file type. Only JPG, JPEG, PNG & GIF files are allowed.";
+            echo "<script>alert('Invalid file type. Only JPG, JPEG, PNG & GIF files are allowed.'); window.location.href='reports.php';</script>";
             exit();
         }
     }
@@ -61,9 +61,9 @@ if ($reportType === 'item_damage') {
 // Execute the query
 try {
     $sql->execute();
-    echo "Report submitted successfully.";
+    echo "<script>alert('Report submitted successfully.'); window.location.href='reports.php';</script>";
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href='reports.php';</script>";
 }
 
 // Close the connection
