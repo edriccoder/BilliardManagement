@@ -49,12 +49,22 @@ if (!empty($error)) {
                 title: 'Oops...',
                 text: '" . $error . "',
             }).then(function() {
-                window.location = 'user_table.php';
+                window.location = 'user_table.php'; 
             });
         }
     </script>";
 } else {
-    header("Location: user_table.php");
-    exit();
+    // Only redirect if no errors
+    echo "<script>
+        window.onload = function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Booking Confirmed!',
+                text: 'Your booking was successful!',
+            }).then(function() {
+                window.location = 'user_table.php';
+            });
+        }
+    </script>";
 }
 ?>
