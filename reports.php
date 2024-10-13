@@ -376,24 +376,36 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
                             <!-- Item Damage Section -->
                             <div id="itemDamageSection" class="report-section" style="display: none;">
                                 <h6>Item Damage Report</h6>
-                                <img src="path/to/your/image.jpg" alt="Item Damage" class="img-fluid mb-2">
                                 <p>Description of the damage:</p>
-                                <textarea name="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..."></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..."></textarea>
+                                </div>
                                 <p>Date & Time:</p>
-                                <input type="datetime-local" name="item_damage_datetime" class="form-control">
+                                </div>
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="item_damage_datetime" class="form-control">
+                                </div>
                                 <p>Upload Photo:</p>
-                                <input type="file" name="item_damage_photo" class="form-control">
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="file" name="item_damage_photo" class="form-control">
+                                </div>                         
                             </div>
 
                             <!-- Incident Report Section -->
                             <div id="incidentReportSection" class="report-section" style="display: none;">
                                 <h6>Incident Report</h6>
                                 <p>Name of the person to report:</p>
-                                <input type="text" name="incident_report_name" class="form-control" placeholder="Name">
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="text" name="incident_report_name" class="form-control" placeholder="Name">
+                                </div>              
                                 <p>Description of the incident:</p>
-                                <textarea name="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..."></textarea>
+                                <div class="input-group input-group-outline my-3">
+                                    <textarea name="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..."></textarea>
+                                </div>
                                 <p>Date & Time:</p>
-                                <input type="datetime-local" name="incident_report_datetime" class="form-control">
+                                <div class="input-group input-group-outline my-3">
+                                    <input type="datetime-local" name="incident_report_datetime" class="form-control">
+                                </div>                       
                             </div>
 
                             <div class="modal-footer">

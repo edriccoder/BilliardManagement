@@ -554,20 +554,23 @@
                   </div>
                   <form id="addCashierForm" action="addCashier.php" method="POST">
                      <div class="modal-body">
-                        <div class="form-group">
+                        <label for="cashierName">Name</label>
+                        <div class="input-group input-group-outline my-3">
                               <label for="cashierName">Name</label>
                               <input type="text" class="form-control" id="cashierName" name="name" required>
-                        </div>
-                        <div class="form-group">
-                              <label for="cashierEmail">Email</label>
+                        </div>                    
+                        <div class="input-group input-group-outline my-3">
+                              
                               <input type="email" class="form-control" id="cashierEmail" name="email" required>
                         </div>
-                        <div class="form-group">
-                              <label for="cashierUsername">Username</label>
+                        <label for="cashierUsername">Username</label>
+                        <div class="input-group input-group-outline my-3">
+                              
                               <input type="text" class="form-control" id="cashierUsername" name="username" required>
                         </div>
-                        <div class="form-group">
-                              <label for="cashierPassword">Password</label>
+                        <label for="cashierPassword">Password</label>
+                        <div class="input-group input-group-outline my-3">
+                              
                               <input type="password" class="form-control" id="cashierPassword" name="password" required>
                         </div>
                         <input type="hidden" name="role" value="cashier">
