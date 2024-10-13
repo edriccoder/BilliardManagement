@@ -42,7 +42,7 @@
         .title-container > h1 {
             font-size: 90px !important;
             color: rgb(255, 255, 255);
-            text-shadow: 2px 4px 2px rgba(200, 200, 200, 0.6);
+            text-shadow: 2px 4px 2px rgba(255, 255, 255, 0.7);
         }
 
         .form-group {
