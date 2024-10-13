@@ -394,6 +394,42 @@ foreach ($users as $user) {
             </div>
          </div>
       </div>
+      <!-- Edit Modal -->
+      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="manage_booking.php">
+                            <input type="hidden" id="bookingId" name="booking_id">
+                            <input type="hidden" id="userId" name="user_id">
+                            <label for="username">User</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                            </div>
+                            <label>Start Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                            </div>
+                            <label>End Time</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
+                                <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
+                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -411,7 +447,21 @@ foreach ($users as $user) {
          }
 
         function generateReportWeek(){ 
-         window.location.href = 'generate_reportWeekly.php'
+            window.location.href = 'generate_reportWeekly.php'
+            function openEditModal(booking) {
+               document.getElementById('bookingId').value = booking.booking_id;
+               document.getElementById('userId').value = booking.user_id;
+               document.getElementById('username').value = userData[booking.user_id];
+               document.getElementById('editStartTime').value = booking.start_time.replace(' ', 'T');
+               document.getElementById('editEndTime').value = booking.end_time.replace(' ', 'T');
+               document.getElementById('editAmount').value = booking.amount;
+
+               $('#bookingModal').modal('show');
+            }
+            function openImageModal(imageUrl) {
+               $('#imageModalContent').attr('src', imageUrl);
+               $('#imageModal').modal('show');
+            }
         }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
