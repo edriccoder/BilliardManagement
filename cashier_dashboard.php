@@ -2,12 +2,6 @@
 <?php
 // Include database connection
 include 'conn.php';
-if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-   // Redirect to login page if session variables are not set
-   header("Location: index.php");
-   exit();
-   
-}
 
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
