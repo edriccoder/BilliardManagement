@@ -395,7 +395,7 @@ foreach ($users as $user) {
          </div>
       </div>
       <!-- Edit Modal -->
-      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -447,22 +447,23 @@ foreach ($users as $user) {
          }
 
         function generateReportWeek(){ 
-            window.location.href = 'generate_reportWeekly.php'
-            function openEditModal(booking) {
-               document.getElementById('bookingId').value = booking.booking_id;
-               document.getElementById('userId').value = booking.user_id;
-               document.getElementById('username').value = userData[booking.user_id];
-               document.getElementById('editStartTime').value = booking.start_time.replace(' ', 'T');
-               document.getElementById('editEndTime').value = booking.end_time.replace(' ', 'T');
-               document.getElementById('editAmount').value = booking.amount;
-
-               $('#bookingModal').modal('show');
-            }
-            function openImageModal(imageUrl) {
-               $('#imageModalContent').attr('src', imageUrl);
-               $('#imageModal').modal('show');
-            }
+         window.location.href = 'generate_reportWeekly.php'
         }
+
+        function openEditModal(booking) {
+            document.getElementById('bookingId').value = booking.booking_id;
+            document.getElementById('userId').value = booking.user_id;
+            document.getElementById('username').value = userData[booking.user_id];
+            document.getElementById('editStartTime').value = booking.start_time.replace(' ', 'T');
+            document.getElementById('editEndTime').value = booking.end_time.replace(' ', 'T');
+            document.getElementById('editAmount').value = booking.amount;
+
+            $('#bookingModal').modal('show');
+         }
+         function openImageModal(imageUrl) {
+            $('#imageModalContent').attr('src', imageUrl);
+            $('#imageModal').modal('show');
+         }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
