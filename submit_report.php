@@ -7,7 +7,7 @@ $photoPath = "";
 $reportType = "";
 
 // Check which report type is being submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveCashier'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
     if (isset($_POST['item_damage_description'])) {
         $description = trim($_POST['item_damage_description']);
         $datetime = $_POST['item_damage_datetime'];
