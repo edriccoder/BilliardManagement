@@ -16,6 +16,8 @@ function getCount($conn, $sql) {
    $stmt->execute();
    $result = $stmt->fetch(PDO::FETCH_ASSOC);
    return $result ? $result['total'] : 0;
+
+   
 }
 
 // Fetch total users
@@ -35,7 +37,9 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
 
 $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
-                LEFT JOIN transactions t ON b.booking_id = t.booking_id";
+                LEFT JOIN transactions t ON b.booking_id = t.booking_id
+                WHERE b.archive = 0
+                ORDER BY b.booking_id DESC";
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->execute();
 $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
