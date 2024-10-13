@@ -108,6 +108,22 @@
             text-align: center;
             margin-bottom: 20px; /* Space below headings */
         }
+
+        .checkbox-label-group {
+            display: flex;                /* Use flexbox for alignment */
+            align-items: center;         /* Center vertically */
+            margin-bottom: 15px;         /* Space below the checkbox */
+        }
+
+        .checkbox-label-group .form-check-input {
+            margin-right: 8px;           /* Space between checkbox and label */
+            cursor: pointer;             /* Change cursor on hover */
+        }
+
+        .checkbox-label-group .form-check-label {
+            color: white;                /* Make label text white */
+        }
+
     </style>
 
 </head>
@@ -182,11 +198,10 @@
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <div class="form-group form-check">
+                <div class="form-group checkbox-label-group">
                     <input type="checkbox" class="form-check-input" id="rememberCheck">
                     <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
-
                 <div class="form-group">
                     <small class="show-form" onclick="showForm('forgot')">Forgot Password?</small>
                     <small class="show-form" onclick="showForm('registration')">No Account? Register Here.</small>
