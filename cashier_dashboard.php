@@ -3,6 +3,15 @@
 // Include database connection
 include 'conn.php';
 
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
+   // Redirect to login page if session variables are not set
+   header("Location: index.php");
+   exit();
+}
+
+$username = htmlspecialchars($_SESSION['username']);
+$user_id = htmlspecialchars($_SESSION['user_id']);
+
 function getCount($conn, $sql) {
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -60,7 +69,7 @@ $total_bookings = getCount($conn, $sql_bookings);
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
             <img src="./img/admin.png" class="navbar-brand-img h-100" alt="main_logo">
-            <span class="ms-1 font-weight-bold text-white">Cashier</span>
+            <span class="ms-1 font-weight-bold text-white">Log in as <?php echo htmlspecialchars($username); ?></span>
             </a>
          </div>
          <hr class="horizontal light mt-0 mb-2">

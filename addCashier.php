@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveCashier'])) {
                 window.location.href = 'manage_user.php';
             </script>
         ";
-
     } else {
         echo "Error: " . $stmt->errorInfo()[2];
 
