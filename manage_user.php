@@ -552,8 +552,8 @@
                         <span aria-hidden="true">&times;</span>
                      </button>
                   </div>
-                  <div class="modal-body">
-                     <form id="addCashierForm">
+                  <form id="addCashierForm" action="addCashier.php" method="POST">
+                     <div class="modal-body">
                         <div class="form-group">
                               <label for="cashierName">Name</label>
                               <input type="text" class="form-control" id="cashierName" name="name" required>
@@ -571,12 +571,12 @@
                               <input type="password" class="form-control" id="cashierPassword" name="password" required>
                         </div>
                         <input type="hidden" name="role" value="cashier">
-                     </form>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary" id="saveCashierBtn">Save Account</button>
-                  </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="saveCashier">Save Account</button>
+                     </div>
+                  </form>
             </div>
          </div>
       </div>

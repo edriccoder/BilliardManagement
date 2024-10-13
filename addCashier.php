@@ -2,7 +2,7 @@
 // your_backend_script.php
 include 'conn.php'; // Include your database connection file
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveCashier'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $username = $_POST['username'];
