@@ -1,22 +1,21 @@
 <?php
 session_start();
 include 'conn.php';
+
+// Check if user is logged in
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-    // Redirect to login page if session variables are not set
     header("Location: index.php");
     exit();
-    
 }
 
-$username = htmlspecialchars($_SESSION['username']);
-$user_id = htmlspecialchars($_SESSION['user_id']);
+$username = htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
+$user_id = htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8');
 
+// Fetch reports from the database
 $sql = "SELECT report_id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
