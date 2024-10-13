@@ -36,7 +36,7 @@
             border-radius: 10px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 30px;
-            color: rgba(255, 255, 255, 0.7)
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .title-container > h1 {
@@ -53,6 +53,7 @@
 
         .form-group label {
             margin-bottom: 5px; /* Space between label and input */
+            color: white; /* Make label text white */
         }
 
         .form-control {
@@ -60,7 +61,7 @@
             border-radius: 5px;
             border: 1px solid #ccc;
             background-color: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: white; /* Set input text color to white */
         }
 
         .form-control:focus {
@@ -70,12 +71,12 @@
 
         .form-check {
             display: flex;
-            align-items: center;
+            align-items: center; /* Center checkbox and label vertically */
             margin-bottom: 15px; /* Space below the checkbox */
         }
 
-        .form-check-label {
-            margin-left: 8px; /* Space between checkbox and label */
+        .form-check-input {
+            margin-right: 8px; /* Space between checkbox and label */
         }
 
         .show-form {
@@ -107,6 +108,7 @@
             margin-bottom: 20px; /* Space below headings */
         }
     </style>
+
 </head>
 <body>
 
@@ -154,9 +156,9 @@
             <h2 class="text-center">Forgot Password</h2>
             <p class="text-center">Enter your email to receive OTP.</p>
             <form action="forgot_password.php" method="POST">
-                <div class="form-group">
-                    <label for="forgotEmail">Email:</label>
-                    <input type="email" class="form-control" id="forgotEmail" name="email" required>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberCheck">
+                    <label class="form-check-label" for="rememberCheck">Remember Password</label>
                 </div>
                 <div class="form-group">
                     <small class="show-form" onclick="showForm('login')">Remembered your password? Login Here.</small>
