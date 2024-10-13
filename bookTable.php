@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($isBooked) {
             $_SESSION['error'] = 'The selected table is already booked during this time. Please choose a different time.';
-            header("Location: bookTable.php");
+            header("Location: user_table.php");
             exit();
         } else {
             // Proceed with booking
@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Other booking type logic
 }
 
-// On bookTable.php page, display session error
 if (isset($_SESSION['error'])) {
     echo "<script>alert('" . $_SESSION['error'] . "');</script>";
     unset($_SESSION['error']); // Clear error after showing
