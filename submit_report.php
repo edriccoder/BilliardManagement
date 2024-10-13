@@ -6,10 +6,14 @@ $datetime = "";
 $photoPath = "";
 $reportType = "";
 
-// Check which report type is being submitted (fixing name mismatch)
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Check which report type is being submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
 
-    // Check if it's an item damage report
+    // Item Damage Report
     if (isset($_POST['item_damage_description'])) {
         $description = trim($_POST['item_damage_description']);
         $datetime = $_POST['item_damage_datetime'];
@@ -21,12 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
             $fileName = basename($_FILES['item_damage_photo']['name']);
             $targetFilePath = $targetDir . $fileName;
 
-            // Validate file type (only allow images)
+            // Validate file type
             $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
             if (in_array($fileType, $allowedTypes)) {
-                // Move the uploaded file to the target directory
                 if (move_uploaded_file($_FILES['item_damage_photo']['tmp_name'], $targetFilePath)) {
                     $photoPath = $targetFilePath;
                 } else {
@@ -39,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['saveReport'])) {
             }
         }
     } 
-    // Check if it's an incident report
+    // Incident Report
     elseif (isset($_POST['incident_report_name'])) {
         $description = trim($_POST['incident_report_description']);
         $datetime = $_POST['incident_report_datetime'];
