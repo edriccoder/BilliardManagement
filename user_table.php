@@ -478,7 +478,7 @@ echo "<script>
                      var start = new Date(startTime);
                      var end = new Date(endTime);
                      var diff = (end - start) / (1000 * 60 * 60); 
-                     amount = diff * 80; 
+                     amount = diff * 100; 
                }
             } else if (bookingType === 'match') {
                var numMatches = document.getElementById('numMatches').value;
