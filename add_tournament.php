@@ -34,7 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insert into announcements table
         $title = "New Tournament: " . $name;  // Announcement title
-        $body = "The tournament " . $name . " is starting on " . $start_date . " and will end on " . $end_date . ". Max players: " . $max_player . ". Qualification: " . ucfirst($qualification); // Include qualification
+        $body = "The tournament " . $name . " is starting on " . $start_date . 
+                " and will end on " . $end_date . 
+                ". Max players: " . $max_player . 
+                ". Qualification: " . ucfirst($qualification) . 
+                ". Status: " . ucfirst($status); // Include status
         $expires_at = $end_date;  // You can set when this announcement will expire (e.g., at the end of the tournament)
 
         $sqlAnnouncement = "INSERT INTO announcements (title, body, tournament_id, created_at, expires_at) 
