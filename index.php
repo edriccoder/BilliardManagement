@@ -197,8 +197,28 @@
                     <div class="h-100">
                         <p class="text-primary text-uppercase mb-2">Tables  </p>
                         <h1 class="display-6 mb-4">We play for our dream</h1>
-                        <p>Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
-                        <p>Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
+                        <p>T James Sports Bar opened its doors with a vision to create a vibrant and welcoming environment for sports enthusiasts and community members alike. The bar quickly became a local favorite, known for its lively atmosphere, extensive drink menu, and passion for sports. With numerous large-screen TVs, patrons could enjoy live broadcasts of their favorite games while savoring delicious food and drinks.</p>
+                        <p>Over the years, T James Sports Bar has expanded its offerings, becoming a hub for not only watching sports but also for hosting various events and tournaments. The bar has built a reputation for excellent customer service and a strong community presence, making it a go-to destination for both casual outings and special occasions.</p>
+                        <h3>Services Offered</h3>
+
+                        <p><strong>Online Table Booking:</strong></p>
+                        <p>Patrons can conveniently reserve tables online, ensuring they have a spot during busy game nights or special events.</p>
+
+                        <p><strong>Join Tournaments:</strong></p>
+                        <p>T James Sports Bar regularly hosts various tournaments, from trivia contests to sports competitions. Guests can join these events, compete for prizes, and enjoy a fun, engaging atmosphere.</p>
+
+                        <p><strong>Special Offers:</strong></p>
+                        <p>The bar frequently updates its special offers, including happy hour deals, game-day promotions, and discounts on food and drinks. These offers are designed to enhance the experience for guests and provide great value.</p>
+
+                        <p><strong>Live Entertainment:</strong></p>
+                        <p>T James Sports Bar features live music and entertainment on select nights, creating a lively atmosphere for guests to enjoy beyond sports.</p>
+
+                        <p><strong>Catering Services:</strong></p>
+                        <p>For private events or gatherings, T James Sports Bar offers catering services, allowing guests to enjoy their favorite dishes in a customized setting.</p>
+
+                        <p><strong>Merchandise:</strong></p>
+                        <p>Fans can purchase branded merchandise, including apparel and accessories, to show their support for their favorite teams and the bar itself.</p>
+
                         <div class="row g-2 mb-4">
                             <div class="col-sm-6">
                                 <i class="fa fa-check text-primary me-2"></i>Quality Table
