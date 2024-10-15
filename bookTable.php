@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tableId = $_POST['table_id'];
     $userId = $_POST['user_id'];
     $bookingType = $_POST['booking_type'];
-    $amount = $_POST['amount'];
+    $numPlayers = $_POST['num_players']; // Assuming number of players is passed
     $paymentMethod = $_POST['payment_method'];
 
     // Fetch table_number based on table_id
@@ -40,19 +40,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ";
         } else {
             // Insert booking data into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status, amount, payment_method) 
-                    VALUES (?, ?, ?, ?, ?, NULL, 'Pending', ?, ?)";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_players) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $amount, $paymentMethod]);
+            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
             // Get the last inserted booking ID
             $bookingId = $conn->lastInsertId();
+
+            // Assume amount is calculated and passed based on the time or number of matches
+            $amount = $_POST['amount'];
 
             if ($paymentMethod === 'gcash') {
                 // Check if the proof of payment is uploaded
                 if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
                     // Define the upload directory
                     $uploadDir = 'payments/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true); // Ensure the directory exists
+                    }
                     $fileName = basename($_FILES['proof_of_payment']['name']);
                     $targetFilePath = $uploadDir . $fileName;
 
