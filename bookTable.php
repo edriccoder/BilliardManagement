@@ -100,27 +100,32 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             $uploadDir = 'payments/';
 
             // Ensure the directory exists
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true); // Create the directory if it doesn't exist
+            }
+
             $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
-        if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
-            // Insert transaction with proof of payment, including folder path
-            $proofOfPaymentPath = "payments/" . $uploadFile; 
 
-            $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
-                                VALUES (?, ?, ?, 'Pending', NOW(), ?)";
-            $stmtTransaction = $conn->prepare($sqlTransaction);
-            $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
+                // Insert transaction with proof of payment, including folder path
+                $proofOfPaymentPath = $uploadFile; 
 
-            if ($execution) {
-                alertAndRedirect('Booking and GCash payment successful.');
+                $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
+                                    VALUES (?, ?, ?, 'Pending', NOW(), ?)";
+                $stmtTransaction = $conn->prepare($sqlTransaction);
+                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+
+                if ($execution) {
+                    alertAndRedirect('Booking and GCash payment successful.');
+                } else {
+                    alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for booking ID: ' . $bookingId);
+                }
             } else {
-                alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for booking ID: ' . $bookingId);
+                alertAndRedirect('Error uploading proof of payment.', 'File upload failed for booking ID: ' . $bookingId);
             }
         } else {
-            alertAndRedirect('Error uploading proof of payment.', 'File upload failed for booking ID: ' . $bookingId);
+            alertAndRedirect('Please upload the proof of payment.', 'No file uploaded for GCash payment.');
         }
-    } else {
-        alertAndRedirect('Please upload the proof of payment.', 'No file uploaded for GCash payment.');
-    }
     } else {
         // Insert a cash transaction with pending status
         $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp) 
@@ -136,6 +141,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
         }
     }
 }
+
 
 
 // Updated alertAndRedirect function with optional logging
