@@ -85,33 +85,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // Function to handle transactions for both GCash and Cash payments
 function handleTransaction($bookingId, $amount, $paymentMethod) {
     global $conn;
+    $image = $_FILES['proof_of_payment']['name'] ?? '';
 
     if ($paymentMethod === 'gcash') {
         // Check if the proof of payment is uploaded
         if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === UPLOAD_ERR_OK) {
             // Define the upload directory
-            $uploadDir = 'payments/';
-
-            // Ensure the directory exists
-            if (!is_dir($uploadDir)) {
-                if (!mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
-                    alertAndRedirect('Error creating directory for payments.', 'Directory creation failed for GCash payment.');
-                }
-            }
-
-            // Sanitize the file name
-            $fileName = basename($_FILES['proof_of_payment']['name']);
-            $uploadFile = $uploadDir . $fileName;
+            $targetDir = "payments/";
+            $targetFile = $targetDir . basename($image);
+            $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
             // Move uploaded file
-            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
+            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $imageFileType)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $uploadFile; 
+                $proofOfPaymentPath = $imageFileType; 
 
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                     VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                 $stmtTransaction = $conn->prepare($sqlTransaction);
-                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $image]);
 
                 if ($execution) {
                     alertAndRedirect('Booking and GCash payment successful.');
