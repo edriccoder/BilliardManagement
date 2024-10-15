@@ -18,6 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmtTable = $conn->prepare("SELECT table_number FROM tables WHERE table_id = ?");
     $stmtTable->execute([$tableId]);
     $table = $stmtTable->fetch(PDO::FETCH_ASSOC);
+
+    if (!$table) {
+        alertAndRedirect('Invalid table selected.');
+    }
+
     $tableName = $table['table_number'];
 
     // Check if booking is per hour or per match
@@ -85,9 +90,18 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
         if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
             // Define the upload directory
             $uploadDir = 'payments/';
+
+            // Ensure the directory exists and is writable
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true); // Ensure the directory exists
+                if (!mkdir($uploadDir, 0777, true)) {
+                    alertAndRedirect('Failed to create the payments directory.');
+                }
             }
+
+            if (!is_writable($uploadDir)) {
+                alertAndRedirect('The payments directory is not writable. Please check permissions.');
+            }
+
             $fileName = basename($_FILES['proof_of_payment']['name']);
             $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
             $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
@@ -97,13 +111,15 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
                 alertAndRedirect('Invalid file type for proof of payment. Allowed types: jpg, jpeg, png, pdf.');
             }
 
-            $uniqueFileName = uniqid() . '.' . $fileExt;
+            // Generate a unique file name to prevent overwriting
+            $uniqueFileName = uniqid('proof_', true) . '.' . $fileExt;
             $targetFilePath = $uploadDir . $uniqueFileName;
 
             // Move the uploaded file to the server
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $targetFilePath)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $targetFilePath; // Full path with folder
+                $proofOfPaymentPath = $targetFilePath; // Full relative path with folder
+
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                    VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                 $stmtTransaction = $conn->prepare($sqlTransaction);
