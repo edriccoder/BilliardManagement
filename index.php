@@ -379,7 +379,7 @@
             </div>
             <div class="modal-body">
                 <p>T-James Billiard Hall offers state-of-the-art facilities, professional coaching, and a vibrant community of billiard enthusiasts. Whether you're a beginner or a seasoned player, our hall provides the perfect environment to hone your skills and enjoy the game.</p>
-                <img src="dashboard/img/detailed-image.jpg" class="img-fluid mb-3" alt="Detailed Image">
+                <img src="img/logoBilliard.jpg" class="img-fluid mb-3" alt="Detailed Image">
                 <p>Join us today and chase your dreams on the felt!</p>
             </div>
             <div class="modal-footer">
