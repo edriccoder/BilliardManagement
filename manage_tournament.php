@@ -244,38 +244,43 @@
                   </div>
                   <div class="card-body pt-4 p-3">
                      <ul class="list-group">
-                        <?php if (!empty($tournaments)) : ?>
-                           <?php foreach ($tournaments as $tournament) : ?>
-                           <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                              <div class="d-flex flex-column">
-                                 <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
-                                 <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
-                                 <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
-                                 <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
-                                 <span class="mb-2 text-xs">Prizes: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
-                                 <span class="mb-2 text-xs">Tournament fee: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['fee']); ?></span></span>
-                                 <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
-                              </div>
-                              <div class="ms-auto text-end">
-                                 <button class="btn btn-link text-danger text-gradient px-3 mb-0" onclick="deleteTournament('<?php echo htmlspecialchars($tournament['tournament_id']); ?>')">
-                                    <i class="material-icons text-sm me-2">delete</i>Delete
-                                 </button>
-                                 <button class="btn btn-link text-dark px-3 mb-0" onclick='editTournament(<?php echo json_encode($tournament); ?>)'>
-                                    <i class="material-icons text-sm me-2">edit</i>Edit
-                                 </button>
-                                 <button class="btn btn-link text-dark px-3 mb-0 show-players" data-toggle="modal" data-target="#playersModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">
-                                    <i class="material-icons text-sm me-2">person</i>Show Players
-                                 </button>
-                              </div>
-                           </li>
-                           <?php endforeach; ?>
-                        <?php else : ?>
+                     <?php if (!empty($tournaments)) : ?>
+                        <?php foreach ($tournaments as $tournament) : ?>
                         <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                            <div class="d-flex flex-column">
-                              <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                              <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
+                              <!-- Formatting start_date and end_date to show both date and time -->
+                              <span class="mb-2 text-xs">Start Date & Time: <span class="text-dark font-weight-bold ms-sm-2">
+                                 <?php echo htmlspecialchars(date("F j, Y, g:i A", strtotime($tournament['start_date']))); ?>
+                              </span></span>
+                              <span class="mb-2 text-xs">End Date & Time: <span class="text-dark font-weight-bold ms-sm-2">
+                                 <?php echo htmlspecialchars(date("F j, Y, g:i A", strtotime($tournament['end_date']))); ?>
+                              </span></span>
+                              <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                              <span class="mb-2 text-xs">Prizes: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
+                              <span class="mb-2 text-xs">Tournament Fee: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['fee']); ?></span></span>
+                              <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
+                           </div>
+                           <div class="ms-auto text-end">
+                              <button class="btn btn-link text-danger text-gradient px-3 mb-0" onclick="deleteTournament('<?php echo htmlspecialchars($tournament['tournament_id']); ?>')">
+                                 <i class="material-icons text-sm me-2">delete</i>Delete
+                              </button>
+                              <button class="btn btn-link text-dark px-3 mb-0" onclick='editTournament(<?php echo json_encode($tournament); ?>)'>
+                                 <i class="material-icons text-sm me-2">edit</i>Edit
+                              </button>
+                              <button class="btn btn-link text-dark px-3 mb-0 show-players" data-toggle="modal" data-target="#playersModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">
+                                 <i class="material-icons text-sm me-2">person</i>Show Players
+                              </button>
                            </div>
                         </li>
-                        <?php endif; ?>
+                        <?php endforeach; ?>
+                     <?php else : ?>
+                     <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                           <h6 class="mb-3 text-sm">No tournaments found.</h6>
+                        </div>
+                     </li>
+                     <?php endif; ?>
                      </ul>
                   </div>
                </div>
