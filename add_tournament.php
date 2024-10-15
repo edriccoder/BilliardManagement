@@ -3,8 +3,8 @@ include 'conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
-    $start_date = $_POST['start_date'];
-    $end_date = $_POST['end_date'];
+    $start_date = $_POST['start_date'];  // This will now contain both date and time
+    $end_date = $_POST['end_date'];      // This will now contain both date and time
     $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; 
     $max_player = $_POST['max_player'];
     $prize = $_POST['prize'];
@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 VALUES (:name, :start_date, :end_date, :status, :max_player, NOW(), :prize, :fee, :qualification)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':start_date', $start_date);
-        $stmt->bindParam(':end_date', $end_date);
+        $stmt->bindParam(':start_date', $start_date);  // Insert both date and time
+        $stmt->bindParam(':end_date', $end_date);      // Insert both date and time
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':max_player', $max_player);
         $stmt->bindParam(':prize', $prize);

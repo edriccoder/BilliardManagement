@@ -420,60 +420,61 @@
       <div class="modal fade" id="addTournamentModal" tabindex="-1" role="dialog" aria-labelledby="addTournamentModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-               <div class="modal-header">
-               <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-               </button>
-               </div>
-               <div class="modal-body">
-               <form id="addTournamentForm" method="POST" action="add_tournament.php">
-                  <label for="tournamentName">Tournament Name</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="text" class="form-control" id="tournamentName" name="name" required>
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addTournamentModalLabel">Add Tournament</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
                   </div>
-                  <label for="startDate">Start Date</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="date" class="form-control" id="startDate" name="start_date" required>
+                  <div class="modal-body">
+                     <form id="addTournamentForm" method="POST" action="add_tournament.php">
+                        <label for="tournamentName">Tournament Name</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="tournamentName" name="name" required>
+                        </div>
+                        <label for="startDate">Start Date & Time</label> <!-- Updated label -->
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" class="form-control" id="startDate" name="start_date" required>
+                        </div>
+                        <label for="endDate">End Date & Time</label> <!-- Updated label -->
+                        <div class="input-group input-group-outline my-3">
+                              <input type="datetime-local" class="form-control" id="endDate" name="end_date" required>
+                        </div>
+                        <label for="maxPlayers">Max Players</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
+                        </div>
+                        <label for="prize">Prizes</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="prize" name="prize" required>
+                        </div>
+                        <label for="fee">Tournament Fee</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="number" step="0.01" class="form-control" id="fee" name="fee" required>
+                        </div>
+                        <label for="status">Status</label>
+                        <div class="input-group input-group-outline my-3">
+                              <select class="form-control" id="status" name="status" required>
+                                 <option value="upcoming">Upcoming</option>
+                                 <option value="ongoing">Ongoing</option>
+                                 <option value="completed">Completed</option>
+                              </select>
+                        </div>
+                        <label for="qualification">Qualification</label>
+                        <div class="input-group input-group-outline my-3">
+                              <select class="form-control" id="qualification" name="qualification" required>
+                                 <option value="all">Class A</option>
+                                 <option value="beginner">Class B</option>
+                                 <option value="pro">Class S</option>
+                              </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Tournament</button>
+                     </form>
                   </div>
-                  <label for="endDate">End Date</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="date" class="form-control" id="endDate" name="end_date" required>
-                  </div>
-                  <label for="maxPlayers">Max Players</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="number" class="form-control" id="maxPlayers" name="max_player" required>
-                  </div>
-                  <label for="prize">Prizes</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="text" class="form-control" id="prize" name="prize" required>
-                  </div>
-                  <label for="fee">Tournament Fee</label>
-                  <div class="input-group input-group-outline my-3">
-                     <input type="number" step="0.01" class="form-control" id="fee" name="fee" required>
-                  </div>
-                  <label for="status">Status</label>
-                  <div class="input-group input-group-outline my-3">
-                     <select class="form-control" id="status" name="status" required>
-                     <option value="upcoming">Upcoming</option>
-                     <option value="ongoing">Ongoing</option>
-                     <option value="completed">Completed</option>
-                     </select>
-                  </div>
-                  <label for="qualification">Qualification</label>
-                  <div class="input-group input-group-outline my-3">
-                     <select class="form-control" id="qualification" name="qualification" required>
-                        <option value="all">Class A</option>
-                        <option value="beginner">Class B</option>
-                        <option value="pro">Class S</option>
-                     </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Add Tournament</button>
-               </form>
-               </div>
             </div>
          </div>
       </div>
+
       <!-- Edit Tournament Modal -->
       <div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
