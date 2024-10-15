@@ -373,18 +373,19 @@
     <div class="modal fade" id="readMoreModal" tabindex="-1" aria-labelledby="readMoreModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="readMoreModalLabel">More About T-James Billiard Hall</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>T-James Billiard Hall offers state-of-the-art facilities, professional coaching, and a vibrant community of billiard enthusiasts. Whether you're a beginner or a seasoned player, our hall provides the perfect environment to hone your skills and enjoy the game.</p>
-                <img src="img/logoBilliard.png" class="img-fluid mb-3" alt="Detailed Image">
-                <p>Join us today and chase your dreams on the felt!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="readMoreModalLabel">More About T-James Billiard Hall</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>T-James Billiard Hall offers state-of-the-art facilities, professional coaching, and a vibrant community of billiard enthusiasts. Whether you're a beginner or a seasoned player, our hall provides the perfect environment to hone your skills and enjoy the game.</p>
+                    <!-- Apply Bootstrap width class here -->
+                    <img src="img/logoBilliard.png" class="img-fluid mb-3 w-25" alt="Detailed Image">
+                    <p>Join us today and chase your dreams on the felt!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
