@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             alertAndRedirect('The selected table is already booked during this time. Please choose a different time.');
         } else {
             // Insert booking data for hour-based booking into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status, num_players, num_matches) 
-                    VALUES (?, ?, ?, ?, ?, 'Pending', ?, NULL)";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_players, num_matches, status) 
+                    VALUES (?, ?, ?, ?, ?, ?, NULL,  'Pending')";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
@@ -63,9 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // For match-based booking, ensure num_matches and num_players are valid
         if ($numMatches > 0 && $numPlayers > 0) {
             // Insert booking data for match-based booking into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, status, num_players, num_matches) 
-                    VALUES (?, ?, ?, 'Pending', ?, ?)";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, NULL, NULL, ?, 'Pending')";
             $stmt = $conn->prepare($sql);
+            $stmt->execute([$tableId, $tableName, $userId, $numMatches]);
             $result = $stmt->execute([$tableId, $tableName, $userId, $numPlayers, $numMatches]);
 
 
