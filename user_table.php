@@ -388,7 +388,6 @@ echo "<script>
                </div>
                <div class="modal-body">
                   <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                      <input type="hidden" id="bookingTableId" name="table_id">
                      <input type="hidden" id="bookingTableName" name="table_name">
                      <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
