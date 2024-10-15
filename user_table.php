@@ -472,17 +472,34 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
+         function resetFields(bookingType) {
+            if (bookingType === 'hour') {
+                  document.getElementById('numMatches').value = '';
+            } else {
+                  document.getElementById('startTime').value = '';
+                  document.getElementById('endTime').value = '';
+            }
+            calculateAmount();
+         }
+
          function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
+            var numMatches = document.getElementById('numMatches');
+
             if (bookingType === 'hour') {
-               perHourFields.style.display = 'block';
-               perMatchFields.style.display = 'none';
+                  perHourFields.style.display = 'block';
+                  perMatchFields.style.display = 'none';
+                  numMatches.removeAttribute('required');
             } else {
-               perHourFields.style.display = 'none';
-               perMatchFields.style.display = 'block';
+                  perHourFields.style.display = 'none';
+                  perMatchFields.style.display = 'block';
+                  numMatches.setAttribute('required', 'required');
             }
+
+            // Reset fields and amount when switching booking types
+            resetFields(bookingType);
          }
 
          function calculateAmount() {
