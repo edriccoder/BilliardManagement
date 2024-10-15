@@ -1,11 +1,7 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-include 'conn.php';
-$error = '';
-
+// Check if request is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Capture necessary fields from the form
     $tableId = $_POST['table_id'];
     $userId = $_POST['user_id'];
     $bookingType = $_POST['booking_type'];
@@ -25,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $tableName = $table['table_number'];
 
-    // Check if booking is per hour or per match
+    // Booking logic based on type
     if ($bookingType === 'hour') {
         $startTime = $_POST['start_time'];
         $endTime = $_POST['end_time'];
@@ -47,47 +43,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($isBooked) {
             alertAndRedirect('The selected table is already booked during this time. Please choose a different time.');
         } else {
-            // Insert booking data for hour-based booking into the bookings table
+            // Insert hour-based booking into bookings table
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_players, num_matches, status) 
                     VALUES (?, ?, ?, ?, ?, ?, NULL, 'Pending')";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
-            // Get the last inserted booking ID
+            // Get last inserted booking ID
             $bookingId = $conn->lastInsertId();
 
-            // Handle the transaction based on payment method
+            // Handle transaction based on payment method
             handleTransaction($bookingId, $amount, $paymentMethod);
         }
     } elseif ($bookingType === 'match') {
         // For match-based booking, ensure num_matches and num_players are valid
         if ($numMatches > 0 && $numPlayers > 0) {
-            // Insert booking data for match-based booking into the bookings table, including 'Pending' status
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) 
-                    VALUES (?, ?, ?, NULL, NULL, ?, 'Pending')";
+            // Insert match-based booking into bookings table
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, num_players, status) 
+                    VALUES (?, ?, ?, NULL, NULL, ?, ?, 'Pending')";
             $stmt = $conn->prepare($sql);
-            $result = $stmt->execute([$tableId, $tableName, $userId, $numMatches]);
+            $result = $stmt->execute([$tableId, $tableName, $userId, $numMatches, $numPlayers]);
 
             if ($result) {
-                // Get the last inserted booking ID
+                // Get last inserted booking ID
                 $bookingId = $conn->lastInsertId();
 
-                // Handle the transaction based on payment method
+                // Handle transaction based on payment method
                 handleTransaction($bookingId, $amount, $paymentMethod);
             } else {
-                $error = 'Failed to insert match-based booking.';
-                // Optionally log the error
-                // file_put_contents('debug_log.txt', $error . "\n", FILE_APPEND);
-                alertAndRedirect('Failed to process your booking. Please try again.');
+                alertAndRedirect('Failed to process your match-based booking.');
             }
         } else {
             alertAndRedirect('Please enter a valid number of matches and players.');
         }
-
     } else {
         alertAndRedirect('Invalid booking type selected.');
     }
 }
+
 
 // Function to handle transactions for both GCash and Cash payments
 function handleTransaction($bookingId, $amount, $paymentMethod) {
