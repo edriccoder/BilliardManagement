@@ -110,8 +110,8 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
                 alertAndRedirect('The payments directory is not writable. Please check permissions.', 'Directory not writable.');
             }
 
-            $fileName = basename($_FILES['proof_of_payment']['name']);
             // Sanitize the file name
+            $fileName = basename($_FILES['proof_of_payment']['name']);
             $fileName = preg_replace("/[^A-Z0-9._-]/i", "_", $fileName);
             $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
@@ -144,7 +144,11 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             // Move the uploaded file to the server
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $uploadFile; // 'payments/unique_filename.ext'
+                $proofOfPaymentPath = $uploadFile; // This should be 'payments/unique_filename.ext'
+
+                // Debugging Step: Log the path to ensure it's correct
+                // You can uncomment the following line during development to verify
+                // error_log('Proof of Payment Path: ' . $proofOfPaymentPath);
 
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                    VALUES (?, ?, ?, 'Pending', NOW(), ?)";
@@ -177,6 +181,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
         }
     }
 }
+
 
 // Updated alertAndRedirect function with optional logging
 function alertAndRedirect($message, $logMessage = null) {
