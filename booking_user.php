@@ -267,19 +267,19 @@ foreach ($users as $user) {
                             echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
                     
                             if (!empty($booking["proof_of_payment"])) {
-                                 echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                 echo '<a href="#" onclick="openImageModal(\'payments/' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                 echo '<img src="payments/' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
-                                 echo '</a>';
-                                 echo '</span></span>';
-                           }
-                           
-                           echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
-                           echo '</div>';
-                           echo '<div class="ms-auto text-end">';
-                           echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                           echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . json_encode($booking) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                           
+                                echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                                echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                echo '</a>';
+                                echo '</span></span>';
+                            }
+                    
+                            echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
+                            echo '</div>';
+                            echo '<div class="ms-auto text-end">';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . json_encode($booking) . ')\'>';
+                            echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
                     
                             // Conditional check for status
                             if (in_array($booking['status'], ['cancelled', 'pending'])) {
