@@ -19,7 +19,10 @@ function generate_invoice($booking) {
 
     // Header Data
     $logoFile = 'img/logoBilliard.png'; // Replace with the path to your logo image
-    $pdf->SetHeaderData($logoFile, 30, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\General Santos City, Sout Cotabato, 9500\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
+    if (!file_exists($logoFile)) {
+        $logoFile = ''; // If logo doesn't exist, leave it empty or use a placeholder
+    }
+    $pdf->SetHeaderData($logoFile, 30, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\nGeneral Santos City, South Cotabato, 9500\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
 
     // Header and Footer Fonts
     $pdf->setHeaderFont(['helvetica', '', 12]);
@@ -30,8 +33,8 @@ function generate_invoice($booking) {
 
     // Margins
     $pdf->SetMargins(15, 45, 15); // Left, Top, Right
-    $pdf->SetHeaderMargin(10);
-    $pdf->SetFooterMargin(15);
+    $pdf->SetHeaderMargin(15);
+    $pdf->SetFooterMargin(20);
 
     // Auto Page Break
     $pdf->SetAutoPageBreak(TRUE, 25);
@@ -116,12 +119,22 @@ function generate_invoice($booking) {
     
     // Include proof of payment image if available
     if (!empty($booking['proof_of_payment'])) {
-        $proofImage = htmlspecialchars($booking['proof_of_payment']);
-        $html .= '
-            <tr>
-                <td><strong>Proof of Payment</strong></td>
-                <td><img src="' . $proofImage . '" alt="Proof of Payment" style="max-width:150px; max-height:150px;"></td>
-            </tr>';
+        $proofImagePath = $booking['proof_of_payment'];
+        if (file_exists($proofImagePath)) {
+            // Embed the image using TCPDF's Image method
+            $imageData = '<img src="' . $proofImagePath . '" alt="Proof of Payment" style="max-width:150px; max-height:150px;">';
+            $html .= '
+                <tr>
+                    <td><strong>Proof of Payment</strong></td>
+                    <td>' . $imageData . '</td>
+                </tr>';
+        } else {
+            $html .= '
+                <tr>
+                    <td><strong>Proof of Payment</strong></td>
+                    <td>Image not available.</td>
+                </tr>';
+        }
     }
 
     $html .= '
@@ -131,9 +144,65 @@ function generate_invoice($booking) {
     $pdf->writeHTML($html, true, false, false, false, '');
     $pdf->Ln(10);
 
-    // Thank You Note
-    $pdf->SetFont('helvetica', 'I', 12);
-    $pdf->Cell(0, 10, 'Thank you for your business!', 0, 1, 'C');
+    // Terms and Conditions or Additional Notes
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Additional Information', 0, 1, 'L');
+    $pdf->SetFont('helvetica', '', 12);
+    $additionalInfo = '
+    <p><strong>Terms and Conditions:</strong></p>
+    <ul>
+        <li>All bookings are subject to availability.</li>
+        <li>Cancellation policy applies as per the booking agreement.</li>
+        <li>Please retain this receipt for your records.</li>
+    </ul>
+    <p><strong>Thank you for choosing T JAMES SPORTY BAR!</strong></p>
+    ';
+    $pdf->writeHTML($additionalInfo, true, false, false, false, '');
+    $pdf->Ln(5);
+
+    // QR Code (Optional)
+    // Generate a QR code that links to the online booking details
+    $bookingURL = "https://www.tjamessportybar.com/bookings.php?booking_id=" . urlencode($booking['booking_id']);
+    $style = array(
+        'border' => 0,
+        'vpadding' => 'auto',
+        'hpadding' => 'auto',
+        'fgcolor' => array(0,0,0),
+        'bgcolor' => false, // No background
+        'module_width' => 1, // width of a single module in points
+        'module_height' => 1 // height of a single module in points
+    );
+    $pdf->write2DBarcode($bookingURL, 'QRCODE,H', 150, 245, 30, 30, $style, 'N');
+    $pdf->Text(150, 275, 'Scan for Booking Details');
+
+    // Footer Note
+    $pdf->SetY(-40);
+    $pdf->SetFont('helvetica', 'I', 10);
+    $footerNote = '
+    <hr>
+    <p>If you have any questions about your booking, please contact us at (123) 456-7890 or email us at support@tjamessportybar.com.</p>
+    ';
+    $pdf->writeHTML($footerNote, true, false, false, false, '');
+
+    // Digital Signature (Optional)
+    // If you have a digital signature image, you can embed it as follows:
+    /*
+    $signatureFile = 'img/digital_signature.png'; // Path to your signature image
+    if (file_exists($signatureFile)) {
+        $pdf->Image($signatureFile, 15, 250, 50, 20, 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $pdf->Text(15, 270, 'Authorized Signature');
+    }
+    */
+
+    // Page Numbers (Optional)
+    // Uncomment the following lines to add page numbers
+    /*
+    $pdf->setPrintFooter(true);
+    $pdf->SetFooterMargin(20);
+    $pdf->SetFont('helvetica', 'I', 8);
+    $pdf->SetY(-15);
+    $pdf->Cell(0, 10, 'Page ' . $pdf->getAliasNumPage() . '/' . $pdf->getAliasNbPages(), 0, false, 'C');
+    */
 
     // Output PDF
     $pdf->Output('receipt_' . htmlspecialchars($booking['booking_id']) . '.pdf', 'I');
