@@ -104,7 +104,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
                 mkdir($uploadDir, 0777, true); // Create the directory if it doesn't exist
             }
 
-            $uploadFile = basename($_FILES['proof_of_payment']['name']);
+            $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
 
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
@@ -113,7 +113,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                     VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                 $stmtTransaction = $conn->prepare($sqlTransaction);
-                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, 'payements/' . $proofOfPaymentPath]);
+                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
 
                 if ($execution) {
                     alertAndRedirect('Booking and GCash payment successful.');
