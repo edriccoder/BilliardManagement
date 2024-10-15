@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
                     // Directory where the file will be stored
-                    $uploadFileDir = './uploads/proof_of_payment/';
+                    $uploadFileDir = 'payments/';
                     if (!is_dir($uploadFileDir)) {
                         mkdir($uploadFileDir, 0755, true);
                     }
