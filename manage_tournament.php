@@ -526,53 +526,66 @@
             </div>
          </div>
       </div>
-      <!-- Modal Structure -->
-      <div class="modal fade" id="playersModal" tabindex="-1" aria-labelledby="playersModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-lg">
+      <!-- Edit Tournament Modal -->
+      <div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="playersModalLabel">Tournament Players</h5>
-                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                     <table class="table">
-                        <thead>
-                              <tr>
-                                 <th scope="col">User ID</th>
-                                 <th scope="col">Username</th>
-                                 <th scope="col">Proof of payment</th>
-                                 <th scope="col">Status</th>
-                              </tr>
-                        </thead>
-                        <tbody id="playersTableBody">
-                              <!-- Player rows will be appended here dynamically -->
-                        </tbody>
-                     </table>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" id="createBracketBtn" class="btn btn-primary">Create Bracket</button>
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-            </div>
-         </div>
-      </div>
-      <!-- Modal for showing bracket -->
-      <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bracketModalLabel">Single Elimination Tournament Bracket</h5>
-                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                     <div class="bracket" id="bracketContainer">
-                        <!-- Bracket content will be loaded here -->
+               <div class="modal-header">
+                  <h5 class="modal-title" id="editTournamentModalLabel">Edit Tournament</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form id="editTournamentForm" method="POST" action="edit_tournament.php">
+                     <input type="hidden" id="editTournamentId" name="tournament_id">
+                     
+                     <label for="editTournamentName">Tournament Name</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="editTournamentName" name="name" required>
                      </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
+
+                     <label for="editStartDate">Start Date & Time</label> <!-- Updated to datetime-local -->
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" class="form-control" id="editStartDate" name="start_date" required>
+                     </div>
+
+                     <label for="editEndDate">End Date & Time</label> <!-- Updated to datetime-local -->
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" class="form-control" id="editEndDate" name="end_date" required>
+                     </div>
+
+                     <label for="editMaxPlayers">Max Players</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="number" class="form-control" id="editMaxPlayers" name="max_player" required>
+                     </div>
+
+                     <label for="editPrize">Prize</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="editPrize" name="prize" required>
+                     </div>
+
+                     <label for="editFee">Tournament Fee</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="editFee" name="fee" required>
+                     </div>
+
+                     <label for="editStatus">Status</label>
+                     <div class="input-group input-group-outline my-3">
+                        <select class="form-control" id="editStatus" name="status" required>
+                           <option value="upcoming">Upcoming</option>
+                           <option value="ongoing">Ongoing</option>
+                           <option value="completed">Completed</option>
+                        </select>
+                     </div>
+
+                     <button type="submit" class="btn btn-primary">Save Changes</button>
+                  </form>
+               </div>
             </div>
          </div>
       </div>
+
       <!-- Modal to display proof of payment image -->
       <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered modal-lg">
