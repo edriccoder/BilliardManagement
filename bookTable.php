@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Check if the proof of payment is uploaded
                 if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
                     // Define the upload directory
-                    $uploadDir = 'uploads/';
+                    $uploadDir = 'payments/';
                     $fileName = basename($_FILES['proof_of_payment']['name']);
                     $targetFilePath = $uploadDir . $fileName;
 
