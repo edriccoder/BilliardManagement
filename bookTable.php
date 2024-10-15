@@ -112,13 +112,13 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             }
 
             // Generate a unique file name to prevent overwriting
-            $uniqueFileName = uniqid('proof_', true) . '.' . $fileExt;
-            $targetFilePath = $uploadDir . $uniqueFileName;
+            $uploadDir = 'payments/';
+            $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
 
             // Move the uploaded file to the server
-            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $targetFilePath)) {
+            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $targetFilePath; // Full relative path with folder
+                $proofOfPaymentPath = $uploadFile; // Full relative path with folder
 
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                    VALUES (?, ?, ?, 'Pending', NOW(), ?)";
