@@ -66,13 +66,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, status, num_players, num_matches) 
                     VALUES (?, ?, ?, 'Pending', ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$tableId, $tableName, $userId, $numPlayers, $numMatches]);
+            $result = $stmt->execute([$tableId, $tableName, $userId, $numPlayers, $numMatches]);
 
-            // Get the last inserted booking ID
-            $bookingId = $conn->lastInsertId();
+            if ($result) {
+                // Get the last inserted booking ID
+                $bookingId = $conn->lastInsertId();
 
-            // Handle the transaction based on payment method
-            handleTransaction($bookingId, $amount, $paymentMethod);
+                // Handle the transaction based on payment method
+                handleTransaction($bookingId, $amount, $paymentMethod);
+            } else {
+                $error = 'Failed to insert match-based booking.';
+                // Optionally log the error
+                // file_put_contents('debug_log.txt', $error . "\n", FILE_APPEND);
+                alertAndRedirect('Failed to process your booking. Please try again.');
+            }
         } else {
             alertAndRedirect('Please enter a valid number of matches and players.');
         }
@@ -112,8 +119,8 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             }
 
             // Generate a unique file name to prevent overwriting
-            $uploadDir = 'payments/';
-            $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
+            $uniqueFileName = uniqid() . '_' . $fileName;
+            $uploadFile = $uploadDir . $uniqueFileName;
 
             // Move the uploaded file to the server
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {

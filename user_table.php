@@ -406,27 +406,29 @@ echo "<script>
                         </select>
                      </div>
 
-                     <!-- Number of Players Dropdown -->
+                     <!-- Number of Players Input -->
                      <label for="numPlayers">Number of Players</label>
                      <div class="input-group input-group-outline my-3">
-                        <input type="number" name="num_players" id="numPlayers" class="form-control" required>
+                        <input type="number" name="num_players" id="numPlayers" class="form-control" required min="1">
                      </div>
 
+                     <!-- Per Hour Fields -->
                      <div id="perHourFields">
                         <label>Start Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()"/>
                         </div>
                         <label>End Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()"/>
                         </div>
                      </div>
 
+                     <!-- Per Match Fields -->
                      <div id="perMatchFields" style="display: none;">
                         <label>Number of Matches</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()"/>
+                           <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()" min="1" required>
                         </div>
                      </div>
 
@@ -445,7 +447,7 @@ echo "<script>
                         </div>
                         <label>Proof of Payment</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+                           <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control" accept=".jpg, .jpeg, .png, .pdf">
                         </div>
                      </div>
 
@@ -463,6 +465,7 @@ echo "<script>
             </div>
          </div>
       </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -512,12 +515,13 @@ echo "<script>
                      var start = new Date(startTime);
                      var end = new Date(endTime);
                      var diff = (end - start) / (1000 * 60 * 60); 
-                     amount = diff * 100; 
+                     amount = diff * 100; // $100 per hour
                }
             } else if (bookingType === 'match') {
-               var numMatches = document.getElementById('numMatches').value;
-               if (numMatches) {
-                     amount = numMatches * 20; 
+               var numMatches = parseInt(document.getElementById('numMatches').value) || 0;
+               var numPlayers = parseInt(document.getElementById('numPlayers').value) || 0;
+               if (numMatches > 0 && numPlayers > 0) {
+                     amount = numMatches * 20 * numPlayers; // $20 per match per player
                }
             }
             document.getElementById('totalAmount').value = amount.toFixed(2);
@@ -532,6 +536,7 @@ echo "<script>
             document.getElementById('totalAmount').value = ''; 
             $('#bookingModal').modal('show');
          }
+
          function toggleGcashFields() {
             var paymentMethod = document.getElementById('paymentMethod').value;
             var gcashFields = document.getElementById('gcashFields');
@@ -542,7 +547,6 @@ echo "<script>
             }
          }
       </script>
-
 
       <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
