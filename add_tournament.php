@@ -3,8 +3,11 @@ include 'conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
-    $start_date = $_POST['start_date'];  // This will now contain both date and time
-    $end_date = $_POST['end_date'];      // This will now contain both date and time
+    
+    // Convert start_date and end_date to proper date-time format
+    $start_date = $_POST['start_date'];  // Assuming this comes with both date and time
+    $end_date = $_POST['end_date'];      // Assuming this comes with both date and time
+    
     $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; 
     $max_player = $_POST['max_player'];
     $prize = $_POST['prize'];
@@ -15,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->beginTransaction();
 
     try {
-        // Insert into tournaments table
+        // Insert into tournaments table, including date and time fields for start_date and end_date
         $sql = "INSERT INTO tournaments (name, start_date, end_date, status, max_player, created_at, prize, fee, qualification) 
                 VALUES (:name, :start_date, :end_date, :status, :max_player, NOW(), :prize, :fee, :qualification)";
         $stmt = $conn->prepare($sql);
@@ -32,15 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Get the last inserted tournament_id
         $tournament_id = $conn->lastInsertId();
 
-        // Insert into announcements table
+        // Prepare the title and body for the announcement
         $title = "New Tournament: " . $name;  // Announcement title
-        $body = "The tournament " . $name . " is starting on " . $start_date . 
-                " and will end on " . $end_date . 
-                ". Max players: " . $max_player . 
+        $body = "The tournament " . $name . " is starting on " . date('F j, Y, g:i a', strtotime($start_date)) . 
+                " and will end on " . date('F j, Y, g:i a', strtotime($end_date)) . 
+                ". Maximum players allowed: " . $max_player . 
                 ". Qualification: " . ucfirst($qualification) . 
-                ". Status: " . ucfirst($status); // Include status
-        $expires_at = $end_date;  // You can set when this announcement will expire (e.g., at the end of the tournament)
+                ". Status: " . ucfirst($status) . ".";  // Including status in the body
+        $expires_at = $end_date;  // The announcement expires at the end of the tournament
 
+        // Insert into announcements table
         $sqlAnnouncement = "INSERT INTO announcements (title, body, tournament_id, created_at, expires_at) 
                             VALUES (:title, :body, :tournament_id, NOW(), :expires_at)";
         $stmtAnn = $conn->prepare($sqlAnnouncement);
