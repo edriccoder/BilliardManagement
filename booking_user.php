@@ -267,12 +267,13 @@ foreach ($users as $user) {
                             echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
                     
                             if (!empty($booking["proof_of_payment"])) {
-                                echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                echo '<a href="#" onclick="openImageModal(\'payments/' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                echo '<img src="payments/' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
-                                echo '</a>';
-                                echo '</span></span>';
-                            }
+                                 echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                 echo '<a href="#" onclick="openImageModal(\'payments/' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                                 echo '<img src="payments/' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                 echo '</a>';
+                                 echo '</span></span>';
+                           }
+                          
                     
                             echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
                             echo '</div>';
