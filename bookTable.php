@@ -95,82 +95,36 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
 
     if ($paymentMethod === 'gcash') {
         // Check if the proof of payment is uploaded
-        if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
+        if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === UPLOAD_ERR_OK) {
             // Define the upload directory
             $uploadDir = 'payments/';
 
             // Ensure the directory exists
-            if (!is_dir($uploadDir)) {
-                if (!mkdir($uploadDir, 0755, true)) { // Use 0755 permissions for security
-                    alertAndRedirect('Failed to create the payments directory.', 'Directory creation failed.');
-                }
-            }
+            $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
+        if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
+            // Insert transaction with proof of payment, including folder path
+            $proofOfPaymentPath = $uploadFile; 
 
-            // Ensure the directory is writable
-            if (!is_writable($uploadDir)) {
-                alertAndRedirect('The payments directory is not writable. Please check permissions.', 'Directory not writable.');
-            }
+            $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
+                                VALUES (?, ?, ?, 'Pending', NOW(), ?)";
+            $stmtTransaction = $conn->prepare($sqlTransaction);
+            $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
 
-            // Sanitize the file name
-            $fileName = basename($_FILES['proof_of_payment']['name']);
-            $fileName = preg_replace("/[^A-Z0-9._-]/i", "_", $fileName);
-            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
-            $allowedMime = ['image/jpeg', 'image/png', 'application/pdf'];
-            $maxFileSize = 5 * 1024 * 1024; // 5MB
-
-            // Validate file extension
-            if (!in_array($fileExt, $allowedExt)) {
-                alertAndRedirect('Invalid file type for proof of payment. Allowed types: jpg, jpeg, png, pdf.', 'Invalid file extension: ' . $fileExt);
-            }
-
-            // Validate MIME type
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $_FILES['proof_of_payment']['tmp_name']);
-            finfo_close($finfo);
-
-            if (!in_array($mimeType, $allowedMime)) {
-                alertAndRedirect('Invalid file content for proof of payment.', 'Invalid MIME type: ' . $mimeType);
-            }
-
-            // Validate file size
-            if ($_FILES['proof_of_payment']['size'] > $maxFileSize) {
-                alertAndRedirect('Proof of payment file size exceeds the 5MB limit.', 'File size too large: ' . $_FILES['proof_of_payment']['size']);
-            }
-
-            // Generate a unique file name to prevent overwriting
-            $uniqueFileName = uniqid() . '_' . $fileName;
-            $uploadFile = $uploadDir . $uniqueFileName;
-
-            // Move the uploaded file to the server
-            if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
-                // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $uploadFile; // This should be 'payments/unique_filename.ext'
-
-                // Debugging Step: Log the path to ensure it's correct
-                // You can uncomment the following line during development to verify
-                // error_log('Proof of Payment Path: ' . $proofOfPaymentPath);
-
-                $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
-                                   VALUES (?, ?, ?, 'Pending', NOW(), ?)";
-                $stmtTransaction = $conn->prepare($sqlTransaction);
-                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
-
-                if ($execution) {
-                    alertAndRedirect('Booking and GCash payment successful.');
-                } else {
-                    alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for booking ID: ' . $bookingId);
-                }
+            if ($execution) {
+                alertAndRedirect('Booking and GCash payment successful.');
             } else {
-                alertAndRedirect('Error uploading proof of payment.', 'File upload failed for booking ID: ' . $bookingId);
+                alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for booking ID: ' . $bookingId);
             }
         } else {
-            alertAndRedirect('Please upload the proof of payment.', 'No file uploaded for GCash payment.');
+            alertAndRedirect('Error uploading proof of payment.', 'File upload failed for booking ID: ' . $bookingId);
         }
+    } else {
+        alertAndRedirect('Please upload the proof of payment.', 'No file uploaded for GCash payment.');
+    }
     } else {
         // Insert a cash transaction with pending status
         $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp) 
-                           VALUES (?, ?, ?, 'Pending', NOW())";
+                            VALUES (?, ?, ?, 'Pending', NOW())";
         $stmtTransaction = $conn->prepare($sqlTransaction);
         $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod]);
 
