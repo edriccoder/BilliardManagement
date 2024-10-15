@@ -486,13 +486,44 @@ echo "<script>
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
+            var startTime = document.getElementById('startTime');
+            var endTime = document.getElementById('endTime');
+            var numMatches = document.getElementById('numMatches');
+
             if (bookingType === 'hour') {
+               // Show hour-based fields, hide match-based fields
                perHourFields.style.display = 'block';
                perMatchFields.style.display = 'none';
-            } else {
+
+               // Set required attributes for hour-based booking
+               startTime.setAttribute('required', 'required');
+               endTime.setAttribute('required', 'required');
+               
+               // Enable the time fields
+               startTime.removeAttribute('disabled');
+               endTime.removeAttribute('disabled');
+               
+               // Disable and remove required attribute for numMatches
+               numMatches.removeAttribute('required');
+               numMatches.setAttribute('disabled', 'disabled');
+            } else if (bookingType === 'match') {
+               // Hide hour-based fields, show match-based fields
                perHourFields.style.display = 'none';
                perMatchFields.style.display = 'block';
+
+               // Remove required and disable the time fields
+               startTime.removeAttribute('required');
+               endTime.removeAttribute('required');
+               startTime.setAttribute('disabled', 'disabled');
+               endTime.setAttribute('disabled', 'disabled');
+               
+               // Set required attribute for numMatches and enable it
+               numMatches.setAttribute('required', 'required');
+               numMatches.removeAttribute('disabled');
             }
+
+            // Reset fields and recalculate the amount when switching booking types
+            resetFields(bookingType);
          }
 
          function calculateAmount() {
