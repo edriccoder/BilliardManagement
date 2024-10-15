@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Check if the proof of payment is uploaded
                 if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
                     // Define the upload directory
-                    $uploadDir = 'payments/';
+                    $uploadDir = 'img/payments/';
                     if (!is_dir($uploadDir)) {
                         mkdir($uploadDir, 0777, true); // Ensure the directory exists
                     }
