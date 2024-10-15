@@ -415,11 +415,11 @@ echo "<script>
                      <div id="perHourFields">
                         <label for="startTime">Start Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()" />
                         </div>
                         <label for="endTime">End Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()" />
                         </div>
                      </div>
 
@@ -464,7 +464,9 @@ echo "<script>
          </div>
       </div>
 
+
       <script>
+         // Initialize any required plugins or functionalities
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
@@ -473,6 +475,7 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
+         // Reset fields based on booking type
          function resetFields(bookingType) {
             if (bookingType === 'hour') {
                   document.getElementById('numMatches').value = '';
@@ -483,6 +486,7 @@ echo "<script>
             calculateAmount();
          }
 
+         // Toggle booking type fields
          function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
@@ -527,6 +531,7 @@ echo "<script>
             resetFields(bookingType);
          }
 
+         // Calculate the total amount based on booking type
          function calculateAmount() {
             var bookingType = document.getElementById('bookingType').value;
             var amount = 0;
@@ -548,12 +553,13 @@ echo "<script>
                }
             }
 
-            console.log("Calculated Amount: " + amount); // Add a log to check the calculated amount
+            console.log("Calculated Amount: " + amount); // Debugging log
             
             document.getElementById('totalAmount').value = amount.toFixed(2);
             document.getElementById('amount').value = amount.toFixed(2);
          }
 
+         // Open booking modal with pre-filled data
          function openBookingModal(table) {
             document.getElementById('bookingTableId').value = table.table_id;
             document.getElementById('bookingTableName').value = table.table_number;
@@ -563,6 +569,7 @@ echo "<script>
             $('#bookingModal').modal('show');
          }
 
+         // Toggle GCash payment fields
          function toggleGcashFields() {
             var paymentMethod = document.getElementById('paymentMethod').value;
             var gcashFields = document.getElementById('gcashFields');
@@ -580,27 +587,34 @@ echo "<script>
          });
       </script>
 
-      <!-- jQuery (Single Include) -->
+      <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-      <!-- SweetAlert2 -->
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-      <!-- Bootstrap JS Bundle (Includes Popper) -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+      <!-- Bootstrap core JavaScript-->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-      <!-- jQuery Easing -->
+
+      <!-- Core plugin JavaScript-->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-      <!-- Custom Scripts for All Pages -->
+      <!-- Custom scripts for all pages-->
       <script src="js/sb-admin-2.min.js"></script>
 
-      <!-- DataTables JS -->
+      <!-- Page level plugins -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
       <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-      <!-- Page Level Custom Scripts -->
+         
+      <!-- Page level custom scripts -->
       <script src="js/demo/datatables-demo.js"></script>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
 </html>
