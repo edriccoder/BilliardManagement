@@ -411,25 +411,26 @@ echo "<script>
                      <div class="input-group input-group-outline my-3">
                         <input type="number" name="num_players" id="numPlayers" class="form-control" required>
                      </div>
+
                      <div id="perHourFields">
-                        <label>Start Time</label>
+                        <label for="startTime">Start Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()"/>
                         </div>
-                        <label>End Time</label>
+                        <label for="endTime">End Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()"/>
                         </div>
                      </div>
 
                      <div id="perMatchFields" style="display: none;">
-                        <label>Number of Matches</label>
+                        <label for="numMatches">Number of Matches</label>
                         <div class="input-group input-group-outline my-3">
                            <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()" required>
                         </div>
                      </div>
 
-                     <label>Payment Method</label>
+                     <label for="paymentMethod">Payment Method</label>
                      <div class="input-group input-group-outline my-3">
                         <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
                            <option value="cash">Cash</option>
@@ -442,13 +443,13 @@ echo "<script>
                         <div class="input-group input-group-outline my-3">
                            <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
                         </div>
-                        <label>Proof of Payment</label>
+                        <label for="proofOfPayment">Proof of Payment</label>
                         <div class="input-group input-group-outline my-3">
                            <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
                         </div>
                      </div>
 
-                     <label>Total Amount</label>
+                     <label for="totalAmount">Total Amount</label>
                      <div class="input-group input-group-outline my-3">
                         <input type="text" id="totalAmount" class="form-control" readonly>
                      </div>
@@ -462,6 +463,7 @@ echo "<script>
             </div>
          </div>
       </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -525,8 +527,6 @@ echo "<script>
             resetFields(bookingType);
          }
 
-
-
          function calculateAmount() {
             var bookingType = document.getElementById('bookingType').value;
             var amount = 0;
@@ -554,7 +554,6 @@ echo "<script>
             document.getElementById('amount').value = amount.toFixed(2);
          }
 
-
          function openBookingModal(table) {
             document.getElementById('bookingTableId').value = table.table_id;
             document.getElementById('bookingTableName').value = table.table_number;
@@ -563,6 +562,7 @@ echo "<script>
             document.getElementById('totalAmount').value = ''; 
             $('#bookingModal').modal('show');
          }
+
          function toggleGcashFields() {
             var paymentMethod = document.getElementById('paymentMethod').value;
             var gcashFields = document.getElementById('gcashFields');
@@ -572,8 +572,13 @@ echo "<script>
                gcashFields.style.display = 'none';
             }
          }
-      </script>
 
+         // Initialize booking type on modal show
+         $('#bookingModal').on('show.bs.modal', function (e) {
+            // Optionally, set the default booking type here
+            toggleBookingType();
+         });
+      </script>
 
       <!-- jQuery -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
