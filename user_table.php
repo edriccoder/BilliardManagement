@@ -481,17 +481,6 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         // Reset fields based on booking type
-         function resetFields(bookingType) {
-            if (bookingType === 'hour') {
-                  document.getElementById('numMatches').value = '';
-            } else {
-                  document.getElementById('startTime').value = '';
-                  document.getElementById('endTime').value = '';
-            }
-            calculateAmount();
-         }
-
          // Toggle booking type fields
          function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
