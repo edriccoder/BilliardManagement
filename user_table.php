@@ -1,8 +1,4 @@
 <?php
-
-error_log('Booking Type: ' . $bookingType);
-error_log('Number of Matches: ' . $numMatches);
-error_log('Number of Players: ' . $numPlayers);
 session_start();
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     // Redirect to login page if session variables are not set
@@ -12,16 +8,6 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-if (isset($_SESSION['error'])) {
-    $error = $_SESSION['error'];
-    unset($_SESSION['error']); // Clear error after displaying
-}
-
-if (isset($_SESSION['success'])) {
-    $success = $_SESSION['success'];
-    unset($_SESSION['success']); // Clear success message after displaying
-}
-
 // Output JSON encoded user data for JavaScript to use
 echo "<script>
         const userData = {
@@ -29,7 +15,6 @@ echo "<script>
             user_id: '{$user_id}'
         };
       </script>";
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,54 +60,45 @@ echo "<script>
          <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
          <ul class="navbar-nav">
             <li class="nav-item">
-               <a class="nav-link text-white " href="user_profile.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">person</i>
-                  </div>
-                  <span class="nav-link-text ms-1">My Profile</span>
-               </a>
-            </li>
-         <ul class="navbar-nav">
-            <li class="nav-item">
-               <a class="nav-link text-white " href="user_dashboard.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">dashboard</i>
-                  </div>
-                  <span class="nav-link-text ms-1">My Dashboard</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="user_table.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">table_view</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Billiard Tables</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="booking_user.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">book</i>
-                  </div>
-                  <span class="nav-link-text ms-1">My Booking</span>
-               </a>
-            </li>
-            <li class="nav-item">
-                  <a class="nav-link text-white " href="user_tournament.php">
+                  <a class="nav-link text-white " href="user_dashboard.php">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">flag</i>
+                        <i class="material-icons opacity-10">dashboard</i>
                      </div>
-                     <span class="nav-link-text ms-1">My Tournament</span>
+                     <span class="nav-link-text ms-1">Dashboard</span>
                   </a>
-               </li> 
-            <li class="nav-item">
-               <a class="nav-link text-white " href="feedback.php">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">feedback</i>
-                  </div>
-                  <span class="nav-link-text ms-1">My Feedback</span>
-               </a>
-            </li>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="user_table.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">table_view</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Billiard Tables</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="booking_user.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">book</i>
+                     </div>
+                     <span class="nav-link-text ms-1">My Booking</span>
+                  </a>
+               </li>
+               <li class="nav-item">
+                     <a class="nav-link text-white " href="user_tournament.php">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                           <i class="material-icons opacity-10">flag</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Tournament</span>
+                     </a>
+                  </li> 
+               <li class="nav-item">
+                  <a class="nav-link text-white " href="feedback.php">
+                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">feedback</i>
+                     </div>
+                     <span class="nav-link-text ms-1">Feedback</span>
+                  </a>
+               </li>
                <li class="nav-item">
                   <a class="nav-link text-white " href="./notifications.html">
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -384,95 +360,84 @@ echo "<script>
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">×</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                     <input type="hidden" id="amount" name="amount">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                        <input type="hidden" id="bookingTableId" name="table_id">
+                        <input type="hidden" id="bookingTableName" name="table_name">
+                        <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                        <input type="hidden" id="amount" name="amount">
 
-                     <label for="username">User</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                     </div>
-
-                     <label for="bookingType">Booking Type</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
-                           <option value="hour">Per Hour</option>
-                           <option value="match">Per Match</option>
-                        </select>
-                     </div>
-
-                     <!-- Number of Players Dropdown -->
-                     <label for="numPlayers">Number of Players</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="number" name="num_players" id="numPlayers" class="form-control" required>
-                     </div>
-
-                     <!-- Per Hour Fields -->
-                     <div id="perHourFields">
-                        <label for="startTime">Start Time</label>
+                        <label for="username">User</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" onchange="calculateAmount()" />
+                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
                         </div>
-                        <label for="endTime">End Time</label>
+
+                        <label for="bookingType">Booking Type</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" onchange="calculateAmount()" />
+                              <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
+                                 <option value="hour">Per Hour</option>
+                                 <option value="match">Per Match</option>
+                              </select>
                         </div>
-                     </div>
 
-                     <!-- Per Match Fields -->
-                     <div id="perMatchFields" style="display: none;">
-                        <label for="numMatches">Number of Matches</label>
+                        <div id="perHourFields">
+                              <label>Start Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
+                              <label>End Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
+                        </div>
+
+                        <div id="perMatchFields" style="display: none;">
+                              <label>Number of Matches</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()"/>
+                              </div>
+                        </div>
+
+                        <label>Payment Method</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()" required>
+                              <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
+                                 <option value="cash">Cash</option>
+                                 <option value="gcash">GCash</option>
+                              </select>
                         </div>
-                     </div>
 
-                     <label for="paymentMethod">Payment Method</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
-                           <option value="cash">Cash</option>
-                           <option value="gcash">GCash</option>
-                        </select>
-                     </div>
+                        <div id="gcashFields" style="display: none;">
+                              <label>GCash QR Code</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                              </div>
+                              <label>Proof of Payment</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+                              </div>
+                        </div>
 
-                     <div id="gcashFields" style="display: none;">
-                        <label>GCash QR Code</label>
+                        <label>Total Amount</label>
                         <div class="input-group input-group-outline my-3">
-                           <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                              <input type="text" id="totalAmount" class="form-control" readonly>
                         </div>
-                        <label for="proofOfPayment">Proof of Payment</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                         </div>
-                     </div>
-
-                     <label for="totalAmount">Total Amount</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" id="totalAmount" class="form-control" readonly>
-                     </div>
-
-                     <div class="modal-footer">
-                        <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                     </div>
-                  </form>
-               </div>
+                     </form>
+                  </div>
             </div>
          </div>
       </div>
-
-
       <script>
-         // Initialize any required plugins or functionalities
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
             var options = {
@@ -481,49 +446,17 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         // Toggle booking type fields
          function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
-            var startTime = document.getElementById('startTime');
-            var endTime = document.getElementById('endTime');
-            var numMatches = document.getElementById('numMatches');
-
             if (bookingType === 'hour') {
-               // Show hour-based fields, hide match-based fields
                perHourFields.style.display = 'block';
                perMatchFields.style.display = 'none';
-
-               // Set required attributes for hour-based booking
-               startTime.setAttribute('required', 'required');
-               endTime.setAttribute('required', 'required');
-               
-               // Enable the time fields
-               startTime.removeAttribute('disabled');
-               endTime.removeAttribute('disabled');
-               
-               // Disable and remove required attribute for numMatches
-               numMatches.removeAttribute('required');
-               numMatches.setAttribute('disabled', 'disabled');
-            } else if (bookingType === 'match') {
-               // Hide hour-based fields, show match-based fields
+            } else {
                perHourFields.style.display = 'none';
                perMatchFields.style.display = 'block';
-
-               // Remove required and disable the time fields
-               startTime.removeAttribute('required');
-               endTime.removeAttribute('required');
-               startTime.setAttribute('disabled', 'disabled');
-               endTime.setAttribute('disabled', 'disabled');
-               
-               // Set required attribute for numMatches and enable it
-               numMatches.setAttribute('required', 'required');
-               numMatches.removeAttribute('disabled');
             }
-
-            // Reset fields and recalculate the amount when switching booking types
-            resetFields(bookingType);
          }
 
          function calculateAmount() {
@@ -556,18 +489,6 @@ echo "<script>
             document.getElementById('totalAmount').value = ''; 
             $('#bookingModal').modal('show');
          }
-
-         // Open booking modal with pre-filled data
-         function openBookingModal(table) {
-            document.getElementById('bookingTableId').value = table.table_id;
-            document.getElementById('bookingTableName').value = table.table_number;
-            document.getElementById('username').value = userData.username;
-            document.getElementById('userId').value = userData.user_id;
-            document.getElementById('totalAmount').value = ''; 
-            $('#bookingModal').modal('show');
-         }
-
-         // Toggle GCash payment fields
          function toggleGcashFields() {
             var paymentMethod = document.getElementById('paymentMethod').value;
             var gcashFields = document.getElementById('gcashFields');
@@ -577,33 +498,21 @@ echo "<script>
                gcashFields.style.display = 'none';
             }
          }
-
-         // Initialize booking type on modal show
-         $('#bookingModal').on('show.bs.modal', function (e) {
-            // Optionally, set the default booking type here
-            toggleBookingType();
-         });
-
-         function resetFields(bookingType) {
-            if (bookingType === 'hour') {
-               document.getElementById('numMatches').value = '';
-            } else {
-               document.getElementById('startTime').value = '';
-               document.getElementById('endTime').value = '';
-            }
-            calculateAmount(); // Recalculate the amount after resetting fields
-         }
       </script>
 
-      <!-- jQuery -->
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
       <!-- Bootstrap core JavaScript-->
       <script src="vendor/jquery/jquery.min.js"></script>
       <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 
       <!-- Core plugin JavaScript-->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
