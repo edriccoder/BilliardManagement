@@ -38,62 +38,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 window.location.href = 'user_table.php';
             </script>
             ";
-        } else if ($bookingType === 'match'){
+        } else {
             // Insert booking data into the bookings table
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status, amount, payment_method) 
                     VALUES (?, ?, ?, ?, ?, NULL, 'Pending', ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $amount, $paymentMethod]);
 
-        }
+            // Get the last inserted booking ID
+            $bookingId = $conn->lastInsertId();
 
-        if ($paymentMethod === 'gcash') {
-            // Check if the proof of payment is uploaded
-            if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
-                // Define the upload directory
-                $uploadDir = 'payments/';
-                $fileName = basename($_FILES['proof_of_payment']['name']);
-                $targetFilePath = $uploadDir . $fileName;
+            if ($paymentMethod === 'gcash') {
+                // Check if the proof of payment is uploaded
+                if (isset($_FILES['proof_of_payment']) && $_FILES['proof_of_payment']['error'] === 0) {
+                    // Define the upload directory
+                    $uploadDir = 'payments/';
+                    $fileName = basename($_FILES['proof_of_payment']['name']);
+                    $targetFilePath = $uploadDir . $fileName;
 
-                // Move the uploaded file to the server
-                if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $targetFilePath)) {
-                    // Update the booking record with the proof of payment image
-                    $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) VALUES (?, ?, ?, 'Pending', NOW(), ?)";
-                    $stmtTransaction = $conn->prepare($sqlTransaction);
-                    $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPayment]);
+                    // Move the uploaded file to the server
+                    if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $targetFilePath)) {
+                        // Insert transaction with proof of payment
+                        $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
+                                           VALUES (?, ?, ?, 'Pending', NOW(), ?)";
+                        $stmtTransaction = $conn->prepare($sqlTransaction);
+                        $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $fileName]);
 
-                    echo "
-                    <script>
-                        alert('Booking and GCash payment successful.');
-                        window.location.href = 'user_table.php';
-                    </script>
-                    ";
-                    exit();
+                        echo "
+                        <script>
+                            alert('Booking and GCash payment successful.');
+                            window.location.href = 'user_table.php';
+                        </script>
+                        ";
+                        exit();
+                    } else {
+                        echo "
+                        <script>
+                            alert('Error uploading proof of payment.');
+                            window.location.href = 'user_table.php';
+                        </script>
+                        ";
+                    }
                 } else {
                     echo "
                     <script>
-                        alert('Error uploading proof of payment.');
+                        alert('Please upload the proof of payment.');
                         window.location.href = 'user_table.php';
                     </script>
                     ";
                 }
             } else {
+                // Cash payment success message
                 echo "
                 <script>
-                    alert('Please upload the proof of payment.');
+                    alert('Booking Successful');
                     window.location.href = 'user_table.php';
                 </script>
                 ";
+                exit();
             }
-        } else {
-            // Cash payment success message
-            echo "
-            <script>
-                alert('Booking Successful');
-                window.location.href = 'user_table.php';
-            </script>
-            ";
-            exit();
         }
     }
 }
