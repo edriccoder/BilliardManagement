@@ -35,7 +35,7 @@ $total_bookings = getCount($conn, $sql_bookings);
 // Escape and encode session variables for safe output
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment
+$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, b.num_players, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
                 WHERE b.archive = 0
@@ -257,6 +257,8 @@ foreach ($users as $user) {
                                 echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
                                 echo '<span class="mb-2 text-xs">Number Of matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_matches"]) . '</span></span>';
                                 echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+                                echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
+                                
                                 if (!empty($booking["proof_of_payment"])) {
                                     echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
                                     echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
