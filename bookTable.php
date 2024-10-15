@@ -103,7 +103,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
         if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
             // Insert transaction with proof of payment, including folder path
-            $proofOfPaymentPath = $uploadFile; 
+            $proofOfPaymentPath = "payments/" . $uploadFile; 
 
             $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                 VALUES (?, ?, ?, 'Pending', NOW(), ?)";
