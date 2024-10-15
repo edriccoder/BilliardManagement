@@ -98,24 +98,43 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             // Define the upload directory
             $uploadDir = 'payments/';
 
-            // Ensure the directory exists and is writable
+            // Ensure the directory exists
             if (!is_dir($uploadDir)) {
-                if (!mkdir($uploadDir, 0777, true)) {
-                    alertAndRedirect('Failed to create the payments directory.');
+                if (!mkdir($uploadDir, 0755, true)) { // Use 0755 permissions for security
+                    alertAndRedirect('Failed to create the payments directory.', 'Directory creation failed.');
                 }
             }
 
+            // Ensure the directory is writable
             if (!is_writable($uploadDir)) {
-                alertAndRedirect('The payments directory is not writable. Please check permissions.');
+                alertAndRedirect('The payments directory is not writable. Please check permissions.', 'Directory not writable.');
             }
 
             $fileName = basename($_FILES['proof_of_payment']['name']);
-            $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+            // Sanitize the file name
+            $fileName = preg_replace("/[^A-Z0-9._-]/i", "_", $fileName);
+            $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
             $allowedExt = ['jpg', 'jpeg', 'png', 'pdf'];
+            $allowedMime = ['image/jpeg', 'image/png', 'application/pdf'];
+            $maxFileSize = 5 * 1024 * 1024; // 5MB
 
             // Validate file extension
-            if (!in_array(strtolower($fileExt), $allowedExt)) {
-                alertAndRedirect('Invalid file type for proof of payment. Allowed types: jpg, jpeg, png, pdf.');
+            if (!in_array($fileExt, $allowedExt)) {
+                alertAndRedirect('Invalid file type for proof of payment. Allowed types: jpg, jpeg, png, pdf.', 'Invalid file extension: ' . $fileExt);
+            }
+
+            // Validate MIME type
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $_FILES['proof_of_payment']['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedMime)) {
+                alertAndRedirect('Invalid file content for proof of payment.', 'Invalid MIME type: ' . $mimeType);
+            }
+
+            // Validate file size
+            if ($_FILES['proof_of_payment']['size'] > $maxFileSize) {
+                alertAndRedirect('Proof of payment file size exceeds the 5MB limit.', 'File size too large: ' . $_FILES['proof_of_payment']['size']);
             }
 
             // Generate a unique file name to prevent overwriting
@@ -125,34 +144,45 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             // Move the uploaded file to the server
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $uploadFile; // Full relative path with folder
+                $proofOfPaymentPath = $uploadFile; // 'payments/unique_filename.ext'
 
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                    VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                 $stmtTransaction = $conn->prepare($sqlTransaction);
-                $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
 
-                alertAndRedirect('Booking and GCash payment successful.');
+                if ($execution) {
+                    alertAndRedirect('Booking and GCash payment successful.');
+                } else {
+                    alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for booking ID: ' . $bookingId);
+                }
             } else {
-                alertAndRedirect('Error uploading proof of payment.');
+                alertAndRedirect('Error uploading proof of payment.', 'File upload failed for booking ID: ' . $bookingId);
             }
         } else {
-            alertAndRedirect('Please upload the proof of payment.');
+            alertAndRedirect('Please upload the proof of payment.', 'No file uploaded for GCash payment.');
         }
     } else {
         // Insert a cash transaction with pending status
         $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp) 
                            VALUES (?, ?, ?, 'Pending', NOW())";
         $stmtTransaction = $conn->prepare($sqlTransaction);
-        $stmtTransaction->execute([$bookingId, $amount, $paymentMethod]);
+        $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod]);
 
-        // Cash payment success message
-        alertAndRedirect('Booking Successful');
+        if ($execution) {
+            // Cash payment success message
+            alertAndRedirect('Booking Successful');
+        } else {
+            alertAndRedirect('Failed to process your booking. Please try again.', 'Database insertion failed for cash payment with booking ID: ' . $bookingId);
+        }
     }
 }
 
-// Helper function to alert and redirect
-function alertAndRedirect($message) {
+// Updated alertAndRedirect function with optional logging
+function alertAndRedirect($message, $logMessage = null) {
+    if ($logMessage) {
+        error_log($logMessage);
+    }
     echo "
     <script>
         alert('$message');
@@ -161,4 +191,5 @@ function alertAndRedirect($message) {
     ";
     exit();
 }
+
 ?>
