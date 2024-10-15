@@ -409,42 +409,46 @@ foreach ($users as $user) {
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="edit_booking.php">
-                        <input type="hidden" id="bookingId" name="booking_id">
-                        <input type="hidden" id="userId" name="user_id">
-                        <label for="username">User</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" class="form-control" id="username" name="username" value="" readonly>
-                        </div>
-                        <label>Start Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
-                        </div>
-                        <label>End Time</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
-                        </div>
-                        <label>Amount</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="amount" id="editAmount" class="form-control" readonly>
-                        </div>
-                        <label>Payment Method</label>
-                        <div class="input-group input-group-outline my-3">
-                              <input type="text" name="payment_method" id="editPaymentMethod" class="form-control" readonly>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="confirm" class="btn btn-primary">Confirm Edit</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
+               <div class="modal-header">
+                  <h5 class="modal-title" id="bookingModalLabel">Manage Booking</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">×</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form method="POST" action="edit_booking.php">
+                     <input type="hidden" id="bookingId" name="booking_id">
+                     <input type="hidden" id="userId" name="user_id">
+                     <label for="username">User</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" class="form-control" id="username" name="username" value="" readonly>
+                     </div>
+                     <label>Start Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
+                     </div>
+                     <label>End Time</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
+                     </div>
+                     <label>Number of Players</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="number" name="num_players" id="editNumPlayers" class="form-control" required>
+                     </div>
+                     <label>Amount</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" name="amount" id="editAmount" class="form-control" readonly>
+                     </div>
+                     <label>Payment Method</label>
+                     <div class="input-group input-group-outline my-3">
+                        <input type="text" name="payment_method" id="editPaymentMethod" class="form-control" readonly>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="submit" name="confirm" class="btn btn-primary">Confirm Edit</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                     </div>
+                  </form>
+               </div>
             </div>
          </div>
       </div>
