@@ -18,8 +18,8 @@ function generate_invoice($booking) {
     $pdf->SetKeywords('TCPDF, PDF, invoice, booking, receipt');
 
     // Header Data
-    $logoFile = 'path/to/logo.png'; // Replace with the path to your logo image
-    $pdf->SetHeaderData($logoFile, 30, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\nCity, State, ZIP\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
+    $logoFile = 'img/logoBilliard.png'; // Replace with the path to your logo image
+    $pdf->SetHeaderData($logoFile, 30, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\General Santos City, Sout Cotabato, 9500\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
 
     // Header and Footer Fonts
     $pdf->setHeaderFont(['helvetica', '', 12]);
