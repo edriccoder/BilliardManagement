@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $bookingType = $_POST['booking_type'];
     $amount = $_POST['amount'];
     $paymentMethod = $_POST['payment_method'];
+    $numPlayers = $_POST['num_players']; // Handle number of players
 
     // Fetch table_number based on table_id
     $stmtTable = $conn->prepare("SELECT table_number FROM tables WHERE table_id = ?");
@@ -37,9 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ";
         } else {
             // Proceed with booking
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, ?, ?, NULL, 'Pending')";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, num_players, status) VALUES (?, ?, ?, ?, ?, NULL, ?, 'Pending')";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime]);
+            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
             echo "
             <script>
