@@ -6,9 +6,8 @@ require_once('vendor/autoload.php');
 function generate_invoice($booking) {
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-    $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('T JAMES SPORTY BAR');
-    $pdf->SetTitle('Invoice');
+    $pdf->SetTitle('Reciept');
     $pdf->SetSubject('Invoice for Booking ID: ' . htmlspecialchars($booking['booking_id']));
     $pdf->SetKeywords('TCPDF, PDF, invoice, booking');
 
