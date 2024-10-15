@@ -266,8 +266,8 @@ foreach ($users as $user) {
                             echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
                             echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
                            
-                            $paymentsDir = 'payments/';
-                            
+                            $paymentsDir = 'https://tjamessportybar.com/BilliardManagement/payments/';
+
                             if (!empty($booking["proof_of_payment"])) {
                                  echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
                                  echo '<a href="#" onclick="openImageModal(\'' . $paymentsDir . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
