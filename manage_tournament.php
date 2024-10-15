@@ -480,7 +480,6 @@
          </div>
       </div>
 
-
       <!-- Edit Tournament Modal -->
       <div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">

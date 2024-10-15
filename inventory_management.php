@@ -222,10 +222,16 @@
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Inventory Management</h1>
             <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addItemModal'>Add Item</button>
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#showReport'>Show Report</button>
          </div>
          <!-- Content Row -->
          <?php
          include 'conn.php';
+
+         $sql = "SELECT id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
+         $stmt = $conn->prepare($sql);
+         $stmt->execute();
+         $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
          // Handle Add/Edit/Delete form submissions
          if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -449,6 +455,7 @@
             </div>
          </div>
       </div>
+
       <!-- Edit Item Modal -->
       <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
@@ -485,6 +492,67 @@
             </div>
          </div>
       </div>
+      <!-- Modal Structure -->
+      <div class="modal fade" id="showReportModal" tabindex="-1" role="dialog" aria-labelledby="showReportModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h5 class="modal-title" id="showReportModalLabel">Reports</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <div class="modal-body">
+               <?php if (!empty($reports)) { ?>
+               <table class="table table-bordered table-striped">
+                  <thead>
+                     <tr>
+                     <th>ID</th>
+                     <th>Type</th>
+                     <th>Description</th>
+                     <th>Date & Time</th>
+                     <th>Photo</th>
+                     <th>Reported By</th>
+                     <th>Actions</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <?php foreach ($reports as $report) { ?>
+                     <tr>
+                     <td><?php echo htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8'); ?></td>
+                     <td><?php echo htmlspecialchars($report["type"], ENT_QUOTES, 'UTF-8'); ?></td>
+                     <td><?php echo htmlspecialchars($report["description"], ENT_QUOTES, 'UTF-8'); ?></td>
+                     <td><?php echo htmlspecialchars($report["datetime"], ENT_QUOTES, 'UTF-8'); ?></td>
+                     <td>
+                        <?php if (!empty($report["photo"])) { ?>
+                        <a href="#" onclick="openImageModal('<?php echo htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8'); ?>'); return false;">
+                           <img src="<?php echo htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8'); ?>" alt="Report Photo" style="max-width: 100px; max-height: 100px;">
+                        </a>
+                        <?php } ?>
+                     </td>
+                     <td><?php echo htmlspecialchars($report["name"], ENT_QUOTES, 'UTF-8'); ?></td>
+                     <td>
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=<?php echo htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8'); ?>">
+                           <i class="material-icons text-sm me-2">delete</i>Delete
+                        </a>
+                        <a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick='openEditModal(<?php echo json_encode($report); ?>)'>
+                           <i class="material-icons text-sm me-2">edit</i>Edit
+                        </a>
+                     </td>
+                     </tr>
+                     <?php } ?>
+                  </tbody>
+               </table>
+               <?php } else { ?>
+                  <p>No reports found.</p>
+               <?php } ?>
+               </div>
+               <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               </div>
+            </div>
+         </div>
+      </div>
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -505,6 +573,17 @@
             document.getElementById('edit_image').value = ''; // Clear file input
 
             $('#editItemModal').modal('show');
+         }
+
+         function openImageModal(photoUrl) {
+         // Here, implement the logic to open another modal to display the full-sized image
+         alert("Show image: " + photoUrl);
+         }
+
+         // Function to open the edit modal with prefilled data
+         function openEditModal(report) {
+         // Here, implement the logic to fill another modal with report data for editing
+         console.log("Edit report:", report);
          }
       </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
