@@ -437,11 +437,11 @@
                         <div class="input-group input-group-outline my-3">
                               <input type="text" class="form-control" id="tournamentName" name="name" required>
                         </div>
-                        <label for="startDate">Start Date & Time</label> <!-- Updated label -->
+                        <label for="startDate">Start Date & Time</label>
                         <div class="input-group input-group-outline my-3">
                               <input type="datetime-local" class="form-control" id="startDate" name="start_date" required>
                         </div>
-                        <label for="endDate">End Date & Time</label> <!-- Updated label -->
+                        <label for="endDate">End Date & Time</label>
                         <div class="input-group input-group-outline my-3">
                               <input type="datetime-local" class="form-control" id="endDate" name="end_date" required>
                         </div>
@@ -468,9 +468,9 @@
                         <label for="qualification">Qualification</label>
                         <div class="input-group input-group-outline my-3">
                               <select class="form-control" id="qualification" name="qualification" required>
-                                 <option value="all">Class A</option>
-                                 <option value="beginner">Class B</option>
-                                 <option value="pro">Class S</option>
+                                 <option value="Class A">Class A</option>
+                                 <option value="Class B">Class B</option>
+                                 <option value="Class S">Class S</option>
                               </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Tournament</button>
@@ -479,6 +479,7 @@
             </div>
          </div>
       </div>
+
 
       <!-- Edit Tournament Modal -->
       <div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
