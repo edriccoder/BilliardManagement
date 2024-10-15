@@ -265,13 +265,11 @@ foreach ($users as $user) {
                             echo '<span class="mb-2 text-xs">Number Of Matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_matches"]) . '</span></span>';
                             echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
                             echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
-                           
-                            $paymentsDir = 'https://tjamessportybar.com/BilliardManagement/payments/';
 
                             if (!empty($booking["proof_of_payment"])) {
                                  echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                 echo '<a href="#" onclick="openImageModal(\'' . $paymentsDir . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                 echo '<img src="' . $paymentsDir . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                 echo '<a href="#" onclick="openImageModal(\'' htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                                 echo '<img src="' htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
                                  echo '</a>';
                                  echo '</span></span>';
                            }
