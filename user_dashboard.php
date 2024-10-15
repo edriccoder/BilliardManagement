@@ -28,14 +28,10 @@ try {
     echo "Failed " . $e->getMessage();
 }
 
-// Fetch announcements
-try {
-   $stmt = $conn->prepare("SELECT id, title, body, created_at, expires_at FROM announcements WHERE expires_at IS NULL OR expires_at > NOW() ORDER BY created_at DESC");
-   $stmt->execute();
-   $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-   echo "Failed: " . $e->getMessage();
-}
+$sqlBookings = "SELECT title, body, expires_at FROM announcements";
+$stmtBookings = $conn->prepare($sqlBookings);
+$stmtBookings->execute();
+$announcements = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Fetch tournaments for the logged-in user
@@ -332,15 +328,31 @@ echo "<script>
                <h5 class="mb-0">Announcements</h5>
             </div>
             <div class="card-body p-3 pb-0">
-            <?php if (!empty($announcements)): ?>
-               <?php foreach ($announcements as $announcement): ?>
-                  <div class="alert alert-info alert-dismissible fade show custom-alert" role="alert">
-                        <strong><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
-                        <?php echo htmlspecialchars($announcement['body']); ?>
-                        <p>This announcement will expire at: <?php echo htmlspecialchars($announcement['expires_at']); ?></p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-               <?php endforeach; ?>
+               <?php if (!empty($announcements)): ?>
+                  <?php foreach ($announcements as $announcement): ?>
+                     <?php
+                     // Determine alert type based on the title or content (customizable logic)
+                     $alertType = "alert-primary"; // Default alert type
+                     if (stripos($announcement['title'], 'danger') !== false) {
+                           $alertType = "alert-danger";
+                     } elseif (stripos($announcement['title'], 'warning') !== false) {
+                           $alertType = "alert-warning";
+                     } elseif (stripos($announcement['title'], 'info') !== false) {
+                           $alertType = "alert-info";
+                     } elseif (stripos($announcement['title'], 'success') !== false) {
+                           $alertType = "alert-success";
+                     }
+
+                     // Format the expiration date to include both date and time
+                     $expiresAt = date('F j, Y, g:i a', strtotime($announcement['expires_at']));
+                     ?>
+                     <div class="alert <?php echo $alertType; ?> alert-dismissible fade show custom-alert" role="alert">
+                           <strong><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
+                           <?php echo nl2br(htmlspecialchars($announcement['body'])); ?>
+                           <p>This announcement will expire at: <?php echo $expiresAt; ?></p>
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                     </div>
+                  <?php endforeach; ?>
                <?php else: ?>
                   <div class="alert alert-warning" role="alert">
                      No announcements found.
