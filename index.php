@@ -131,7 +131,7 @@
                         <h5 class="mb-0">Announcement</h5>
                     </div>
                     <div class="card-body p-3 pb-0">
-                        <?php
+                    <?php
                         include 'conn.php';
 
                         // Fetch announcements from the database
@@ -155,13 +155,14 @@
                                     $alertType = "alert-success";
                                 }
 
-                                // Format the expiration date
+                                // Format the expiration date to include both date and time
                                 $expiresAt = date('F j, Y, g:i a', strtotime($announcement['expires_at']));
 
-                                // Display the alert
+                                // Display the alert with title, body, and expiration time each on a new line
                                 echo '<div class="alert ' . $alertType . ' alert-dismissible text-white" role="alert">';
-                                echo '<span class="text-sm"><strong>' . htmlspecialchars($announcement['title']) . '</strong>: ' . htmlspecialchars($announcement['body']) . '</span>';
-                                echo '<br><small class="text">Expires at: ' . $expiresAt . '</small>';
+                                echo '<span class="text-sm"><strong>' . htmlspecialchars($announcement['title']) . '</strong></span><br>'; // Title on a new line
+                                echo '<span class="text-sm">' . nl2br(htmlspecialchars($announcement['body'])) . '</span><br>'; // Body with new line support
+                                echo '<small class="text">Expires at: ' . $expiresAt . '</small><br>'; // Expiration date on a new line
                                 echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                                 echo '</div>';
                             }
@@ -172,8 +173,8 @@
                             echo '</div>';
                         }
                         ?>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
