@@ -409,13 +409,7 @@ echo "<script>
                      <!-- Number of Players Dropdown -->
                      <label for="numPlayers">Number of Players</label>
                      <div class="input-group input-group-outline my-3">
-                        <select name="num_players" id="numPlayers" class="form-control">
-                           <option value="1">1 Player</option>
-                           <option value="2">2 Players</option>
-                           <option value="3">3 Players</option>
-                           <option value="4">4 Players</option>
-                           <option value="5">5 Players</option>
-                        </select>
+                        <input type="number" name="num_players" id="numPlayers" class="form-control" required>
                      </div>
 
                      <div id="perHourFields">
