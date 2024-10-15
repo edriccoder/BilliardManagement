@@ -106,7 +106,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                     VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                 $stmtTransaction = $conn->prepare($sqlTransaction);
-                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+                $execution = $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, 'payments/' + $proofOfPaymentPath]);
 
                 if ($execution) {
                     alertAndRedirect('Booking and GCash payment successful.');
