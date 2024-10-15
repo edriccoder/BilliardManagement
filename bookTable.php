@@ -1,4 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+include('conn.php');
+
 // Check if request is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Capture necessary fields from the form
@@ -23,12 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Booking logic based on type
     if ($bookingType === 'hour') {
-        $startTime = $_POST['start_time'];
-        $endTime = $_POST['end_time'];
+        $startTime = isset($_POST['start_time']) ? $_POST['start_time'] : null;
+        $endTime = isset($_POST['end_time']) ? $_POST['end_time'] : null;
 
         // Validate start and end times
         if (empty($startTime) || empty($endTime)) {
             alertAndRedirect('Please enter both start and end times.');
+        }
+
+        // Ensure the start time is before the end time
+        if (strtotime($startTime) >= strtotime($endTime)) {
+            alertAndRedirect('End time must be after the start time.');
         }
 
         // Check for overlapping bookings
@@ -50,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
             // Get last inserted booking ID
-            $bookingId = $conn->lastInsertId();
+            $bookingId = $conn->lastInsertId();  // Use $conn instead of $stmt here
 
             // Handle transaction based on payment method
             handleTransaction($bookingId, $amount, $paymentMethod);
@@ -66,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($result) {
                 // Get last inserted booking ID
-                $bookingId = $conn->lastInsertId();
+                $bookingId = $conn->lastInsertId();  // Use $conn instead of $stmt here
 
                 // Handle transaction based on payment method
                 handleTransaction($bookingId, $amount, $paymentMethod);
@@ -80,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         alertAndRedirect('Invalid booking type selected.');
     }
 }
-
 
 // Function to handle transactions for both GCash and Cash payments
 function handleTransaction($bookingId, $amount, $paymentMethod) {
@@ -106,7 +115,7 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
             // Move uploaded file
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
-                $proofOfPaymentPath = $uploadFile; 
+                $proofOfPaymentPath = $uploadFile;
 
                 $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                     VALUES (?, ?, ?, 'Pending', NOW(), ?)";
@@ -153,5 +162,4 @@ function alertAndRedirect($message, $logMessage = null) {
     ";
     exit();
 }
-
 ?>

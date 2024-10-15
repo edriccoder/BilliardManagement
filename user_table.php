@@ -381,94 +381,94 @@ echo "<script>
          </div>
       </div>  
       <!-- Booking Modal -->
-      <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">×</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                     <input type="hidden" id="amount" name="amount">
-
-                     <label for="username">User</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                     </div>
-
-                     <label for="bookingType">Booking Type</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
-                           <option value="hour">Per Hour</option>
-                           <option value="match">Per Match</option>
-                        </select>
-                     </div>
-
-                     <!-- Number of Players Dropdown -->
-                     <label for="numPlayers">Number of Players</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="number" name="num_players" id="numPlayers" class="form-control" required>
-                     </div>
-
-                     <!-- Per Hour Fields -->
-                     <div id="perHourFields">
-                        <label for="startTime">Start Time</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" onchange="calculateAmount()" />
-                        </div>
-                        <label for="endTime">End Time</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" onchange="calculateAmount()" />
-                        </div>
-                     </div>
-
-                     <!-- Per Match Fields -->
-                     <div id="perMatchFields" style="display: none;">
-                        <label for="numMatches">Number of Matches</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()" required>
-                        </div>
-                     </div>
-
-                     <label for="paymentMethod">Payment Method</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
-                           <option value="cash">Cash</option>
-                           <option value="gcash">GCash</option>
-                        </select>
-                     </div>
-
-                     <div id="gcashFields" style="display: none;">
-                        <label>GCash QR Code</label>
-                        <div class="input-group input-group-outline my-3">
-                           <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
-                        </div>
-                        <label for="proofOfPayment">Proof of Payment</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
-                        </div>
-                     </div>
-
-                     <label for="totalAmount">Total Amount</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" id="totalAmount" class="form-control" readonly>
-                     </div>
-
-                     <div class="modal-footer">
-                        <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                     </div>
-                  </form>
-               </div>
-            </div>
-         </div>
-      </div>
+        <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+           <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">×</span>
+                    </button>
+                 </div>
+                 <div class="modal-body">
+                    <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                       <input type="hidden" id="bookingTableId" name="table_id">
+                       <input type="hidden" id="bookingTableName" name="table_name">
+                       <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                       <input type="hidden" id="amount" name="amount">
+        
+                       <label for="username">User</label>
+                       <div class="input-group input-group-outline my-3">
+                          <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                       </div>
+        
+                       <label for="bookingType">Booking Type</label>
+                       <div class="input-group input-group-outline my-3">
+                          <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
+                             <option value="hour">Per Hour</option>
+                             <option value="match">Per Match</option>
+                          </select>
+                       </div>
+        
+                       <!-- Number of Players Dropdown -->
+                       <label for="numPlayers">Number of Players</label>
+                       <div class="input-group input-group-outline my-3">
+                          <input type="number" name="num_players" id="numPlayers" class="form-control" required>
+                       </div>
+        
+                       <!-- Per Hour Fields -->
+                       <div id="perHourFields">
+                          <label for="startTime">Start Time</label>
+                          <div class="input-group input-group-outline my-3">
+                             <input type="datetime-local" id="startTime" name="start_time" class="form-control" onchange="calculateAmount()" />
+                          </div>
+                          <label for="endTime">End Time</label>
+                          <div class="input-group input-group-outline my-3">
+                             <input type="datetime-local" id="endTime" name="end_time" class="form-control" onchange="calculateAmount()" />
+                          </div>
+                       </div>
+        
+                       <!-- Per Match Fields -->
+                       <div id="perMatchFields" style="display: none;">
+                          <label for="numMatches">Number of Matches</label>
+                          <div class="input-group input-group-outline my-3">
+                             <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()">
+                          </div>
+                       </div>
+        
+                       <label for="paymentMethod">Payment Method</label>
+                       <div class="input-group input-group-outline my-3">
+                          <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
+                             <option value="cash">Cash</option>
+                             <option value="gcash">GCash</option>
+                          </select>
+                       </div>
+        
+                       <div id="gcashFields" style="display: none;">
+                          <label>GCash QR Code</label>
+                          <div class="input-group input-group-outline my-3">
+                             <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                          </div>
+                          <label for="proofOfPayment">Proof of Payment</label>
+                          <div class="input-group input-group-outline my-3">
+                             <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+                          </div>
+                       </div>
+        
+                       <label for="totalAmount">Total Amount</label>
+                       <div class="input-group input-group-outline my-3">
+                          <input type="text" id="totalAmount" class="form-control" readonly>
+                       </div>
+        
+                       <div class="modal-footer">
+                          <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                       </div>
+                    </form>
+                 </div>
+              </div>
+           </div>
+        </div>
 
 
       <script>
@@ -482,81 +482,100 @@ echo "<script>
          }
 
          // Toggle booking type fields
-         function toggleBookingType() {
+         
+   // Toggle booking type fields
+       function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
             var startTime = document.getElementById('startTime');
             var endTime = document.getElementById('endTime');
             var numMatches = document.getElementById('numMatches');
-
+        
             if (bookingType === 'hour') {
-               // Show hour-based fields, hide match-based fields
-               perHourFields.style.display = 'block';
-               perMatchFields.style.display = 'none';
-
-               // Set required attributes for hour-based booking
-               startTime.setAttribute('required', 'required');
-               endTime.setAttribute('required', 'required');
-               
-               // Enable the time fields
-               startTime.removeAttribute('disabled');
-               endTime.removeAttribute('disabled');
-               
-               // Disable and remove required attribute for numMatches
-               numMatches.removeAttribute('required');
-               numMatches.setAttribute('disabled', 'disabled');
+                // Show hour-based fields, hide match-based fields
+                perHourFields.style.display = 'block';
+                perMatchFields.style.display = 'none';
+        
+                // Set required attributes for hour-based booking
+                startTime.setAttribute('required', 'required');
+                endTime.setAttribute('required', 'required');
+        
+                // Enable the time fields
+                startTime.removeAttribute('disabled');
+                endTime.removeAttribute('disabled');
+        
+                // Disable and remove required attribute for numMatches
+                numMatches.removeAttribute('required');
+                numMatches.setAttribute('disabled', 'disabled');
+                numMatches.value = ''; // Clear the numMatches value
             } else if (bookingType === 'match') {
-               // Hide hour-based fields, show match-based fields
-               perHourFields.style.display = 'none';
-               perMatchFields.style.display = 'block';
-
-               // Remove required and disable the time fields
-               startTime.removeAttribute('required');
-               endTime.removeAttribute('required');
-               startTime.setAttribute('disabled', 'disabled');
-               endTime.setAttribute('disabled', 'disabled');
-               
-               // Set required attribute for numMatches and enable it
-               numMatches.setAttribute('required', 'required');
-               numMatches.removeAttribute('disabled');
+                // Hide hour-based fields, show match-based fields
+                perHourFields.style.display = 'none';
+                perMatchFields.style.display = 'block';
+        
+                // Remove required and disable the time fields
+                startTime.removeAttribute('required');
+                endTime.removeAttribute('required');
+                startTime.setAttribute('disabled', 'disabled');
+                endTime.setAttribute('disabled', 'disabled');
+                startTime.value = ''; // Clear the startTime value
+                endTime.value = ''; // Clear the endTime value
+        
+                // Set required attribute for numMatches and enable it
+                numMatches.setAttribute('required', 'required');
+                numMatches.removeAttribute('disabled');
             }
-
+        
             // Reset fields and recalculate the amount when switching booking types
             resetFields(bookingType);
-         }
-
-         function calculateAmount() {
+        }
+        
+        function resetFields(bookingType) {
+            if (bookingType === 'hour') {
+                // Clear match-related field
+                document.getElementById('numMatches').value = '';
+            } else {
+                // Clear time-related fields
+                document.getElementById('startTime').value = '';
+                document.getElementById('endTime').value = '';
+            }
+            calculateAmount(); // Recalculate the amount after resetting fields
+        }
+        
+        function calculateAmount() {
             var bookingType = document.getElementById('bookingType').value;
             var amount = 0;
             if (bookingType === 'hour') {
-               var startTime = document.getElementById('startTime').value;
-               var endTime = document.getElementById('endTime').value;
-               if (startTime && endTime) {
-                     var start = new Date(startTime);
-                     var end = new Date(endTime);
-                     var diff = (end - start) / (1000 * 60 * 60); 
-                     amount = diff * 80; 
-               }
+                var startTime = document.getElementById('startTime').value;
+                var endTime = document.getElementById('endTime').value;
+                if (startTime && endTime) {
+                    var start = new Date(startTime);
+                    var end = new Date(endTime);
+                    var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+                    if (diff > 0) {
+                        amount = diff * 100; // Assuming 100 currency units per hour
+                    } else {
+                        alert("End time must be after the start time.");
+                        return;
+                    }
+                } else {
+                    alert("Please select valid start and end times.");
+                    return;
+                }
             } else if (bookingType === 'match') {
-               var numMatches = document.getElementById('numMatches').value;
-               if (numMatches) {
-                     amount = numMatches * 20; 
-               }
+                var numMatches = document.getElementById('numMatches').value;
+                if (numMatches && numMatches > 0) {
+                    amount = numMatches * 20; // Assuming 20 currency units per match
+                } else {
+                    alert("Please enter a valid number of matches.");
+                    return;
+                }
             }
+        
             document.getElementById('totalAmount').value = amount.toFixed(2);
             document.getElementById('amount').value = amount.toFixed(2);
-         }
-
-         function openBookingModal(table) {
-            document.getElementById('bookingTableId').value = table.table_id;
-            document.getElementById('bookingTableName').value = table.table_number;
-            document.getElementById('username').value = userData.username;
-            document.getElementById('userId').value = userData.user_id;
-            document.getElementById('totalAmount').value = ''; 
-            $('#bookingModal').modal('show');
-         }
-
+        }
          // Open booking modal with pre-filled data
          function openBookingModal(table) {
             document.getElementById('bookingTableId').value = table.table_id;
@@ -584,15 +603,7 @@ echo "<script>
             toggleBookingType();
          });
 
-         function resetFields(bookingType) {
-            if (bookingType === 'hour') {
-               document.getElementById('numMatches').value = '';
-            } else {
-               document.getElementById('startTime').value = '';
-               document.getElementById('endTime').value = '';
-            }
-            calculateAmount(); // Recalculate the amount after resetting fields
-         }
+
       </script>
 
       <!-- jQuery -->
