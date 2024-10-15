@@ -268,8 +268,8 @@ foreach ($users as $user) {
                     
                             if (!empty($booking["proof_of_payment"])) {
                                 echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                echo '<a href="#" onclick="openImageModal(\'payment/' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                echo '<img src="payment/' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                echo '<a href="#" onclick="openImageModal(\'payments/' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                                echo '<img src="payments/' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
                                 echo '</a>';
                                 echo '</span></span>';
                             }
