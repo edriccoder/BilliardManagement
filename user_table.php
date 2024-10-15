@@ -486,72 +486,44 @@ echo "<script>
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
-            var startTime = document.getElementById('startTime');
-            var endTime = document.getElementById('endTime');
-            var numMatches = document.getElementById('numMatches');
-            
             if (bookingType === 'hour') {
                perHourFields.style.display = 'block';
                perMatchFields.style.display = 'none';
-
-               // Set required attributes for hour-based booking
-               startTime.setAttribute('required', 'required');
-               endTime.setAttribute('required', 'required');
-               
-               // Enable the time fields
-               startTime.removeAttribute('disabled');
-               endTime.removeAttribute('disabled');
-               
-               // Disable the numMatches field and remove its required attribute
-               numMatches.removeAttribute('required');
-               numMatches.setAttribute('disabled', 'disabled');
-            } else if (bookingType === 'match') {
+            } else {
                perHourFields.style.display = 'none';
                perMatchFields.style.display = 'block';
-
-               // Remove required attributes from the time fields
-               startTime.removeAttribute('required');
-               endTime.removeAttribute('required');
-
-               // Disable the time fields
-               startTime.setAttribute('disabled', 'disabled');
-               endTime.setAttribute('disabled', 'disabled');
-               
-               // Enable the numMatches field and set it as required
-               numMatches.setAttribute('required', 'required');
-               numMatches.removeAttribute('disabled');
             }
-
-            // Reset fields when switching booking types
-            resetFields(bookingType);
          }
 
-         // Calculate the total amount based on booking type
          function calculateAmount() {
             var bookingType = document.getElementById('bookingType').value;
             var amount = 0;
-            
             if (bookingType === 'hour') {
                var startTime = document.getElementById('startTime').value;
                var endTime = document.getElementById('endTime').value;
-               
                if (startTime && endTime) {
                      var start = new Date(startTime);
                      var end = new Date(endTime);
-                     var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
-                     amount = diff * 100; // Assuming 100 currency units per hour
+                     var diff = (end - start) / (1000 * 60 * 60); 
+                     amount = diff * 80; 
                }
             } else if (bookingType === 'match') {
                var numMatches = document.getElementById('numMatches').value;
                if (numMatches) {
-                     amount = numMatches * 20; // Assuming 20 currency units per match
+                     amount = numMatches * 20; 
                }
             }
-
-            console.log("Calculated Amount: " + amount); // Debugging log
-            
             document.getElementById('totalAmount').value = amount.toFixed(2);
             document.getElementById('amount').value = amount.toFixed(2);
+         }
+
+         function openBookingModal(table) {
+            document.getElementById('bookingTableId').value = table.table_id;
+            document.getElementById('bookingTableName').value = table.table_number;
+            document.getElementById('username').value = userData.username;
+            document.getElementById('userId').value = userData.user_id;
+            document.getElementById('totalAmount').value = ''; 
+            $('#bookingModal').modal('show');
          }
 
          // Open booking modal with pre-filled data
