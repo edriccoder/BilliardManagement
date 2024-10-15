@@ -26,7 +26,7 @@ function generate_invoice($booking) {
     $pdf->AddPage();
     $pdf->SetFont('helvetica', '', 12);
 
-    $pdf->Cell(0, 10, 'Invoice', 0, 1, 'C');
+    $pdf->Cell(0, 10, 'Reciept', 0, 1, 'C');
 
     $html = '<h2>Booking Details</h2>
              <table cellspacing="0" cellpadding="1" border="1">
