@@ -580,36 +580,27 @@ echo "<script>
          });
       </script>
 
-      <!-- jQuery -->
+      <!-- jQuery (Single Include) -->
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+      <!-- SweetAlert2 -->
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-      <!-- Bootstrap core JavaScript-->
-      <script src="vendor/jquery/jquery.min.js"></script>
-      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <!-- jQuery -->
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <!-- Bootstrap JS -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <!-- Bootstrap JS Bundle (Includes Popper) -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
-
-      <!-- Core plugin JavaScript-->
+      <!-- jQuery Easing -->
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-      <!-- Custom scripts for all pages-->
+      <!-- Custom Scripts for All Pages -->
       <script src="js/sb-admin-2.min.js"></script>
 
-      <!-- Page level plugins -->
+      <!-- DataTables JS -->
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>
       <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-         
-      <!-- Page level custom scripts -->
-      <script src="js/demo/datatables-demo.js"></script>
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <!-- Page Level Custom Scripts -->
+      <script src="js/demo/datatables-demo.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc --><script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
    </body>
 </html>
