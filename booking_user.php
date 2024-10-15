@@ -13,7 +13,7 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
 $sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, b.num_players, t.amount, t.payment_method, t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
-                WHERE b.user_id = :user_id
+                WHERE b.user_id = :user_id AND b.archive = 0
                 ORDER BY b.booking_id DESC"; 
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->bindParam(':user_id', $user_id, PDO::PARAM_INT);
