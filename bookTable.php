@@ -1,15 +1,21 @@
 <?php
+// Enable error reporting for debugging (remove in production)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Include database connection
 include 'conn.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Retrieve POST data
-    $tableId = $_POST['table_id'];
-    $userId = $_POST['user_id'];
-    $bookingType = $_POST['booking_type'];
-    $amount = $_POST['amount'];
-    $paymentMethod = $_POST['payment_method'];
-    $numPlayers = $_POST['num_players'];
+    // Retrieve and sanitize POST data
+    $tableId = isset($_POST['table_id']) ? trim($_POST['table_id']) : '';
+    $userId = isset($_POST['user_id']) ? trim($_POST['user_id']) : '';
+    $bookingType = isset($_POST['booking_type']) ? trim($_POST['booking_type']) : '';
+    $amount = isset($_POST['amount']) ? trim($_POST['amount']) : '';
+    $paymentMethod = isset($_POST['payment_method']) ? trim($_POST['payment_method']) : '';
+    $numPlayers = isset($_POST['num_players']) ? intval($_POST['num_players']) : 0;
 
     // Initialize proof of payment variable
     $proofOfPaymentPath = null;
@@ -34,13 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
 
                     // Directory where the file will be stored
-                    $uploadFileDir = 'payments/';
+                    $uploadFileDir = './uploads/proof_of_payment/';
                     if (!is_dir($uploadFileDir)) {
-                        mkdir($uploadFileDir, 0755, true);
+                        if (!mkdir($uploadFileDir, 0755, true)) {
+                            $error .= "Failed to create upload directory.<br>";
+                        }
                     }
                     $dest_path = $uploadFileDir . $newFileName;
 
-                    if(move_uploaded_file($fileTmpPath, $dest_path)) {
+                    if (move_uploaded_file($fileTmpPath, $dest_path)) {
                         $proofOfPaymentPath = $dest_path;
                     } else {
                         $error .= "There was an error moving the uploaded file.<br>";
@@ -58,106 +66,126 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Fetch table_number based on table_id
     $stmtTable = $conn->prepare("SELECT table_number FROM tables WHERE table_id = ?");
-    $stmtTable->execute([$tableId]);
-    $table = $stmtTable->fetch(PDO::FETCH_ASSOC);
-    $tableName = $table['table_number'];
-
-    if ($bookingType === 'hour') {
-        $startTime = $_POST['start_time'];
-        $endTime = $_POST['end_time'];
-
-        // Check for overlapping bookings
-        $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM bookings WHERE table_id = ? AND (
-            (start_time < ? AND end_time > ?) OR
-            (start_time < ? AND end_time > ?) OR
-            (start_time >= ? AND start_time < ?)
-        )");
-        $stmtCheck->execute([$tableId, $endTime, $startTime, $startTime, $endTime, $startTime, $endTime]);
-        $isBooked = $stmtCheck->fetchColumn();
-
-        if ($isBooked) {
-            echo "
-            <script>
-                alert('The selected table is already booked during this time. Please choose a different time.');
-                window.location.href = 'user_table.php';
-            </script>
-            ";
-            exit();
+    if ($stmtTable->execute([$tableId])) {
+        $table = $stmtTable->fetch(PDO::FETCH_ASSOC);
+        if ($table) {
+            $tableName = $table['table_number'];
         } else {
+            $error .= "Invalid table selected.<br>";
+        }
+    } else {
+        $error .= "Database query failed.<br>";
+    }
+
+    // Proceed only if no errors so far
+    if (empty($error)) {
+        if ($bookingType === 'hour') {
+            $startTime = isset($_POST['start_time']) ? trim($_POST['start_time']) : '';
+            $endTime = isset($_POST['end_time']) ? trim($_POST['end_time']) : '';
+
+            // Validate date and time
+            if (empty($startTime) || empty($endTime)) {
+                $error .= "Start time and end time are required.<br>";
+            } elseif (strtotime($startTime) >= strtotime($endTime)) {
+                $error .= "End time must be after start time.<br>";
+            }
+
+            if (empty($error)) {
+                // Check for overlapping bookings
+                $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM bookings WHERE table_id = ? AND (
+                    (start_time < ? AND end_time > ?) OR
+                    (start_time < ? AND end_time > ?) OR
+                    (start_time >= ? AND start_time < ?)
+                )");
+                $stmtCheck->execute([$tableId, $endTime, $startTime, $startTime, $endTime, $startTime, $endTime]);
+                $isBooked = $stmtCheck->fetchColumn();
+
+                if ($isBooked) {
+                    $error .= "The selected table is already booked during this time. Please choose a different time.<br>";
+                } else {
+                    // Proceed with booking
+                    $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, num_players, payment_method, amount, proof_of_payment, status) VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, 'Pending')";
+                    $stmt = $conn->prepare($sql);
+                    $executeSuccess = $stmt->execute([
+                        $tableId,
+                        $tableName,
+                        $userId,
+                        $startTime,
+                        $endTime,
+                        $numPlayers,
+                        $paymentMethod,
+                        $amount,
+                        $proofOfPaymentPath
+                    ]);
+
+                    if ($executeSuccess) {
+                        echo "
+                        <script>
+                            alert('Booking Successful');
+                            window.location.href = 'user_table.php';
+                        </script>
+                        ";
+                        exit();
+                    } else {
+                        $error .= "Failed to create booking. Please try again later.<br>";
+                    }
+                }
+            }
+        }
+        // Handle other booking types (e.g., 'match')
+        elseif ($bookingType === 'match') {
+            $numMatches = isset($_POST['num_matches']) ? intval($_POST['num_matches']) : 0;
+
+            // Validate number of matches
+            if ($numMatches <= 0) {
+                $error .= "Number of matches must be at least 1.<br>";
+            }
+
+            // You might want to add logic to check overlapping matches or other business rules here
+
             if (empty($error)) {
                 // Proceed with booking
-                $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, num_players, payment_method, amount, proof_of_payment, status) VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, 'Pending')";
+                $sql = "INSERT INTO bookings (table_id, table_name, user_id, num_matches, num_players, payment_method, amount, proof_of_payment, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
                 $stmt = $conn->prepare($sql);
-                $stmt->execute([
+                $executeSuccess = $stmt->execute([
                     $tableId,
                     $tableName,
                     $userId,
-                    $startTime,
-                    $endTime,
+                    $numMatches,
                     $numPlayers,
                     $paymentMethod,
                     $amount,
                     $proofOfPaymentPath
                 ]);
 
-                echo "
-                <script>
-                    alert('Booking Successful');
-                    window.location.href = 'user_table.php';
-                </script>
-                ";
-                exit();
-            } else {
-                // Display errors
-                echo "
-                <script>
-                    alert('" . addslashes($error) . "');
-                    window.location.href = 'user_table.php';
-                </script>
-                ";
-                exit();
+                if ($executeSuccess) {
+                    echo "
+                    <script>
+                        alert('Booking Successful');
+                        window.location.href = 'user_table.php';
+                    </script>
+                    ";
+                    exit();
+                } else {
+                    $error .= "Failed to create booking. Please try again later.<br>";
+                }
             }
         }
-    }
-    // Handle other booking types (e.g., 'match')
-    elseif ($bookingType === 'match') {
-        $numMatches = $_POST['num_matches'];
-
-        // Implement similar booking logic for 'match' type
-        // ...
-
-        if (empty($error)) {
-            // Example insertion for 'match' booking type
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, num_matches, num_players, payment_method, amount, proof_of_payment, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([
-                $tableId,
-                $tableName,
-                $userId,
-                $numMatches,
-                $numPlayers,
-                $paymentMethod,
-                $amount,
-                $proofOfPaymentPath
-            ]);
-
-            echo "
-            <script>
-                alert('Booking Successful');
-                window.location.href = 'user_table.php';
-            </script>
-            ";
-            exit();
-        } else {
-            // Display errors
-            echo "
-            <script>
-                alert('" . addslashes($error) . "');
-                window.location.href = 'user_table.php';
-            </script>
-            ";
-            exit();
+        // Handle unknown booking types
+        else {
+            $error .= "Unknown booking type selected.<br>";
         }
+    }
+
+    // If there are any errors, display them
+    if (!empty($error)) {
+        echo "
+        <script>
+            alert('" . addslashes($error) . "');
+            window.location.href = 'user_table.php';
+        </script>
+        ";
+        exit();
     }
 }
 ?>
