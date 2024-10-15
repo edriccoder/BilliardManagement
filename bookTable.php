@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             // Insert booking data for hour-based booking into the bookings table
             $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_players, num_matches, status) 
-                    VALUES (?, ?, ?, ?, ?, ?, NULL,  'Pending')";
+                    VALUES (?, ?, ?, ?, ?, ?, NULL, 'Pending')";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
@@ -62,12 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($bookingType === 'match') {
         // For match-based booking, ensure num_matches and num_players are valid
         if ($numMatches > 0 && $numPlayers > 0) {
-            // Insert booking data for match-based booking into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) VALUES (?, ?, ?, NULL, NULL, ?, 'Pending')";
+            // Insert booking data for match-based booking into the bookings table, including 'Pending' status
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_matches, status) 
+                    VALUES (?, ?, ?, NULL, NULL, ?, 'Pending')";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$tableId, $tableName, $userId, $numMatches]);
-            $result = $stmt->execute([$tableId, $tableName, $userId, $numPlayers, $numMatches]);
-
+            $result = $stmt->execute([$tableId, $tableName, $userId, $numMatches]);
 
             if ($result) {
                 // Get the last inserted booking ID
@@ -84,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             alertAndRedirect('Please enter a valid number of matches and players.');
         }
+
     } else {
         alertAndRedirect('Invalid booking type selected.');
     }
