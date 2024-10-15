@@ -492,20 +492,39 @@ echo "<script>
             if (bookingType === 'hour') {
                perHourFields.style.display = 'block';
                perMatchFields.style.display = 'none';
+               
+               // Set required attributes for hour-based booking
                startTime.setAttribute('required', 'required');
                endTime.setAttribute('required', 'required');
+               
+               // Enable the time fields
+               startTime.removeAttribute('disabled');
+               endTime.removeAttribute('disabled');
+               
+               // Remove required attribute from number of matches
                numMatches.removeAttribute('required');
-            } else {
+               numMatches.setAttribute('disabled', 'disabled'); // Disable the match input
+            } else if (bookingType === 'match') {
                perHourFields.style.display = 'none';
                perMatchFields.style.display = 'block';
+               
+               // Remove required attributes for hour-based booking
                startTime.removeAttribute('required');
                endTime.removeAttribute('required');
+               
+               // Disable the time fields when "Per Match" is selected
+               startTime.setAttribute('disabled', 'disabled');
+               endTime.setAttribute('disabled', 'disabled');
+               
+               // Set required attribute for number of matches
                numMatches.setAttribute('required', 'required');
+               numMatches.removeAttribute('disabled'); // Enable the match input
             }
 
             // Reset fields and amount when switching booking types
             resetFields(bookingType);
          }
+
 
 
          function calculateAmount() {
