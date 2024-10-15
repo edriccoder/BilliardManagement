@@ -513,7 +513,6 @@
                      <th>Date & Time</th>
                      <th>Photo</th>
                      <th>Reported By</th>
-                     <th>Actions</th>
                      </tr>
                   </thead>
                   <tbody>
@@ -531,14 +530,6 @@
                         <?php } ?>
                      </td>
                      <td><?php echo htmlspecialchars($report["name"], ENT_QUOTES, 'UTF-8'); ?></td>
-                     <td>
-                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=<?php echo htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8'); ?>">
-                           <i class="material-icons text-sm me-2">delete</i>Delete
-                        </a>
-                        <a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick='openEditModal(<?php echo json_encode($report); ?>)'>
-                           <i class="material-icons text-sm me-2">edit</i>Edit
-                        </a>
-                     </td>
                      </tr>
                      <?php } ?>
                   </tbody>
