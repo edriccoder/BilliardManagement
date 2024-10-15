@@ -380,92 +380,83 @@ echo "<script>
       <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
             <div class="modal-content">
-               <div class="modal-header">
-                  <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">×</span>
-                  </button>
-               </div>
-               <div class="modal-body">
-                  <form method="POST" action="bookTable.php" enctype="multipart/form-data">
-                     <input type="hidden" id="bookingTableId" name="table_id">
-                     <input type="hidden" id="bookingTableName" name="table_name">
-                     <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-                     <input type="hidden" id="amount" name="amount">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="bookingModalLabel">Book Billiard Table</h5>
+                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action="bookTable.php" enctype="multipart/form-data">
+                        <input type="hidden" id="bookingTableId" name="table_id">
+                        <input type="hidden" id="bookingTableName" name="table_name">
+                        <input type="hidden" id="userId" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+                        <input type="hidden" id="amount" name="amount">
 
-                     <label for="username">User</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
-                     </div>
-
-                     <label for="bookingType">Booking Type</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
-                           <option value="hour">Per Hour</option>
-                           <option value="match">Per Match</option>
-                        </select>
-                     </div>
-
-                     <!-- Number of Players Input -->
-                     <label for="numPlayers">Number of Players</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="number" name="num_players" id="numPlayers" class="form-control" required min="1">
-                     </div>
-
-                     <!-- Per Hour Fields -->
-                     <div id="perHourFields">
-                        <label>Start Time</label>
+                        <label for="username">User</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()"/>
+                              <input type="text" class="form-control" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
                         </div>
-                        <label>End Time</label>
+
+                        <label for="bookingType">Booking Type</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()"/>
+                              <select name="booking_type" id="bookingType" class="form-control" onchange="toggleBookingType()">
+                                 <option value="hour">Per Hour</option>
+                                 <option value="match">Per Match</option>
+                              </select>
                         </div>
-                     </div>
 
-                     <!-- Per Match Fields -->
-                     <div id="perMatchFields" style="display: none;">
-                        <label>Number of Matches</label>
+                        <div id="perHourFields">
+                              <label>Start Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="startTime" name="start_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
+                              <label>End Time</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="datetime-local" id="endTime" name="end_time" class="form-control" required="required" onchange="calculateAmount()"/>
+                              </div>
+                        </div>
+
+                        <div id="perMatchFields" style="display: none;">
+                              <label>Number of Matches</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()"/>
+                              </div>
+                        </div>
+
+                        <label>Payment Method</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="number" id="numMatches" name="num_matches" class="form-control" onchange="calculateAmount()" min="1" required>
+                              <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
+                                 <option value="cash">Cash</option>
+                                 <option value="gcash">GCash</option>
+                              </select>
                         </div>
-                     </div>
 
-                     <label>Payment Method</label>
-                     <div class="input-group input-group-outline my-3">
-                        <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
-                           <option value="cash">Cash</option>
-                           <option value="gcash">GCash</option>
-                        </select>
-                     </div>
+                        <div id="gcashFields" style="display: none;">
+                              <label>GCash QR Code</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                              </div>
+                              <label>Proof of Payment</label>
+                              <div class="input-group input-group-outline my-3">
+                                 <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
+                              </div>
+                        </div>
 
-                     <div id="gcashFields" style="display: none;">
-                        <label>GCash QR Code</label>
+                        <label>Total Amount</label>
                         <div class="input-group input-group-outline my-3">
-                           <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
+                              <input type="text" id="totalAmount" class="form-control" readonly>
                         </div>
-                        <label>Proof of Payment</label>
-                        <div class="input-group input-group-outline my-3">
-                           <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control" accept=".jpg, .jpeg, .png, .pdf">
+
+                        <div class="modal-footer">
+                              <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
+                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                         </div>
-                     </div>
-
-                     <label>Total Amount</label>
-                     <div class="input-group input-group-outline my-3">
-                        <input type="text" id="totalAmount" class="form-control" readonly>
-                     </div>
-
-                     <div class="modal-footer">
-                        <button type="submit" name="save" class="btn btn-primary">Book & Pay</button>
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                     </div>
-                  </form>
-               </div>
+                     </form>
+                  </div>
             </div>
          </div>
       </div>
-
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -475,34 +466,17 @@ echo "<script>
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function resetFields(bookingType) {
-            if (bookingType === 'hour') {
-                  document.getElementById('numMatches').value = '';
-            } else {
-                  document.getElementById('startTime').value = '';
-                  document.getElementById('endTime').value = '';
-            }
-            calculateAmount();
-         }
-
          function toggleBookingType() {
             var bookingType = document.getElementById('bookingType').value;
             var perHourFields = document.getElementById('perHourFields');
             var perMatchFields = document.getElementById('perMatchFields');
-            var numMatches = document.getElementById('numMatches');
-
             if (bookingType === 'hour') {
-                  perHourFields.style.display = 'block';
-                  perMatchFields.style.display = 'none';
-                  numMatches.removeAttribute('required');
+               perHourFields.style.display = 'block';
+               perMatchFields.style.display = 'none';
             } else {
-                  perHourFields.style.display = 'none';
-                  perMatchFields.style.display = 'block';
-                  numMatches.setAttribute('required', 'required');
+               perHourFields.style.display = 'none';
+               perMatchFields.style.display = 'block';
             }
-
-            // Reset fields and amount when switching booking types
-            resetFields(bookingType);
          }
 
          function calculateAmount() {
@@ -515,13 +489,12 @@ echo "<script>
                      var start = new Date(startTime);
                      var end = new Date(endTime);
                      var diff = (end - start) / (1000 * 60 * 60); 
-                     amount = diff * 100; // $100 per hour
+                     amount = diff * 80; 
                }
             } else if (bookingType === 'match') {
-               var numMatches = parseInt(document.getElementById('numMatches').value) || 0;
-               var numPlayers = parseInt(document.getElementById('numPlayers').value) || 0;
-               if (numMatches > 0 && numPlayers > 0) {
-                     amount = numMatches * 20 * numPlayers; // $20 per match per player
+               var numMatches = document.getElementById('numMatches').value;
+               if (numMatches) {
+                     amount = numMatches * 20; 
                }
             }
             document.getElementById('totalAmount').value = amount.toFixed(2);
@@ -536,7 +509,6 @@ echo "<script>
             document.getElementById('totalAmount').value = ''; 
             $('#bookingModal').modal('show');
          }
-
          function toggleGcashFields() {
             var paymentMethod = document.getElementById('paymentMethod').value;
             var gcashFields = document.getElementById('gcashFields');
