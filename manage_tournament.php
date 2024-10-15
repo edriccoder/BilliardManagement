@@ -463,9 +463,9 @@
                   <label for="qualification">Qualification</label>
                   <div class="input-group input-group-outline my-3">
                      <select class="form-control" id="qualification" name="qualification" required>
-                        <option value="all">All</option>
-                        <option value="beginner">Beginner</option>
-                        <option value="pro">Pro</option>
+                        <option value="all">Class A</option>
+                        <option value="beginner">Class B</option>
+                        <option value="pro">Class S</option>
                      </select>
                   </div>
                   <button type="submit" class="btn btn-primary">Add Tournament</button>
