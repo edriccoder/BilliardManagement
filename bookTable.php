@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ";
         } else {
             // Insert booking data into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, num_players) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status, num_players) 
+                    VALUES (?, ?, ?, ?, ?,'Pending', ?)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
 
