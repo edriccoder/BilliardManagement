@@ -1,4 +1,8 @@
 <?php
+
+error_log('Booking Type: ' . $bookingType);
+error_log('Number of Matches: ' . $numMatches);
+error_log('Number of Players: ' . $numPlayers);
 session_start();
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
     // Redirect to login page if session variables are not set
@@ -412,17 +416,19 @@ echo "<script>
                         <input type="number" name="num_players" id="numPlayers" class="form-control" required>
                      </div>
 
+                     <!-- Per Hour Fields -->
                      <div id="perHourFields">
                         <label for="startTime">Start Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" required onchange="calculateAmount()" />
+                           <input type="datetime-local" id="startTime" name="start_time" class="form-control" onchange="calculateAmount()" />
                         </div>
                         <label for="endTime">End Time</label>
                         <div class="input-group input-group-outline my-3">
-                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" required onchange="calculateAmount()" />
+                           <input type="datetime-local" id="endTime" name="end_time" class="form-control" onchange="calculateAmount()" />
                         </div>
                      </div>
 
+                     <!-- Per Match Fields -->
                      <div id="perMatchFields" style="display: none;">
                         <label for="numMatches">Number of Matches</label>
                         <div class="input-group input-group-outline my-3">
@@ -494,11 +500,11 @@ echo "<script>
             var startTime = document.getElementById('startTime');
             var endTime = document.getElementById('endTime');
             var numMatches = document.getElementById('numMatches');
-
+            
             if (bookingType === 'hour') {
                perHourFields.style.display = 'block';
                perMatchFields.style.display = 'none';
-               
+
                // Set required attributes for hour-based booking
                startTime.setAttribute('required', 'required');
                endTime.setAttribute('required', 'required');
@@ -507,27 +513,27 @@ echo "<script>
                startTime.removeAttribute('disabled');
                endTime.removeAttribute('disabled');
                
-               // Remove required attribute from number of matches
+               // Disable the numMatches field and remove its required attribute
                numMatches.removeAttribute('required');
-               numMatches.setAttribute('disabled', 'disabled'); // Disable the match input
+               numMatches.setAttribute('disabled', 'disabled');
             } else if (bookingType === 'match') {
                perHourFields.style.display = 'none';
                perMatchFields.style.display = 'block';
-               
-               // Remove required attributes for hour-based booking
+
+               // Remove required attributes from the time fields
                startTime.removeAttribute('required');
                endTime.removeAttribute('required');
-               
-               // Disable the time fields when "Per Match" is selected
+
+               // Disable the time fields
                startTime.setAttribute('disabled', 'disabled');
                endTime.setAttribute('disabled', 'disabled');
                
-               // Set required attribute for number of matches
+               // Enable the numMatches field and set it as required
                numMatches.setAttribute('required', 'required');
-               numMatches.removeAttribute('disabled'); // Enable the match input
+               numMatches.removeAttribute('disabled');
             }
 
-            // Reset fields and amount when switching booking types
+            // Reset fields when switching booking types
             resetFields(bookingType);
          }
 
@@ -585,6 +591,16 @@ echo "<script>
             // Optionally, set the default booking type here
             toggleBookingType();
          });
+
+         function resetFields(bookingType) {
+            if (bookingType === 'hour') {
+               document.getElementById('numMatches').value = '';
+            } else {
+               document.getElementById('startTime').value = '';
+               document.getElementById('endTime').value = '';
+            }
+            calculateAmount(); // Recalculate the amount after resetting fields
+         }
       </script>
 
       <!-- jQuery -->
