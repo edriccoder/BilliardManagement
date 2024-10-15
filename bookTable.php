@@ -9,7 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tableId = $_POST['table_id'];
     $userId = $_POST['user_id'];
     $bookingType = $_POST['booking_type'];
-    $numPlayers = $_POST['num_players']; // Assuming number of players is passed
+    $numPlayers = $_POST['num_players']; // Number of players is passed
+    $numMatches = isset($_POST['num_matches']) ? $_POST['num_matches'] : null; // Matches passed only if booking type is 'match'
+    $amount = $_POST['amount']; // Total amount
     $paymentMethod = $_POST['payment_method'];
 
     // Fetch table_number based on table_id
@@ -18,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $table = $stmtTable->fetch(PDO::FETCH_ASSOC);
     $tableName = $table['table_number'];
 
+    // Check if booking is per hour or per match
     if ($bookingType === 'hour') {
         $startTime = $_POST['start_time'];
         $endTime = $_POST['end_time'];
@@ -40,16 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ";
         } else {
             // Insert booking data into the bookings table
-            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status, num_players) 
-                    VALUES (?, ?, ?, ?, ?,'Pending', ?)";
+            $sql = "INSERT INTO bookings (table_id, table_name, user_id, start_time, end_time, status, num_players, num_matches) 
+                    VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers]);
+            $stmt->execute([$tableId, $tableName, $userId, $startTime, $endTime, $numPlayers, $numMatches]);
 
             // Get the last inserted booking ID
             $bookingId = $conn->lastInsertId();
-
-            // Assume amount is calculated and passed based on the time or number of matches
-            $amount = $_POST['amount'];
 
             if ($paymentMethod === 'gcash') {
                 // Check if the proof of payment is uploaded
@@ -95,6 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ";
                 }
             } else {
+                // Insert a cash transaction with pending status
+                $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp) 
+                                   VALUES (?, ?, ?, 'Pending', NOW())";
+                $stmtTransaction = $conn->prepare($sqlTransaction);
+                $stmtTransaction->execute([$bookingId, $amount, $paymentMethod]);
+
                 // Cash payment success message
                 echo "
                 <script>
