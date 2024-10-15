@@ -482,46 +482,52 @@ echo "<script>
          }
 
          function toggleBookingType() {
-         var bookingType = document.getElementById('bookingType').value;
-         var perHourFields = document.getElementById('perHourFields');
-         var perMatchFields = document.getElementById('perMatchFields');
-         var numMatches = document.getElementById('numMatches');
+            var bookingType = document.getElementById('bookingType').value;
+            var perHourFields = document.getElementById('perHourFields');
+            var perMatchFields = document.getElementById('perMatchFields');
+            var numMatches = document.getElementById('numMatches');
 
-         if (bookingType === 'hour') {
-            perHourFields.style.display = 'block';
-            perMatchFields.style.display = 'none';
-            numMatches.removeAttribute('required');
-         } else {
-            perHourFields.style.display = 'none';
-            perMatchFields.style.display = 'block';
-            numMatches.setAttribute('required', 'required');
+            if (bookingType === 'hour') {
+               perHourFields.style.display = 'block';
+               perMatchFields.style.display = 'none';
+               numMatches.removeAttribute('required');
+            } else {
+               perHourFields.style.display = 'none';
+               perMatchFields.style.display = 'block';
+               numMatches.setAttribute('required', 'required');
+            }
+
+            // Reset fields and amount when switching booking types
+            resetFields(bookingType);
          }
-
-         // Reset fields and amount when switching booking types
-         resetFields(bookingType);
-      }
 
          function calculateAmount() {
             var bookingType = document.getElementById('bookingType').value;
             var amount = 0;
+            
             if (bookingType === 'hour') {
                var startTime = document.getElementById('startTime').value;
                var endTime = document.getElementById('endTime').value;
+               
                if (startTime && endTime) {
                      var start = new Date(startTime);
                      var end = new Date(endTime);
-                     var diff = (end - start) / (1000 * 60 * 60); 
-                     amount = diff * 100; 
+                     var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+                     amount = diff * 100; // Assuming 100 currency units per hour
                }
             } else if (bookingType === 'match') {
                var numMatches = document.getElementById('numMatches').value;
                if (numMatches) {
-                     amount = numMatches * 20; 
+                     amount = numMatches * 20; // Assuming 20 currency units per match
                }
             }
+
+            console.log("Calculated Amount: " + amount); // Add a log to check the calculated amount
+            
             document.getElementById('totalAmount').value = amount.toFixed(2);
             document.getElementById('amount').value = amount.toFixed(2);
          }
+
 
          function openBookingModal(table) {
             document.getElementById('bookingTableId').value = table.table_id;
