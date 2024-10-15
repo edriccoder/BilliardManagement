@@ -74,7 +74,7 @@
                         <div class="col-lg-8">
                                 <p class="text-primary text-uppercase fw-bold mb-2">T-James Billiard Hall</p>
                                 <h1 class="display-1 text-light mb-4 animated slideInDown">Chase the Felt, Chase the Dream.</h1>    
-                                <a href="" class="btn btn-primary rounded-pill py-3 px-5">Read More</a>
+                                <a href="#" class="btn btn-primary rounded-pill py-3 px-5" data-bs-toggle="modal" data-bs-target="#readMoreModal">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -173,7 +173,6 @@
                             echo '</div>';
                         }
                         ?>
-
                     </div>
                 </div>
             </div>
@@ -370,6 +369,25 @@
         </div>
     </div>
 
+    <!-- Read More Modal -->
+    <div class="modal fade" id="readMoreModal" tabindex="-1" aria-labelledby="readMoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="readMoreModalLabel">More About T-James Billiard Hall</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>T-James Billiard Hall offers state-of-the-art facilities, professional coaching, and a vibrant community of billiard enthusiasts. Whether you're a beginner or a seasoned player, our hall provides the perfect environment to hone your skills and enjoy the game.</p>
+                <img src="dashboard/img/detailed-image.jpg" class="img-fluid mb-3" alt="Detailed Image">
+                <p>Join us today and chase your dreams on the felt!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Copyright Start -->
     <div class="container-fluid copyright text-light py-4 wow fadeIn" data-wow-delay="0.1s">
@@ -396,6 +414,22 @@
                 this.classList.add('active');
             });
         });
+
+        function toggleReadMore() {
+            var dots = document.getElementById("dots");
+            var moreText = document.getElementById("more");
+            var btnText = document.getElementById("readMoreBtn");
+
+            if (dots.style.display === "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Read More";
+            moreText.style.display = "none";
+            } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Read Less";
+            moreText.style.display = "inline";
+            }
+        }
 
     </script>
 
