@@ -61,15 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                     $fileName = basename($_FILES['proof_of_payment']['name']);
                     $targetFilePath = $uploadDir . $fileName;
-
+            
                     // Move the uploaded file to the server
                     if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $targetFilePath)) {
-                        // Insert transaction with proof of payment
+                        // Insert transaction with proof of payment, including folder path
+                        $proofOfPaymentPath = $uploadDir . $fileName; // Full path with folder
                         $sqlTransaction = "INSERT INTO transactions (booking_id, amount, payment_method, status, timestamp, proof_of_payment) 
                                            VALUES (?, ?, ?, 'Pending', NOW(), ?)";
                         $stmtTransaction = $conn->prepare($sqlTransaction);
-                        $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $fileName]);
-
+                        $stmtTransaction->execute([$bookingId, $amount, $paymentMethod, $proofOfPaymentPath]);
+            
                         echo "
                         <script>
                             alert('Booking and GCash payment successful.');
