@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt = $conn->prepare($sql);
             $result = $stmt->execute([$tableId, $tableName, $userId, $numPlayers, $numMatches]);
 
+
             if ($result) {
                 // Get the last inserted booking ID
                 $bookingId = $conn->lastInsertId();
