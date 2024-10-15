@@ -94,11 +94,16 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
 
             // Ensure the directory exists
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true); // Create the directory if it doesn't exist
+                if (!mkdir($uploadDir, 0777, true) && !is_dir($uploadDir)) {
+                    alertAndRedirect('Error creating directory for payments.', 'Directory creation failed for GCash payment.');
+                }
             }
 
-            $uploadFile = $uploadDir . basename($_FILES['proof_of_payment']['name']);
+            // Sanitize the file name
+            $fileName = basename($_FILES['proof_of_payment']['name']);
+            $uploadFile = $uploadDir . $fileName;
 
+            // Move uploaded file
             if (move_uploaded_file($_FILES['proof_of_payment']['tmp_name'], $uploadFile)) {
                 // Insert transaction with proof of payment, including folder path
                 $proofOfPaymentPath = $uploadFile; 
@@ -134,8 +139,6 @@ function handleTransaction($bookingId, $amount, $paymentMethod) {
         }
     }
 }
-
-
 
 // Updated alertAndRedirect function with optional logging
 function alertAndRedirect($message, $logMessage = null) {
