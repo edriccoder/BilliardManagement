@@ -5,8 +5,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     
     // Convert start_date and end_date to proper date-time format
-    $start_date = $_POST['start_date'];  // Assuming this comes with both date and time
-    $end_date = $_POST['end_date'];      // Assuming this comes with both date and time
+    $start_date_raw = $_POST['start_date'];  // This comes as YYYY-MM-DDTHH:MM
+    $end_date_raw = $_POST['end_date'];      // This comes as YYYY-MM-DDTHH:MM
+    
+    // Use DateTime to format the date and time properly
+    $start_date = DateTime::createFromFormat('Y-m-d\TH:i', $start_date_raw)->format('Y-m-d H:i:s');
+    $end_date = DateTime::createFromFormat('Y-m-d\TH:i', $end_date_raw)->format('Y-m-d H:i:s');
     
     $status = isset($_POST['status']) ? $_POST['status'] : 'upcoming'; 
     $max_player = $_POST['max_player'];
