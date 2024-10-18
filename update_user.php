@@ -33,11 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($stmt->execute()) {
-        echo "User updated successfully.";
+        echo "<script>alert('User updated successfully.'); window.location.href = 'udpate_user.php';</script>";
     } else {
-        echo "Error updating user.";
+        echo "<script>alert('Error updating user.'); window.location.href = 'udpate_user.php';</script>";
     }
 } else {
-    echo "Invalid request.";
+    echo "<script>alert('Invalid request.'); window.location.href = 'udpate_user.php';</script>";
 }
 ?>
