@@ -33,11 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($stmt->execute()) {
-        echo "<script>alert('Cashier updated successfully.'); window.location.href = 'udpate_user.php';</script>";
+        echo "<script>alert('Cashier updated successfully.'); window.location.href = 'manage_user.php';</script>";
     } else {
-        echo "<script>alert('Error updating user.'); window.location.href = 'udpate_user.php';</script>";
+        echo "<script>alert('Error updating user.'); window.location.href = 'manage_user.php';</script>";
     }
 } else {
-    echo "<script>alert('Invalid request.'); window.location.href = 'udpate_user.php';</script>";
+    echo "<script>alert('Invalid request.'); window.location.href = 'manage_user.php';</script>";
 }
 ?>
