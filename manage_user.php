@@ -484,37 +484,6 @@
             </div>
          </div>
       </div>
-      <!-- Modal -->
-      <div class="modal fade" id="playersModal" tabindex="-1" role="dialog" aria-labelledby="playersModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="playersModalLabel">Players</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <table class="table">
-                        <thead>
-                              <tr>
-                                 <th>Name</th>
-                                 <th>Email</th>
-                                 <th>Username</th>
-                                 <th>Action</th>
-                              </tr>
-                        </thead>
-                        <tbody id="players-list">
-                              <!-- Players will be loaded here via JavaScript -->
-                        </tbody>
-                     </table>
-                  </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-            </div>
-         </div>
-      </div>
 
       <!-- Modal for Adding Cashier Account -->
       <div class="modal fade" id="addCashier" tabindex="-1" role="dialog" aria-labelledby="addCashierLabel" aria-hidden="true">
