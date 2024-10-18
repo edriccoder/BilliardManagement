@@ -827,8 +827,6 @@
                                        team.classList.add('eliminated');
                                     }
                               });
-                              console.log('Winner updated successfully');
-
                               moveWinnerToNextRound(winnerElement, round, match);
                               if (parseInt(round) === parseInt(finalRound)) {
                                     announceWinner(winnerElement.textContent, currentTournamentId, round);
@@ -869,36 +867,6 @@
                }
             }
 
-            function announceWinner(winnerName, tournamentId, round) {
-                  if (!tournamentId) {
-                     console.error('Tournament ID is missing.');
-                     return;
-                  }
-
-                  fetch('announce_winner.php', {
-                     method: 'POST',
-                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                     },
-                     body: new URLSearchParams({
-                        winner_name: winnerName,
-                        tournament_id: tournamentId,
-                        round: round
-                     })
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                     if (data.success) {
-                        console.log('Winner announcement made successfully.');
-                     } else {
-                        console.error('Failed to announce winner:', data.message);
-                     }
-                  })
-                  .catch(error => {
-                     console.error('Error announcing winner:', error);
-                  });
-            }
-
                function deleteTournament(tournamentId) {
                   if (confirm('Are you sure you want to delete this tournament?')) {
                         window.location.href = `delete_tournament.php?tournament_id=${tournamentId}`;
@@ -931,13 +899,14 @@
                });
       </script>
       <style>
-        .bracket {
+         .bracket {
             display: flex;
             justify-content: space-between;
             flex-wrap: nowrap;
             padding: 20px;
             background-color: #2c3e50; /* Dark background */
             position: relative;
+            min-width: 600px; /* Ensure there's enough width for all rounds */
          }
 
          .round {
@@ -946,7 +915,7 @@
             align-items: center;
             position: relative;
             color: white;
-            padding: 0 15px;
+            padding: 0 20px;
          }
 
          .round h2 {
@@ -959,9 +928,9 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin-bottom: 50px; /* More spacing between matches */
+            margin-bottom: 40px; /* More spacing between matches */
             position: relative;
-            width: 200px; /* Set a consistent width */
+            width: 220px; /* Set a consistent width */
          }
 
          .team {
@@ -972,7 +941,7 @@
             font-weight: bold;
             background-color: #34495e; /* Background for team */
             border-radius: 4px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             position: relative;
          }
 
@@ -992,16 +961,16 @@
 
          .match::before {
             top: 50%;
-            left: -15px; /* Connect to the previous round */
+            left: -20px; /* Connect to the previous round */
             height: 1px;
-            width: 15px;
+            width: 20px;
          }
 
          .match::after {
             top: 50%;
-            right: -15px; /* Connect to the next round */
+            right: -20px; /* Connect to the next round */
             height: 1px;
-            width: 15px;
+            width: 20px;
          }
 
          .winner-placeholder {
@@ -1021,7 +990,40 @@
             background-color: #f39c12; /* Light orange button */
             border: none;
             padding: 10px;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
          }
+
+         .win-btn:hover {
+            background-color: #e67e22;
+            cursor: pointer;
+         }
+
+         /* Adjusting line connections */
+         .match::before,
+         .match::after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 2px;
+            border-color: white;
+         }
+
+         .match::before {
+            top: 50%;
+            left: -20px;
+            height: 1px;
+            width: 20px;
+         }
+
+         .match::after {
+            top: 50%;
+            right: -20px;
+            height: 1px;
+            width: 20px;
+         }
+
 
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
