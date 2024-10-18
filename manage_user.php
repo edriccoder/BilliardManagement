@@ -670,40 +670,39 @@
                   }
                });
             });
+               $('#editUserModal').on('show.bs.modal', function (event) {
+               var button = $(event.relatedTarget); // Button that triggered the modal
+               var userId = button.data('userid');
+               var name = button.data('name');
+               var email = button.data('email');
+               var username = button.data('username');
+
+               // Get the modal elements
+               var modal = $(this);
+               modal.find('#editUserId').val(userId);
+               modal.find('#editUserName').val(name);
+               modal.find('#editUserEmail').val(email);
+               modal.find('#editUserUsername').val(username);
+            });
+
+            // Fill the cashier modal with data
+            $('#editCashierModal').on('show.bs.modal', function (event) {
+               var button = $(event.relatedTarget); // Button that triggered the modal
+               var userId = button.data('userid');
+               var name = button.data('name');
+               var email = button.data('email');
+               var username = button.data('username');
+
+               // Get the modal elements
+               var modal = $(this);
+               modal.find('#editCashierId').val(userId);
+               modal.find('#editCashierName').val(name);
+               modal.find('#editCashierEmail').val(email);
+               modal.find('#editCashierUsername').val(username);
+            });
          });
 
 
-         // Fill the user modal with data
-         $('#editUserModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('userid');
-            var name = button.data('name');
-            var email = button.data('email');
-            var username = button.data('username');
-
-            // Get the modal elements
-            var modal = $(this);
-            modal.find('#editUserId').val(userId);
-            modal.find('#editUserName').val(name);
-            modal.find('#editUserEmail').val(email);
-            modal.find('#editUserUsername').val(username);
-         });
-
-         // Fill the cashier modal with data
-         $('#editCashierModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('userid');
-            var name = button.data('name');
-            var email = button.data('email');
-            var username = button.data('username');
-
-            // Get the modal elements
-            var modal = $(this);
-            modal.find('#editCashierId').val(userId);
-            modal.find('#editCashierName').val(name);
-            modal.find('#editCashierEmail').val(email);
-            modal.find('#editCashierUsername').val(username);
-         });
       </script>
 
 
