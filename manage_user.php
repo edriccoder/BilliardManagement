@@ -540,19 +540,19 @@
                <form id="editUserForm" method="POST" action="update_user.php">
                <div class="modal-body">
                   <input type="hidden" name="user_id" id="editUserId">
-                  <div class="form-group">
-                     <label for="editUserName">Name</label>
+                  <label for="editUserName">Name</label>
+                  <div class="input-group input-group-outline my-3">                    
                      <input type="text" class="form-control" id="editUserName" name="name" required>
                   </div>
-                  <div class="form-group">
-                     <label for="editUserEmail">Email</label>
+                  <label for="editUserEmail">Email</label>
+                  <div class="input-group input-group-outline my-3">
                      <input type="email" class="form-control" id="editUserEmail" name="email" required>
                   </div>
-                  <div class="form-group">
-                     <label for="editUserUsername">Username</label>
+                  <label for="editUserUsername">Username</label>
+                  <div class="input-group input-group-outline my-3">
                      <input type="text" class="form-control" id="editUserUsername" name="username" required>
                   </div>
-                  <div class="form-group">
+                  <div class="input-group input-group-outline my-3">
                      <label for="editUserPassword">Password (Leave blank if unchanged)</label>
                      <input type="password" class="form-control" id="editUserPassword" name="password">
                   </div>
@@ -579,20 +579,20 @@
                <form id="editCashierForm" method="POST" action="update_cashier.php">
                <div class="modal-body">
                   <input type="hidden" name="user_id" id="editCashierId">
-                  <div class="form-group">
-                     <label for="editCashierName">Name</label>
+                  <label for="editCashierName">Name</label>
+                  <div class="input-group input-group-outline my-3">
                      <input type="text" class="form-control" id="editCashierName" name="name" required>
                   </div>
-                  <div class="form-group">
-                     <label for="editCashierEmail">Email</label>
+                  <label for="editCashierEmail">Email</label>
+                  <div class="input-group input-group-outline my-3">
                      <input type="email" class="form-control" id="editCashierEmail" name="email" required>
                   </div>
-                  <div class="form-group">
-                     <label for="editCashierUsername">Username</label>
+                  <label for="editCashierUsername">Username</label>
+                  <div class="input-group input-group-outline my-3p">
                      <input type="text" class="form-control" id="editCashierUsername" name="username" required>
                   </div>
-                  <div class="form-group">
-                     <label for="editCashierPassword">Password (Leave blank if unchanged)</label>
+                  <label for="editCashierPassword">Password (Leave blank if unchanged)</label>
+                  <div class="input-group input-group-outline my-3">                
                      <input type="password" class="form-control" id="editCashierPassword" name="password">
                   </div>
                </div>
