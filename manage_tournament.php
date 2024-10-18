@@ -821,15 +821,19 @@
                            .then(response => response.json())
                            .then(data => {
                               if (data.success) {
+                                 // Disable the button after winner is selected
                                  winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
+
+                                 // Mark the eliminated team
                                  winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
                                        if (team !== winnerElement) {
                                           team.classList.add('eliminated');
                                        }
                                  });
-                                 console.log('Winner updated successfully');
 
+                                 // Move the winner to the next round and draw the line
                                  moveWinnerToNextRound(winnerElement, round, match);
+
                                  if (parseInt(round) === parseInt(finalRound)) {
                                        announceWinner(winnerElement.textContent, currentTournamentId, round);
                                  }
@@ -860,11 +864,17 @@
 
                      nextTeamDiv.textContent = winnerElement.textContent;
                      nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+
+                     // Add a class to show the line connecting the winner
+                     nextTeamDiv.classList.add('winner-selected');
                   } else {
                      const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
                      if (winnerPlaceholder) {
                            winnerPlaceholder.textContent = winnerElement.textContent;
                            winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+
+                           // Add a class to show the line connecting the winner
+                           winnerPlaceholder.classList.add('winner-selected');
                      }
                   }
                }
@@ -930,108 +940,123 @@
                   });
                });
       </script>
-      <div class="bracket" id="bracketContainer">
-   <!-- Bracket will be dynamically generated here -->
-</div>
 
-<style>
-    .bracket {
-        display: flex;
-        justify-content: center;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        padding: 20px;
-        background-color: #2c3e50; /* Dark blue background */
-    }
+   <style>
+      .bracket {
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 20px;
+      background-color: #2c3e50; /* Dark blue background */
+   }
 
-    .round {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0 20px;
-        position: relative;
-        color: white;
-    }
+   .round {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 20px;
+      position: relative;
+      color: white;
+   }
 
-    .round h2 {
-        text-align: center;
-        margin-bottom: 10px;
-        color: #f39c12; /* Light orange accent for round titles */
-    }
+   .round h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #f39c12; /* Light orange accent for round titles */
+   }
 
-    .match {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 2px solid #f39c12; /* Light orange borders */
-        border-radius: 8px;
-        background-color: #34495e; /* Darker background for the match box */
-        position: relative;
-        width: 180px;
-        position: relative;
-    }
+   .match {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 2px solid #f39c12; /* Light orange borders */
+      border-radius: 8px;
+      background-color: #34495e; /* Darker background for the match box */
+      position: relative;
+      width: 180px;
+      position: relative;
+   }
 
-    .match::before, .match::after {
-        content: "";
-        position: absolute;
-        width: 100px;
-        height: 2px;
-        background-color: white;
-        top: 50%;
-        left: -100px;
-    }
+   /* Lines connecting the boxes */
+   .match::before {
+      content: "";
+      position: absolute;
+      width: 50px;
+      height: 2px;
+      background-color: white;
+      top: 50%;
+      left: -50px;
+   }
 
-    .match::before {
-        top: 50%;
-        left: -100px;
-    }
+   .match::after {
+      content: "";
+      position: absolute;
+      width: 50px;
+      height: 2px;
+      background-color: white;
+      top: 50%;
+      left: 100%;
+   }
 
-    .team {
-        width: 150px;
-        text-align: center;
-        padding: 10px;
-        color: white;
-        font-weight: bold;
-        background-color: #2c3e50; /* Dark blue team background */
-        border-radius: 4px;
-        margin-bottom: 5px;
-    }
+   .team {
+      width: 150px;
+      text-align: center;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+      background-color: #2c3e50; /* Dark blue team background */
+      border-radius: 4px;
+      margin-bottom: 5px;
+   }
 
-    .team.selected {
-        background-color: #e67e22; /* Highlight the selected team */
-        border-radius: 10px;
-    }
+   .team.selected {
+      background-color: #e67e22; /* Highlight the selected team */
+      border-radius: 10px;
+   }
 
-    .team.eliminated {
-        text-decoration: line-through;
-        color: #bdc3c7; /* Gray for eliminated teams */
-    }
+   .team.eliminated {
+      text-decoration: line-through;
+      color: #bdc3c7; /* Gray for eliminated teams */
+   }
 
-    .winner-placeholder {
-        height: 50px;
-    }
+   .winner-placeholder {
+      height: 50px;
+   }
 
-    .vertical-center {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+   .vertical-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+   }
 
-    .win-btn {
-        margin-top: 5px;
-        color: white;
-        background-color: #f39c12; /* Light orange buttons */
-        border: none;
-        border-radius: 4px;
-        padding: 8px 12px;
-    }
+   /* Connecting lines for winners */
+   .winner-selected::before {
+      content: "";
+      position: absolute;
+      height: 2px;
+      width: 50%;
+      background-color: #f39c12;
+      top: 50%;
+      left: 50%;
+   }
 
-    .win-btn:hover {
-        background-color: #e67e22; /* Darker orange on hover */
-    }
-</style>
+   .win-btn {
+      margin-top: 5px;
+      color: white;
+      background-color: #f39c12; /* Light orange buttons */
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+   }
+
+   .win-btn:hover {
+      background-color: #e67e22; /* Darker orange on hover */
+   }
+
+   </style>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
