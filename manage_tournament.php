@@ -724,22 +724,22 @@
                });
 
                document.querySelectorAll('.show-bracket').forEach(button => {
-               button.addEventListener('click', function () {
-                  currentTournamentId = this.getAttribute('data-tournament-id');
+                  button.addEventListener('click', function () {
+                     currentTournamentId = this.getAttribute('data-tournament-id');
 
-                  fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
+                     fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
                         .then(response => response.json())
                         .then(data => {
-                           const bracketContainer = document.getElementById('bracketContainer');
-                           bracketContainer.innerHTML = '';
+                              const bracketContainer = document.getElementById('bracketContainer');
+                              bracketContainer.innerHTML = '';
 
-                           if (data.success && data.players.length > 0) {
-                              const players = data.players;
-                              const rounds = Math.ceil(Math.log2(players.length));
-                              finalRound = rounds;
-                              let matchups = data.matchups || players.slice();
+                              if (data.success && data.players.length > 0) {
+                                 const players = data.players;
+                                 const rounds = Math.ceil(Math.log2(players.length));
+                                 finalRound = rounds;
+                                 let matchups = data.matchups || players.slice();
 
-                              for (let round = 1; round <= rounds; round++) {
+                                 for (let round = 1; round <= rounds; round++) {
                                     const roundDiv = document.createElement('div');
                                     roundDiv.className = 'round';
                                     roundDiv.dataset.round = round;
@@ -749,31 +749,32 @@
                                     const newMatchups = [];
 
                                     for (let match = 0; match < matches; match++) {
-                                       const matchDiv = document.createElement('div');
-                                       matchDiv.className = 'match';
+                                          const matchDiv = document.createElement('div');
+                                          matchDiv.className = 'match';
 
-                                       const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
-                                       const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
+                                          const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
+                                          const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
 
-                                       matchDiv.innerHTML = `
-                                          <div class="team" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
-                                          <div class="team" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
-                                          <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
-                                       `;
+                                          matchDiv.innerHTML = `
+                                             <div class="team" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
+                                             <div class="team" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
+                                             <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
+                                          `;
 
-                                       roundDiv.appendChild(matchDiv);
-                                       newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
+                                          roundDiv.appendChild(matchDiv);
+
+                                          newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
                                     }
 
                                     if (round > 1) {
-                                       roundDiv.classList.add('vertical-center');
+                                          roundDiv.classList.add('vertical-center');
                                     }
 
                                     bracketContainer.appendChild(roundDiv);
                                     matchups = newMatchups;
-                              }
+                                 }
 
-                              if (players.length > 1) {
+                                 if (players.length > 1) {
                                     const finalRoundDiv = document.createElement('div');
                                     finalRoundDiv.className = 'vertical-center';
                                     finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
@@ -784,87 +785,120 @@
 
                                     finalRoundDiv.appendChild(winnerPlaceholder);
                                     bracketContainer.appendChild(finalRoundDiv);
-                              }
+                                 }
 
-                              const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
-                              playersModal.show();
-                           } else {
-                              alert(data.message);
-                           }
+                                 const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
+                                 playersModal.show();
+                              } else {
+                                 alert(data.message);
+                              }
                         })
                         .catch(error => {
-                           console.error('Error fetching bracket:', error);
+                              console.error('Error fetching bracket:', error);
                         });
-               });
+                  });
             });
 
             document.getElementById('bracketContainer').addEventListener('click', function (event) {
-               if (event.target.classList.contains('win-btn')) {
-                  const round = event.target.getAttribute('data-round');
-                  const match = event.target.getAttribute('data-match');
-                  const winnerElement = event.target.parentElement.querySelector('.team.selected');
+                  if (event.target.classList.contains('win-btn')) {
+                     const round = event.target.getAttribute('data-round');
+                     const match = event.target.getAttribute('data-match');
+                     const winnerElement = event.target.parentElement.querySelector('.team.selected');
 
-                  if (winnerElement) {
+                     if (winnerElement) {
                         const winnerId = winnerElement.getAttribute('data-player-id');
                         fetch(`update_bracket.php`, {
-                           method: 'POST',
-                           headers: {
-                              'Content-Type': 'application/x-www-form-urlencoded',
-                           },
-                           body: new URLSearchParams({
-                              tournament_id: currentTournamentId,
-                              round: round,
-                              match: match,
-                              winner_id: winnerId,
-                           })
+                              method: 'POST',
+                              headers: {
+                                 'Content-Type': 'application/x-www-form-urlencoded',
+                              },
+                              body: new URLSearchParams({
+                                 tournament_id: currentTournamentId,
+                                 round: round,
+                                 match: match,
+                                 winner_id: winnerId,
+                              })
                         })
                         .then(response => response.json())
                         .then(data => {
-                           if (data.success) {
-                              winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
-                              winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
+                              if (data.success) {
+                                 winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
+                                 winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
                                     if (team !== winnerElement) {
-                                       team.classList.add('eliminated');
+                                          team.classList.add('eliminated');
                                     }
-                              });
-                              moveWinnerToNextRound(winnerElement, round, match);
-                              if (parseInt(round) === parseInt(finalRound)) {
+                                 });
+                                 console.log('Winner updated successfully');
+
+                                 moveWinnerToNextRound(winnerElement, round, match);
+                                 announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 if (parseInt(round) === parseInt(finalRound)) {
                                     announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 }
+                              } else {
+                                 alert('Error: ' + data.message);
                               }
-                           } else {
-                              alert('Error: ' + data.message);
-                           }
                         })
                         .catch(error => {
-                           console.error('Error updating winner:', error);
+                              console.error('Error updating winner:', error);
                         });
-                  } else {
+                     } else {
                         alert('Please select a winner.');
+                     }
+                  } else if (event.target.classList.contains('team')) {
+                     event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
+                     event.target.classList.add('selected');
                   }
-               } else if (event.target.classList.contains('team')) {
-                  event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
-                  event.target.classList.add('selected');
-               }
             });
 
             function moveWinnerToNextRound(winnerElement, round, match) {
-               const nextRound = parseInt(round) + 1;
-               const nextMatch = Math.floor(match / 2);
+                  const nextRound = parseInt(round) + 1;
+                  const nextMatch = Math.floor(match / 2);
 
-               const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
-               if (nextRoundDiv) {
-                  const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
-                  const nextTeamDiv = nextMatchDiv.querySelectorAll('.team')[match % 2];
+                  const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
+                  if (nextRoundDiv) {
+                     const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
+                     const nextTeamDiv = nextMatchDiv.querySelectorAll('.team')[match % 2];
 
-                  nextTeamDiv.textContent = winnerElement.textContent;
-                  nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-               } else {
-                  const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
-                  if (winnerPlaceholder) {
+                     nextTeamDiv.textContent = winnerElement.textContent;
+                     nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+                  } else {
+                     const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
+                     if (winnerPlaceholder) {
                         winnerPlaceholder.textContent = winnerElement.textContent;
                         winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+                     }
                   }
-               }
+            }
+
+            function announceWinner(winnerName, tournamentId, round) {
+                  if (!tournamentId) {
+                     console.error('Tournament ID is missing.');
+                     return;
+                  }
+
+                  fetch('announce_winner.php', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                     },
+                     body: new URLSearchParams({
+                        winner_name: winnerName,
+                        tournament_id: tournamentId,
+                        round: round
+                     })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                     if (data.success) {
+                        console.log('Winner announcement made successfully.');
+                     } else {
+                        console.error('Failed to announce winner:', data.message);
+                     }
+                  })
+                  .catch(error => {
+                     console.error('Error announcing winner:', error);
+                  });
             }
 
                function deleteTournament(tournamentId) {
@@ -899,131 +933,86 @@
                });
       </script>
       <style>
-         .bracket {
+        .bracket {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             flex-wrap: nowrap;
+            overflow-x: auto;
             padding: 20px;
-            background-color: #2c3e50; /* Dark background */
-            position: relative;
-            min-width: 600px; /* Ensure there's enough width for all rounds */
+            background-color: #2c3e50; /* Dark blue background */
          }
 
          .round {
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 0 20px;
             position: relative;
             color: white;
-            padding: 0 20px;
          }
 
          .round h2 {
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: #f39c12; /* Light orange for round titles */
+            text-align: center;
+            margin-bottom: 10px;
+            color: #f39c12; /* Light orange accent for round titles */
          }
 
          .match {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            margin-bottom: 40px; /* More spacing between matches */
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #f39c12; /* Light orange borders */
+            border-radius: 8px;
+            background-color: #34495e; /* Darker background for the match box */
             position: relative;
-            width: 220px; /* Set a consistent width */
+            width: 180px; /* Adjusted width for better spacing */
          }
 
          .team {
-            width: 180px;
+            width: 150px;
             text-align: center;
             padding: 10px;
             color: white;
             font-weight: bold;
-            background-color: #34495e; /* Background for team */
+            background-color: #2c3e50; /* Dark blue team background */
             border-radius: 4px;
-            margin-bottom: 10px;
-            position: relative;
+            margin-bottom: 5px;
          }
 
          .team.selected {
-            background-color: #e67e22; /* Highlight selected team */
+            background-color: #e67e22; /* Highlight the selected team */
             border-radius: 10px;
          }
 
-         .match::before,
-         .match::after {
-            content: '';
-            position: absolute;
-            border-style: solid;
-            border-width: 2px;
-            border-color: white;
-         }
-
-         .match::before {
-            top: 50%;
-            left: -20px; /* Connect to the previous round */
-            height: 1px;
-            width: 20px;
-         }
-
-         .match::after {
-            top: 50%;
-            right: -20px; /* Connect to the next round */
-            height: 1px;
-            width: 20px;
+         .team.eliminated {
+            text-decoration: line-through;
+            color: #bdc3c7; /* Gray for eliminated teams */
          }
 
          .winner-placeholder {
             height: 50px;
-            background-color: #f39c12; /* Final winner placeholder */
-            color: black;
-            font-weight: bold;
          }
 
          .vertical-center {
             display: flex;
+            flex-direction: column;
             justify-content: center;
          }
 
          .win-btn {
             margin-top: 5px;
-            background-color: #f39c12; /* Light orange button */
-            border: none;
-            padding: 10px;
             color: white;
-            font-weight: bold;
+            background-color: #f39c12; /* Light orange buttons */
+            border: none;
             border-radius: 4px;
+            padding: 8px 12px;
          }
 
          .win-btn:hover {
-            background-color: #e67e22;
-            cursor: pointer;
+            background-color: #e67e22; /* Darker orange on hover */
          }
-
-         /* Adjusting line connections */
-         .match::before,
-         .match::after {
-            content: '';
-            position: absolute;
-            border-style: solid;
-            border-width: 2px;
-            border-color: white;
-         }
-
-         .match::before {
-            top: 50%;
-            left: -20px;
-            height: 1px;
-            width: 20px;
-         }
-
-         .match::after {
-            top: 50%;
-            right: -20px;
-            height: 1px;
-            width: 20px;
-         }
-
 
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
