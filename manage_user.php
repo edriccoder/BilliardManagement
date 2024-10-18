@@ -540,19 +540,20 @@
                <form id="editUserForm" method="POST" action="update_user.php">
                <div class="modal-body">
                   <input type="hidden" name="user_id" id="editUserId">
-                  <label for="editUserName">Name</label>
-                  <div class="input-group input-group-outline my-3">                    
+                  <div class="form-group">
+                     <label for="editUserName">Name</label>
                      <input type="text" class="form-control" id="editUserName" name="name" required>
                   </div>
-                  <label for="editUserEmail">Email</label>
-                  <div class="input-group input-group-outline my-3">
+                  <div class="form-group">
+                     <label for="editUserEmail">Email</label>
                      <input type="email" class="form-control" id="editUserEmail" name="email" required>
                   </div>
-                  <label for="editUserUsername">Username</label>
+                  <div class="form-group">
+                     <label for="editUserUsername">Username</label>
                      <input type="text" class="form-control" id="editUserUsername" name="username" required>
                   </div>
-                  <label for="editUserPassword">Password</label>
-                  <div class="input-group input-group-outline my-3p">
+                  <div class="form-group">
+                     <label for="editUserPassword">Password (Leave blank if unchanged)</label>
                      <input type="password" class="form-control" id="editUserPassword" name="password">
                   </div>
                </div>
@@ -578,20 +579,20 @@
                <form id="editCashierForm" method="POST" action="update_cashier.php">
                <div class="modal-body">
                   <input type="hidden" name="user_id" id="editCashierId">
-                  <label for="editCashierName">Name</label>
-                  <div class="input-group input-group-outline my-3">
+                  <div class="form-group">
+                     <label for="editCashierName">Name</label>
                      <input type="text" class="form-control" id="editCashierName" name="name" required>
                   </div>
-                  <label for="editCashierEmail">Email</label>
-                  <div class="input-group input-group-outline my-3">
+                  <div class="form-group">
+                     <label for="editCashierEmail">Email</label>
                      <input type="email" class="form-control" id="editCashierEmail" name="email" required>
                   </div>
-                  <label for="editCashierUsername">Username</label>
-                  <div class="input-group input-group-outline my-3">
+                  <div class="form-group">
+                     <label for="editCashierUsername">Username</label>
                      <input type="text" class="form-control" id="editCashierUsername" name="username" required>
                   </div>
-                  <label for="editCashierPassword">Password</label>
-                  <div class="input-group input-group-outline my-3">
+                  <div class="form-group">
+                     <label for="editCashierPassword">Password (Leave blank if unchanged)</label>
                      <input type="password" class="form-control" id="editCashierPassword" name="password">
                   </div>
                </div>
@@ -601,8 +602,9 @@
                </div>
                </form>
             </div>
-         </div>
       </div>
+      </div>
+
 
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
@@ -689,32 +691,36 @@
             modal.find('#editCashierUsername').val(username);
          });
 
-         $('#editUserModal').on('show.bs.modal', function (event){ 
-            var button = $(event.relatedTarget); 
-            var userId = button.data('userid'); 
-            var name = button.data('name'); 
-            var email = button.data('email'); 
+         $('#editUserModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var userId = button.data('userid');
+            var name = button.data('name');
+            var email = button.data('email');
             var username = button.data('username');
 
-            var modal = $(this); 
-            modal.find('#editUserId').val(userId); 
-            modal.find('#editUserName').val(name); 
-            modal.find('#editUserEmail').val(email); 
-            modal.find('#editUserUsername').val(username); 
+            // Get the modal elements
+            var modal = $(this);
+            modal.find('#editUserId').val(userId);
+            modal.find('#editUserName').val(name);
+            modal.find('#editUserEmail').val(email);
+            modal.find('#editUserUsername').val(username);
          });
 
-         $('#editCashierModal').on('show.bs.modal', function (event) { 
-            var button = $(event.relatedTarget); 
-            var userId = button.data('userid'); 
-            var name = button.data('name'); 
-            var email = button.data('email'); 
+         // Fill the cashier modal with data
+         $('#editCashierModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var userId = button.data('userid');
+            var name = button.data('name');
+            var email = button.data('email');
             var username = button.data('username');
 
-            var modal = $(this); 
-            modal.find('#editCashierId').val(userId); 
-            modal.find('#editCashierName').val(name); 
-            modal.find('#editCashierEmail').val(email); 
-            modal.find('#editCashierUsername').val(username); });
+            // Get the modal elements
+            var modal = $(this);
+            modal.find('#editCashierId').val(userId);
+            modal.find('#editCashierName').val(name);
+            modal.find('#editCashierEmail').val(email);
+            modal.find('#editCashierUsername').val(username);
+         });
       </script>
 
 
