@@ -317,32 +317,44 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if (!empty($cashiers)) {
-                                                foreach ($cashiers as $cashier) {
-                                                    echo '<tr>' .
-                                                            '<td>' .
-                                                                '<div class="d-flex px-2 py-1">' .
-                                                                    '<div class="d-flex flex-column justify-content-center">' .
-                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($cashier["name"]) . '</h6>' .
-                                                                    '</div>' .
-                                                                '</div>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["email"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["username"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td class="align-middle">' .
-                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
-                                                                'Edit' .
-                                                                '</a>' .
-                                                            '</td>' .
-                                                        '</tr>';
-                                                }
-                                            } else {
-                                                echo '<tr><td colspan="4">No cashiers found</td></tr>';
-                                            }
+                                                if (!empty($cashiers)) {
+                                                   foreach ($cashiers as $cashier) {
+                                                      echo '<tr>' .
+                                                               '<td>' .
+                                                                  '<div class="d-flex px-2 py-1">' .
+                                                                     '<div class="d-flex flex-column justify-content-center">' .
+                                                                           '<h6 class="mb-0 text-sm">' . htmlspecialchars($cashier["name"]) . '</h6>' .
+                                                                     '</div>' .
+                                                                  '</div>' .
+                                                               '</td>' .
+                                                               '<td>' .
+                                                                  '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["email"]) . '</p>' .
+                                                               '</td>' .
+                                                               '<td>' .
+                                                                  '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["username"]) . '</p>' .
+                                                               '</td>' .
+                                                               // Optional link to edit user (if still needed)
+                                                               '<td class="align-middle">' .
+                                                                  '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
+                                                                  'Edit' .
+                                                                  '</a>' .
+                                                               '</td>' .
+                                                               // Button to trigger the modal for editing the cashier
+                                                               '<td class="align-middle">' .
+                                                                  '<button class="btn btn-sm btn-warning editCashierBtn" ' .
+                                                                     'data-cashier-id="' . $cashier['user_id'] . '" ' .
+                                                                     'data-name="' . htmlspecialchars($cashier['name']) . '" ' .
+                                                                     'data-email="' . htmlspecialchars($cashier['email']) . '" ' .
+                                                                     'data-username="' . htmlspecialchars($cashier['username']) . '" ' .
+                                                                     'data-toggle="modal" ' .
+                                                                     'data-target="#editCashierModal">Edit</button>' .
+                                                               '</td>' .
+                                                            '</tr>';
+                                                   }
+                                             } else {
+                                                   echo '<tr><td colspan="5">No cashiers found</td></tr>';
+                                             }
+                                         
                                             ?>
                                         </tbody>
                                     </table>
@@ -476,6 +488,46 @@
             </div>
          </div>
       </div>
+      <!-- Edit User Modal -->
+      <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <form id="editUserForm" action="edit_user.php" method="POST">
+               <div class="modal-body">
+                  <input type="hidden" name="user_id" id="editUserId">
+                  <div class="form-group">
+                     <label for="editName">Name</label>
+                     <input type="text" class="form-control" id="editName" name="name" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editEmail">Email</label>
+                     <input type="email" class="form-control" id="editEmail" name="email" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editUsername">Username</label>
+                     <input type="text" class="form-control" id="editUsername" name="username" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editPassword">Password</label>
+                     <input type="password" class="form-control" id="editPassword" name="password">
+                     <small class="form-text text-muted">Leave blank if you don't want to change the password.</small>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
       <!-- Modal for edit table -->            
       <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
@@ -635,6 +687,23 @@
                      // Handle error
                      alert('An error occurred: ' + error);
                   }
+               });
+            });
+
+            $(document).ready(function() {
+               // When edit button is clicked
+               $('.editUserBtn').on('click', function() {
+                  // Get user data from the button
+                  var userId = $(this).data('user-id');
+                  var name = $(this).data('name');
+                  var email = $(this).data('email');
+                  var username = $(this).data('username');
+
+                  // Set the data in the modal fields
+                  $('#editUserId').val(userId);
+                  $('#editName').val(name);
+                  $('#editEmail').val(email);
+                  $('#editUsername').val(username);
                });
             });
          });
