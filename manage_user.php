@@ -720,6 +720,33 @@
             modal.find('#editCashierEmail').val(email);
             modal.find('#editCashierUsername').val(username);
          });
+
+         $('#editUserModal').on('show.bs.modal', function (event){ 
+            var button = $(event.relatedTarget); 
+            var userId = button.data('userid'); 
+            var name = button.data('name'); 
+            var email = button.data('email'); 
+            var username = button.data('username');
+
+            var modal = $(this); 
+            modal.find('#editUserId').val(userId); 
+            modal.find('#editUserName').val(name); 
+            modal.find('#editUserEmail').val(email); 
+            modal.find('#editUserUsername').val(username); 
+         });
+
+         $('#editCashierModal').on('show.bs.modal', function (event) { 
+            var button = $(event.relatedTarget); 
+            var userId = button.data('userid'); 
+            var name = button.data('name'); 
+            var email = button.data('email'); 
+            var username = button.data('username');
+
+            var modal = $(this); 
+            modal.find('#editCashierId').val(userId); 
+            modal.find('#editCashierName').val(name); 
+            modal.find('#editCashierEmail').val(email); 
+            modal.find('#editCashierUsername').val(username); });
       </script>
 
 
