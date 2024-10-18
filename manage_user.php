@@ -261,32 +261,43 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if (!empty($users)) {
-                                                foreach ($users as $user) {
-                                                    echo '<tr>' .
-                                                            '<td>' .
-                                                                '<div class="d-flex px-2 py-1">' .
-                                                                    '<div class="d-flex flex-column justify-content-center">' .
-                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($user["name"]) . '</h6>' .
-                                                                    '</div>' .
-                                                                '</div>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["email"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["username"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td class="align-middle">' .
-                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
-                                                                'Archive' .
-                                                                '</a>' .
-                                                            '</td>' .
-                                                        '</tr>';
-                                                }
-                                            } else {
-                                                echo '<tr><td colspan="4">No users found</td></tr>';
-                                            }
+                                                if (!empty($users)) {
+                                                   foreach ($users as $user) {
+                                                      echo '<tr>' .
+                                                               '<td>' .
+                                                                  '<div class="d-flex px-2 py-1">' .
+                                                                     '<div class="d-flex flex-column justify-content-center">' .
+                                                                           '<h6 class="mb-0 text-sm">' . htmlspecialchars($cashier["name"]) . '</h6>' .
+                                                                     '</div>' .
+                                                                  '</div>' .
+                                                               '</td>' .
+                                                               '<td>' .
+                                                                  '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["email"]) . '</p>' .
+                                                               '</td>' .
+                                                               '<td>' .
+                                                                  '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["username"]) . '</p>' .
+                                                               '</td>' .
+                                                               // Optional link to edit user (if still needed)
+                                                               '<td class="align-middle">' .
+                                                                  '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
+                                                                  'Edit' .
+                                                                  '</a>' .
+                                                               '</td>' .
+                                                               // Button to trigger the modal for editing the cashier
+                                                               '<td class="align-middle">' .
+                                                                  '<button class="btn btn-sm btn-warning editCashierBtn" ' .
+                                                                     'data-cashier-id="' . $cashier['user_id'] . '" ' .
+                                                                     'data-name="' . htmlspecialchars($cashier['name']) . '" ' .
+                                                                     'data-email="' . htmlspecialchars($cashier['email']) . '" ' .
+                                                                     'data-username="' . htmlspecialchars($cashier['username']) . '" ' .
+                                                                     'data-toggle="modal" ' .
+                                                                     'data-target="#editCashierModal">Edit</button>' .
+                                                               '</td>' .
+                                                            '</tr>';
+                                                   }
+                                             } else {
+                                                   echo '<tr><td colspan="5">No cashiers found</td></tr>';
+                                             }                                    
                                             ?>
                                         </tbody>
                                     </table>
@@ -339,22 +350,11 @@
                                                                   'Edit' .
                                                                   '</a>' .
                                                                '</td>' .
-                                                               // Button to trigger the modal for editing the cashier
-                                                               '<td class="align-middle">' .
-                                                                  '<button class="btn btn-sm btn-warning editCashierBtn" ' .
-                                                                     'data-cashier-id="' . $cashier['user_id'] . '" ' .
-                                                                     'data-name="' . htmlspecialchars($cashier['name']) . '" ' .
-                                                                     'data-email="' . htmlspecialchars($cashier['email']) . '" ' .
-                                                                     'data-username="' . htmlspecialchars($cashier['username']) . '" ' .
-                                                                     'data-toggle="modal" ' .
-                                                                     'data-target="#editCashierModal">Edit</button>' .
-                                                               '</td>' .
                                                             '</tr>';
                                                    }
                                              } else {
                                                    echo '<tr><td colspan="5">No cashiers found</td></tr>';
-                                             }
-                                         
+                                             }                                    
                                             ?>
                                         </tbody>
                                     </table>
