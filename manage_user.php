@@ -670,14 +670,14 @@
                   }
                });
             });
-               $('#editUserModal').on('show.bs.modal', function (event) {
+            $('#editUserModal').on('show.bs.modal', function(event) {
                var button = $(event.relatedTarget); // Button that triggered the modal
                var userId = button.data('userid');
                var name = button.data('name');
                var email = button.data('email');
                var username = button.data('username');
 
-               // Get the modal elements
+               // Fill the modal fields with the data from the button
                var modal = $(this);
                modal.find('#editUserId').val(userId);
                modal.find('#editUserName').val(name);
@@ -685,15 +685,15 @@
                modal.find('#editUserUsername').val(username);
             });
 
-            // Fill the cashier modal with data
-            $('#editCashierModal').on('show.bs.modal', function (event) {
+            // Handle the Cashier Edit Modal
+            $('#editCashierModal').on('show.bs.modal', function(event) {
                var button = $(event.relatedTarget); // Button that triggered the modal
                var userId = button.data('userid');
                var name = button.data('name');
                var email = button.data('email');
                var username = button.data('username');
 
-               // Get the modal elements
+               // Fill the modal fields with the data from the button
                var modal = $(this);
                modal.find('#editCashierId').val(userId);
                modal.find('#editCashierName').val(name);
