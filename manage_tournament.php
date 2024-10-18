@@ -728,8 +728,8 @@
                      currentTournamentId = this.getAttribute('data-tournament-id');
 
                      fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
-                        .then(response => response.json())
-                        .then(data => {
+                           .then(response => response.json())
+                           .then(data => {
                               const bracketContainer = document.getElementById('bracketContainer');
                               bracketContainer.innerHTML = '';
 
@@ -740,15 +740,15 @@
                                  let matchups = data.matchups || players.slice();
 
                                  for (let round = 1; round <= rounds; round++) {
-                                    const roundDiv = document.createElement('div');
-                                    roundDiv.className = 'round';
-                                    roundDiv.dataset.round = round;
-                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
+                                       const roundDiv = document.createElement('div');
+                                       roundDiv.className = 'round';
+                                       roundDiv.dataset.round = round;
+                                       roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
 
-                                    const matches = Math.ceil(matchups.length / 2);
-                                    const newMatchups = [];
+                                       const matches = Math.ceil(matchups.length / 2);
+                                       const newMatchups = [];
 
-                                    for (let match = 0; match < matches; match++) {
+                                       for (let match = 0; match < matches; match++) {
                                           const matchDiv = document.createElement('div');
                                           matchDiv.className = 'match';
 
@@ -762,29 +762,28 @@
                                           `;
 
                                           roundDiv.appendChild(matchDiv);
-
                                           newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
-                                    }
+                                       }
 
-                                    if (round > 1) {
+                                       if (round > 1) {
                                           roundDiv.classList.add('vertical-center');
-                                    }
+                                       }
 
-                                    bracketContainer.appendChild(roundDiv);
-                                    matchups = newMatchups;
+                                       bracketContainer.appendChild(roundDiv);
+                                       matchups = newMatchups;
                                  }
 
                                  if (players.length > 1) {
-                                    const finalRoundDiv = document.createElement('div');
-                                    finalRoundDiv.className = 'vertical-center';
-                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
+                                       const finalRoundDiv = document.createElement('div');
+                                       finalRoundDiv.className = 'vertical-center';
+                                       finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
 
-                                    const winnerPlaceholder = document.createElement('div');
-                                    winnerPlaceholder.className = 'match winner-placeholder';
-                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
+                                       const winnerPlaceholder = document.createElement('div');
+                                       winnerPlaceholder.className = 'match winner-placeholder';
+                                       winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
 
-                                    finalRoundDiv.appendChild(winnerPlaceholder);
-                                    bracketContainer.appendChild(finalRoundDiv);
+                                       finalRoundDiv.appendChild(winnerPlaceholder);
+                                       bracketContainer.appendChild(finalRoundDiv);
                                  }
 
                                  const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
@@ -792,22 +791,22 @@
                               } else {
                                  alert(data.message);
                               }
-                        })
-                        .catch(error => {
+                           })
+                           .catch(error => {
                               console.error('Error fetching bracket:', error);
-                        });
+                           });
                   });
-            });
+               });
 
-            document.getElementById('bracketContainer').addEventListener('click', function (event) {
+               document.getElementById('bracketContainer').addEventListener('click', function (event) {
                   if (event.target.classList.contains('win-btn')) {
                      const round = event.target.getAttribute('data-round');
                      const match = event.target.getAttribute('data-match');
                      const winnerElement = event.target.parentElement.querySelector('.team.selected');
 
                      if (winnerElement) {
-                        const winnerId = winnerElement.getAttribute('data-player-id');
-                        fetch(`update_bracket.php`, {
+                           const winnerId = winnerElement.getAttribute('data-player-id');
+                           fetch(`update_bracket.php`, {
                               method: 'POST',
                               headers: {
                                  'Content-Type': 'application/x-www-form-urlencoded',
@@ -818,40 +817,39 @@
                                  match: match,
                                  winner_id: winnerId,
                               })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
+                           })
+                           .then(response => response.json())
+                           .then(data => {
                               if (data.success) {
                                  winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
                                  winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
-                                    if (team !== winnerElement) {
+                                       if (team !== winnerElement) {
                                           team.classList.add('eliminated');
-                                    }
+                                       }
                                  });
                                  console.log('Winner updated successfully');
 
                                  moveWinnerToNextRound(winnerElement, round, match);
-                                 announceWinner(winnerElement.textContent, currentTournamentId, round);
                                  if (parseInt(round) === parseInt(finalRound)) {
-                                    announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                       announceWinner(winnerElement.textContent, currentTournamentId, round);
                                  }
                               } else {
                                  alert('Error: ' + data.message);
                               }
-                        })
-                        .catch(error => {
+                           })
+                           .catch(error => {
                               console.error('Error updating winner:', error);
-                        });
+                           });
                      } else {
-                        alert('Please select a winner.');
+                           alert('Please select a winner.');
                      }
                   } else if (event.target.classList.contains('team')) {
                      event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
                      event.target.classList.add('selected');
                   }
-            });
+               });
 
-            function moveWinnerToNextRound(winnerElement, round, match) {
+               function moveWinnerToNextRound(winnerElement, round, match) {
                   const nextRound = parseInt(round) + 1;
                   const nextMatch = Math.floor(match / 2);
 
@@ -865,11 +863,11 @@
                   } else {
                      const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
                      if (winnerPlaceholder) {
-                        winnerPlaceholder.textContent = winnerElement.textContent;
-                        winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+                           winnerPlaceholder.textContent = winnerElement.textContent;
+                           winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
                      }
                   }
-            }
+               }
 
             function announceWinner(winnerName, tournamentId, round) {
                   if (!tournamentId) {
@@ -939,95 +937,81 @@
             flex-wrap: nowrap;
             overflow-x: auto;
             padding: 20px;
-            background-color: #f5f5f5;
-        }
+            background-color: #2c3e50; /* Dark blue background */
+         }
 
-        .round {
+         .round {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0 20px;
             position: relative;
-        }
+            color: white;
+         }
 
-        .round h2 {
+         .round h2 {
             text-align: center;
             margin-bottom: 10px;
-        }
+            color: #f39c12; /* Light orange accent for round titles */
+         }
 
-        .match {
+         .match {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
+            border: 2px solid #f39c12; /* Light orange borders */
+            border-radius: 8px;
+            background-color: #34495e; /* Darker background for the match box */
             position: relative;
-        }
+            width: 180px; /* Adjusted width for better spacing */
+         }
 
-        .team {
+         .team {
             width: 150px;
             text-align: center;
-            padding: 5px;
-        }
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            background-color: #2c3e50; /* Dark blue team background */
+            border-radius: 4px;
+            margin-bottom: 5px;
+         }
 
-        .winner-placeholder {
-            height: 50px;
-        }
-
-        .round-line {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            background-color: #ccc;
-        }
-
-        .match-line {
-            position: absolute;
-            width: 2px;
-            height: 20px;
-            background-color: #ccc;
-            top: 50%;
-            left: 100%;
-        }
-
-        .vertical-center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .final-round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-
-        .final-winner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100px;
-            width: 200px;
-            border: 2px solid #000;
-            border-radius: 5px;
-            background-color: #ddd;
-        }
-
-        .team.selected {
-            background-color: #e0f7fa;
+         .team.selected {
+            background-color: #e67e22; /* Highlight the selected team */
             border-radius: 10px;
-        }
+         }
 
-        .team.eliminated {
+         .team.eliminated {
             text-decoration: line-through;
-        }
+            color: #bdc3c7; /* Gray for eliminated teams */
+         }
+
+         .winner-placeholder {
+            height: 50px;
+         }
+
+         .vertical-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+         }
+
+         .win-btn {
+            margin-top: 5px;
+            color: white;
+            background-color: #f39c12; /* Light orange buttons */
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+         }
+
+         .win-btn:hover {
+            background-color: #e67e22; /* Darker orange on hover */
+         }
+
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
