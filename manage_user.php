@@ -262,15 +262,20 @@
                                           </tr>
                                        </thead>
                                        <tbody>
-                                          <?php
+                                       <?php
                                           if (!empty($users)) {
                                              foreach ($users as $user) {
-                                                   echo '<tr>' .
-                                                      '<td>' . htmlspecialchars($user["name"]) . '</td>' .
-                                                      '<td>' . htmlspecialchars($user["email"]) . '</td>' .
-                                                      '<td>' . htmlspecialchars($user["username"]) . '</td>' .
-                                                      '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal" data-userid="' . $user["user_id"] . '" data-name="' . htmlspecialchars($user["name"]) . '" data-email="' . htmlspecialchars($user["email"]) . '" data-username="' . htmlspecialchars($user["username"]) . '">Edit</button></td>' .
-                                                      '</tr>';
+                                                echo '<tr>' .
+                                                '<td>' . htmlspecialchars($user["name"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($user["email"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($user["username"]) . '</td>' .
+                                                // Add data attributes correctly
+                                                '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal" 
+                                                data-userid="' . $user["user_id"] . '" 
+                                                data-name="' . htmlspecialchars($user["name"]) . '" 
+                                                data-email="' . htmlspecialchars($user["email"]) . '" 
+                                                data-username="' . htmlspecialchars($user["username"]) . '">Edit</button></td>' .
+                                                '</tr>';
                                              }
                                           } else {
                                              echo '<tr><td colspan="4">No users found</td></tr>';
@@ -305,15 +310,20 @@
                                           </tr>
                                        </thead>
                                        <tbody>
-                                          <?php
+                                       <?php
                                           if (!empty($cashiers)) {
                                              foreach ($cashiers as $cashier) {
-                                                   echo '<tr>' .
-                                                      '<td>' . htmlspecialchars($cashier["name"]) . '</td>' .
-                                                      '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
-                                                      '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
-                                                      '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCashierModal" data-userid="' . $cashier["user_id"] . '" data-name="' . htmlspecialchars($cashier["name"]) . '" data-email="' . htmlspecialchars($cashier["email"]) . '" data-username="' . htmlspecialchars($cashier["username"]) . '">Edit</button></td>' .
-                                                      '</tr>';
+                                                echo '<tr>' .
+                                                '<td>' . htmlspecialchars($cashier["name"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
+                                                // Add data attributes correctly
+                                                '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCashierModal" 
+                                                data-userid="' . $cashier["user_id"] . '" 
+                                                data-name="' . htmlspecialchars($cashier["name"]) . '" 
+                                                data-email="' . htmlspecialchars($cashier["email"]) . '" 
+                                                data-username="' . htmlspecialchars($cashier["username"]) . '">Edit</button></td>' .
+                                                '</tr>';
                                              }
                                           } else {
                                              echo '<tr><td colspan="4">No cashiers found</td></tr>';
@@ -662,35 +672,38 @@
             });
          });
 
+
+         // Fill the user modal with data
          $('#editUserModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
+            var button = $(event.relatedTarget); // Button that triggered the modal
             var userId = button.data('userid');
             var name = button.data('name');
             var email = button.data('email');
             var username = button.data('username');
 
+            // Get the modal elements
             var modal = $(this);
             modal.find('#editUserId').val(userId);
             modal.find('#editUserName').val(name);
             modal.find('#editUserEmail').val(email);
             modal.find('#editUserUsername').val(username);
-            });
+         });
 
-            // Fill modal with cashier data for editing
-            $('#editCashierModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
+         // Fill the cashier modal with data
+         $('#editCashierModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
             var userId = button.data('userid');
             var name = button.data('name');
             var email = button.data('email');
             var username = button.data('username');
 
+            // Get the modal elements
             var modal = $(this);
             modal.find('#editCashierId').val(userId);
             modal.find('#editCashierName').val(name);
             modal.find('#editCashierEmail').val(email);
             modal.find('#editCashierUsername').val(username);
          });
-
       </script>
 
 
