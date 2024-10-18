@@ -933,83 +933,94 @@
       <style>
         .bracket {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             flex-wrap: nowrap;
-            overflow-x: auto;
             padding: 20px;
-            background-color: #2c3e50; /* Dark blue background */
+            background-color: #2c3e50; /* Dark background */
+            position: relative;
          }
 
          .round {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 20px;
             position: relative;
             color: white;
+            padding: 0 15px;
          }
 
          .round h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #f39c12; /* Light orange accent for round titles */
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #f39c12; /* Light orange for round titles */
          }
 
          .match {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 2px solid #f39c12; /* Light orange borders */
-            border-radius: 8px;
-            background-color: #34495e; /* Darker background for the match box */
+            justify-content: center;
+            margin-bottom: 50px; /* More spacing between matches */
             position: relative;
-            width: 180px; /* Adjusted width for better spacing */
+            width: 200px; /* Set a consistent width */
          }
 
          .team {
-            width: 150px;
+            width: 180px;
             text-align: center;
             padding: 10px;
             color: white;
             font-weight: bold;
-            background-color: #2c3e50; /* Dark blue team background */
+            background-color: #34495e; /* Background for team */
             border-radius: 4px;
             margin-bottom: 5px;
+            position: relative;
          }
 
          .team.selected {
-            background-color: #e67e22; /* Highlight the selected team */
+            background-color: #e67e22; /* Highlight selected team */
             border-radius: 10px;
          }
 
-         .team.eliminated {
-            text-decoration: line-through;
-            color: #bdc3c7; /* Gray for eliminated teams */
+         .match::before,
+         .match::after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 2px;
+            border-color: white;
+         }
+
+         .match::before {
+            top: 50%;
+            left: -15px; /* Connect to the previous round */
+            height: 1px;
+            width: 15px;
+         }
+
+         .match::after {
+            top: 50%;
+            right: -15px; /* Connect to the next round */
+            height: 1px;
+            width: 15px;
          }
 
          .winner-placeholder {
             height: 50px;
+            background-color: #f39c12; /* Final winner placeholder */
+            color: black;
+            font-weight: bold;
          }
 
          .vertical-center {
             display: flex;
-            flex-direction: column;
             justify-content: center;
          }
 
          .win-btn {
             margin-top: 5px;
-            color: white;
-            background-color: #f39c12; /* Light orange buttons */
+            background-color: #f39c12; /* Light orange button */
             border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-         }
-
-         .win-btn:hover {
-            background-color: #e67e22; /* Darker orange on hover */
+            padding: 10px;
          }
 
     </style>
