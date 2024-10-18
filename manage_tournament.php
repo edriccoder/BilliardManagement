@@ -799,65 +799,77 @@
                   });
             });
 
-            document.getElementById('bracketContainer').addEventListener('click', function(event) {
-    if (event.target.classList.contains('win-btn')) {
-        const round = event.target.getAttribute('data-round');
-        const match = event.target.getAttribute('data-match');
-        const teams = event.target.parentElement.querySelectorAll('.team');
-        
-        // Ensure winner is selected
-        if (teams[0].classList.contains('selected') || teams[1].classList.contains('selected')) {
-            const winnerElement = event.target.parentElement.querySelector('.team.selected');
-            const winnerId = winnerElement.getAttribute('data-player-id');
-            
-            fetch(`update_bracket.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    tournament_id: currentTournamentId,
-                    round: round,
-                    match: match,
-                    winner_id: winnerId,
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Winner updated successfully!');
-                    moveWinnerToNextRound(winnerElement, round, match);
-                    if (parseInt(round) === finalRound) {
-                        announceFinalWinner(winnerElement.textContent, currentTournamentId);
-                    }
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error updating winner:', error);
+            document.getElementById('bracketContainer').addEventListener('click', function (event) {
+                  if (event.target.classList.contains('win-btn')) {
+                     const round = event.target.getAttribute('data-round');
+                     const match = event.target.getAttribute('data-match');
+                     const winnerElement = event.target.parentElement.querySelector('.team.selected');
+
+                     if (winnerElement) {
+                        const winnerId = winnerElement.getAttribute('data-player-id');
+                        fetch(`update_bracket.php`, {
+                              method: 'POST',
+                              headers: {
+                                 'Content-Type': 'application/x-www-form-urlencoded',
+                              },
+                              body: new URLSearchParams({
+                                 tournament_id: currentTournamentId,
+                                 round: round,
+                                 match: match,
+                                 winner_id: winnerId,
+                              })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                              if (data.success) {
+                                 winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
+                                 winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
+                                    if (team !== winnerElement) {
+                                          team.classList.add('eliminated');
+                                    }
+                                 });
+                                 console.log('Winner updated successfully');
+
+                                 moveWinnerToNextRound(winnerElement, round, match);
+                                 announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 if (parseInt(round) === parseInt(finalRound)) {
+                                    announceWinner(winnerElement.textContent, currentTournamentId, round);
+                                 }
+                              } else {
+                                 alert('Error: ' + data.message);
+                              }
+                        })
+                        .catch(error => {
+                              console.error('Error updating winner:', error);
+                        });
+                     } else {
+                        alert('Please select a winner.');
+                     }
+                  } else if (event.target.classList.contains('team')) {
+                     event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
+                     event.target.classList.add('selected');
+                  }
             });
-        } else {
-            alert('Please select a winner.');
-        }
-    }
-});
 
-function moveWinnerToNextRound(winnerElement, round, match) {
-    const nextRound = parseInt(round) + 1;
-    const nextMatch = Math.floor(match / 2);
-    
-    const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
-    if (nextRoundDiv) {
-        const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
-        const teamSlot = nextMatchDiv.querySelectorAll('.team')[match % 2];
-        
-        teamSlot.textContent = winnerElement.textContent;
-        teamSlot.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-        teamSlot.classList.add('selected'); // Auto-select the winner in the next round
-    }
-}
+            function moveWinnerToNextRound(winnerElement, round, match) {
+                  const nextRound = parseInt(round) + 1;
+                  const nextMatch = Math.floor(match / 2);
 
+                  const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
+                  if (nextRoundDiv) {
+                     const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
+                     const nextTeamDiv = nextMatchDiv.querySelectorAll('.team')[match % 2];
+
+                     nextTeamDiv.textContent = winnerElement.textContent;
+                     nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+                  } else {
+                     const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
+                     if (winnerPlaceholder) {
+                        winnerPlaceholder.textContent = winnerElement.textContent;
+                        winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+                     }
+                  }
+            }
 
             function announceWinner(winnerName, tournamentId, round) {
                   if (!tournamentId) {
@@ -921,47 +933,6 @@ function moveWinnerToNextRound(winnerElement, round, match) {
                });
       </script>
       <style>
-         .round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 40px; /* Increased spacing between rounds */
-         }
-
-         .match {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 50px; /* Increased spacing between matches */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-         }
-
-         /* Improved line design for clarity and visibility */
-         .round-line, .match-line {
-            background-color: #000; /* Darker line for better contrast */
-         }
-
-         .match-line {
-            position: absolute;
-            width: 20px; /* Wider line for better visibility */
-            left: 100%;
-            transform: translateX(-50%); /* Center align the line */
-         }
-
-         /* Winner selection enhancements */
-         .team.selected {
-            background-color: #4CAF50; /* Brighter selection color */
-            color: #fff; /* White text for better readability */
-            border-color: #367B3A; /* Dark green border */
-         }
-
-         .team.eliminated {
-            color: #bbb; /* Grayed out text for eliminated teams */
-            background-color: #f0f0f0; /* Light gray background */
-         }
         .bracket {
             display: flex;
             justify-content: center;
@@ -971,9 +942,29 @@ function moveWinnerToNextRound(winnerElement, round, match) {
             background-color: #f5f5f5;
         }
 
+        .round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+            position: relative;
+        }
+
         .round h2 {
             text-align: center;
             margin-bottom: 10px;
+        }
+
+        .match {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            position: relative;
         }
 
         .team {
