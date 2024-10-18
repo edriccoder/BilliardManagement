@@ -234,125 +234,99 @@
             $cashiers = $stmt_cashiers->fetchAll(PDO::FETCH_ASSOC);
             ?>
 
-            <!-- Container for Users -->
+            <!-- Container for Users and Cashiers -->
             <div class="container-fluid py-4">
                <div class="d-sm-flex align-items-center justify-content-between mb-4">
                   <h1 class="h3 mb-0 text-gray-800">Manage Users and Cashiers</h1>
                   <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addCashier'>Add Cashier Account</button>
                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card my-4">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                    <h6 class="text-white text-capitalize ps-3">Users</h6>
-                                </div>
-                            </div>
-                            <div class="card-body px-0 pb-2">
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            if (!empty($users)) {
-                                                foreach ($users as $user) {
-                                                    echo '<tr>' .
-                                                            '<td>' .
-                                                                '<div class="d-flex px-2 py-1">' .
-                                                                    '<div class="d-flex flex-column justify-content-center">' .
-                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($user["name"]) . '</h6>' .
-                                                                    '</div>' .
-                                                                '</div>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["email"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($user["username"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td class="align-middle">' .
-                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
-                                                                'Archive' .
-                                                                '</a>' .
-                                                            '</td>' .
-                                                        '</tr>';
-                                                }
-                                            } else {
-                                                echo '<tr><td colspan="4">No users found</td></tr>';
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card my-4">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                                    <h6 class="text-white text-capitalize ps-3">Cashiers</h6>
-                                </div>
-                            </div>
-                            <div class="card-body px-0 pb-2">
-                                <div class="table-responsive p-0">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Username</th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            if (!empty($cashiers)) {
-                                                foreach ($cashiers as $cashier) {
-                                                    echo '<tr>' .
-                                                            '<td>' .
-                                                                '<div class="d-flex px-2 py-1">' .
-                                                                    '<div class="d-flex flex-column justify-content-center">' .
-                                                                        '<h6 class="mb-0 text-sm">' . htmlspecialchars($cashier["name"]) . '</h6>' .
-                                                                    '</div>' .
-                                                                '</div>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["email"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td>' .
-                                                                '<p class="text-xs text-secondary mb-0">' . htmlspecialchars($cashier["username"]) . '</p>' .
-                                                            '</td>' .
-                                                            '<td class="align-middle">' .
-                                                                '<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">' .
-                                                                'Edit' .
-                                                                '</a>' .
-                                                            '</td>' .
-                                                        '</tr>';
-                                                }
-                                            } else {
-                                                echo '<tr><td colspan="4">No cashiers found</td></tr>';
-                                            }
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <!-- Users Table -->
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card my-4">
+                           <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                 <h6 class="text-white text-capitalize ps-3">Users</h6>
+                              </div>
+                           </div>
+                           <div class="card-body px-0 pb-2">
+                              <div class="table-responsive p-0">
+                                 <table class="table align-items-center mb-0">
+                                       <thead>
+                                          <tr>
+                                             <th>Name</th>
+                                             <th>Email</th>
+                                             <th>Username</th>
+                                             <th></th>
+                                          </tr>
+                                       </thead>
+                                       <tbody>
+                                          <?php
+                                          if (!empty($users)) {
+                                             foreach ($users as $user) {
+                                                   echo '<tr>' .
+                                                      '<td>' . htmlspecialchars($user["name"]) . '</td>' .
+                                                      '<td>' . htmlspecialchars($user["email"]) . '</td>' .
+                                                      '<td>' . htmlspecialchars($user["username"]) . '</td>' .
+                                                      '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal" data-userid="' . $user["user_id"] . '" data-name="' . htmlspecialchars($user["name"]) . '" data-email="' . htmlspecialchars($user["email"]) . '" data-username="' . htmlspecialchars($user["username"]) . '">Edit</button></td>' .
+                                                      '</tr>';
+                                             }
+                                          } else {
+                                             echo '<tr><td colspan="4">No users found</td></tr>';
+                                          }
+                                          ?>
+                                       </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Cashiers Table -->
+               <div class="row">
+                  <div class="col-12">
+                     <div class="card my-4">
+                           <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                 <h6 class="text-white text-capitalize ps-3">Cashiers</h6>
+                              </div>
+                           </div>
+                           <div class="card-body px-0 pb-2">
+                              <div class="table-responsive p-0">
+                                 <table class="table align-items-center mb-0">
+                                       <thead>
+                                          <tr>
+                                             <th>Name</th>
+                                             <th>Email</th>
+                                             <th>Username</th>
+                                             <th></th>
+                                          </tr>
+                                       </thead>
+                                       <tbody>
+                                          <?php
+                                          if (!empty($cashiers)) {
+                                             foreach ($cashiers as $cashier) {
+                                                   echo '<tr>' .
+                                                      '<td>' . htmlspecialchars($cashier["name"]) . '</td>' .
+                                                      '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
+                                                      '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
+                                                      '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCashierModal" data-userid="' . $cashier["user_id"] . '" data-name="' . htmlspecialchars($cashier["name"]) . '" data-email="' . htmlspecialchars($cashier["email"]) . '" data-username="' . htmlspecialchars($cashier["username"]) . '">Edit</button></td>' .
+                                                      '</tr>';
+                                             }
+                                          } else {
+                                             echo '<tr><td colspan="4">No cashiers found</td></tr>';
+                                          }
+                                          ?>
+                                       </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                     </div>
+                  </div>
+               </div>
             </div>
-        </div>
         
          <!-- Content Row -->
          <div class="column">
@@ -583,6 +557,85 @@
             </div>
          </div>
       </div>
+
+      <!-- Edit User Modal -->
+      <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <form id="editUserForm" method="POST" action="update_user.php">
+               <div class="modal-body">
+                  <input type="hidden" name="user_id" id="editUserId">
+                  <div class="form-group">
+                     <label for="editUserName">Name</label>
+                     <input type="text" class="form-control" id="editUserName" name="name" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editUserEmail">Email</label>
+                     <input type="email" class="form-control" id="editUserEmail" name="email" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editUserUsername">Username</label>
+                     <input type="text" class="form-control" id="editUserUsername" name="username" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editUserPassword">Password</label>
+                     <input type="password" class="form-control" id="editUserPassword" name="password">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
+      <!-- Edit Cashier Modal -->
+      <div class="modal fade" id="editCashierModal" tabindex="-1" role="dialog" aria-labelledby="editCashierModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+               <h5 class="modal-title" id="editCashierModalLabel">Edit Cashier</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+               </div>
+               <form id="editCashierForm" method="POST" action="update_cashier.php">
+               <div class="modal-body">
+                  <input type="hidden" name="user_id" id="editCashierId">
+                  <div class="form-group">
+                     <label for="editCashierName">Name</label>
+                     <input type="text" class="form-control" id="editCashierName" name="name" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editCashierEmail">Email</label>
+                     <input type="email" class="form-control" id="editCashierEmail" name="email" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editCashierUsername">Username</label>
+                     <input type="text" class="form-control" id="editCashierUsername" name="username" required>
+                  </div>
+                  <div class="form-group">
+                     <label for="editCashierPassword">Password</label>
+                     <input type="password" class="form-control" id="editCashierPassword" name="password">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+               </form>
+            </div>
+         </div>
+      </div>
+
       <script>
          var win = navigator.platform.indexOf('Win') > -1;
          if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -637,6 +690,35 @@
                   }
                });
             });
+         });
+
+         $('#editUserModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var userId = button.data('userid');
+            var name = button.data('name');
+            var email = button.data('email');
+            var username = button.data('username');
+
+            var modal = $(this);
+            modal.find('#editUserId').val(userId);
+            modal.find('#editUserName').val(name);
+            modal.find('#editUserEmail').val(email);
+            modal.find('#editUserUsername').val(username);
+            });
+
+            // Fill modal with cashier data for editing
+            $('#editCashierModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var userId = button.data('userid');
+            var name = button.data('name');
+            var email = button.data('email');
+            var username = button.data('username');
+
+            var modal = $(this);
+            modal.find('#editCashierId').val(userId);
+            modal.find('#editCashierName').val(name);
+            modal.find('#editCashierEmail').val(email);
+            modal.find('#editCashierUsername').val(username);
          });
       </script>
 
