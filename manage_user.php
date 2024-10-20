@@ -627,38 +627,39 @@
                   }
                });
             });
-            function openEditModal(user) {
-               console.log("openEditModal called");
-               console.log(user);
-
-               // Determine if we are editing a User or a Cashier and select the correct modal
-               var modalId = user.role === 'cashier' ? '#editCashierModal' : '#editUserModal';
-
-               // Set values in the modal
-               $(modalId).find('[name="user_id"]').val(user.user_id);
-               $(modalId).find('[name="name"]').val(user.name);
-               $(modalId).find('[name="email"]').val(user.email);
-               $(modalId).find('[name="username"]').val(user.username);
-
-               // Show the modal
-               $(modalId).modal('show');
-            }
-
-            // Bind event listeners for both User and Cashier modals
-            $('#editUserModal, #editCashierModal').on('show.bs.modal', function(event) {
-               var button = $(event.relatedTarget); // Button that triggered the modal
-               var user = {
-                  user_id: button.data('userid'),
-                  name: button.data('name'),
-                  email: button.data('email'),
-                  username: button.data('username'),
-                  role: button.data('role') // Add a role identifier to differentiate between user and cashier
-               };
-
-               openEditModal(user);
-            });
-
          });
+
+         function openEditModal(user) {
+            console.log("openEditModal called");
+            console.log(user);
+
+            // Determine if we are editing a User or a Cashier and select the correct modal
+            var modalId = user.role === 'cashier' ? '#editCashierModal' : '#editUserModal';
+
+            // Set values in the modal
+            $(modalId).find('[name="user_id"]').val(user.user_id);
+            $(modalId).find('[name="name"]').val(user.name);
+            $(modalId).find('[name="email"]').val(user.email);
+            $(modalId).find('[name="username"]').val(user.username);
+
+            // Show the modal
+            $(modalId).modal('show');
+         }
+
+         // Bind event listeners for both User and Cashier modals
+         $('#editUserModal, #editCashierModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var user = {
+               user_id: button.data('userid'),
+               name: button.data('name'),
+               email: button.data('email'),
+               username: button.data('username'),
+               role: button.data('role') // Add a role identifier to differentiate between user and cashier
+            };
+
+            openEditModal(user);
+         });
+
 
 
       </script>
