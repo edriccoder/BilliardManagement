@@ -266,15 +266,16 @@
                                           if (!empty($users)) {
                                              foreach ($users as $user) {
                                                 echo '<tr>' .
-                                                   '<td>' . htmlspecialchars($cashier["name"]) . '</td>' .
-                                                   '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
-                                                   '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
-                                                   '<td><button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCashierModal" 
-                                                   data-userid="' . $cashier["user_id"] . '" 
-                                                   data-name="' . htmlspecialchars($cashier["name"]) . '" 
-                                                   data-email="' . htmlspecialchars($cashier["email"]) . '" 
-                                                   data-username="' . htmlspecialchars($cashier["username"]) . '">Edit</button></td>' .
-                                                   '</tr>';
+                                                '<td>' . htmlspecialchars($user["name"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($user["email"]) . '</td>' .
+                                                '<td>' . htmlspecialchars($user["username"]) . '</td>' .
+                                                // Add data attributes correctly
+                                                '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal" 
+                                                data-userid="' . $user["user_id"] . '" 
+                                                data-name="' . htmlspecialchars($user["name"]) . '" 
+                                                data-email="' . htmlspecialchars($user["email"]) . '" 
+                                                data-username="' . htmlspecialchars($user["username"]) . '">Edit</button></td>' .
+                                                '</tr>';
                                              }
                                           } else {
                                              echo '<tr><td colspan="4">No users found</td></tr>';
@@ -537,80 +538,82 @@
       </div>
 
       <!-- Edit User Modal -->
-      <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-         <div class="modal-dialog">
+      <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
             <div class="modal-content">
                <div class="modal-header">
-                  <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
                </div>
                <form id="editUserForm" method="POST" action="update_user.php">
-                  <div class="modal-body">
-                     <input type="hidden" name="user_id" id="editUserId">
-                     <label for="editUserName">Name</label>
-                     <div class="input-group my-3">
-                        <input type="text" class="form-control" id="editUserName" name="name" required>
-                     </div>
-                     <label for="editUserEmail">Email</label>
-                     <div class="input-group my-3">
-                        <input type="email" class="form-control" id="editUserEmail" name="email" required>
-                     </div>
-                     <label for="editUserUsername">Username</label>
-                     <div class="input-group my-3">
-                        <input type="text" class="form-control" id="editUserUsername" name="username" required>
-                     </div>
+               <div class="modal-body">
+                  <input type="hidden" name="user_id" id="editUserId">
+                  <label for="editUserName">Name</label>
+                  <div class="input-group input-group-outline my-3">                    
+                     <input type="text" class="form-control" id="editUserName" name="name" required>
+                  </div>
+                  <label for="editUserEmail">Email</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="email" class="form-control" id="editUserEmail" name="email" required>
+                  </div>
+                  <label for="editUserUsername">Username</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="text" class="form-control" id="editUserUsername" name="username" required>
+                  </div>
+                  <div class="input-group input-group-outline my-3">
                      <label for="editUserPassword">Password (Leave blank if unchanged)</label>
-                     <div class="input-group my-3">
-                        <input type="password" class="form-control" id="editUserPassword" name="password">
-                     </div>
+                     <input type="password" class="form-control" id="editUserPassword" name="password">
                   </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary">Save changes</button>
-                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
                </form>
             </div>
          </div>
       </div>
-
 
       <!-- Edit Cashier Modal -->
-      <div class="modal fade" id="editCashierModal" tabindex="-1" aria-labelledby="editCashierModalLabel" aria-hidden="true">
-         <div class="modal-dialog">
+      <div class="modal fade" id="editCashierModal" tabindex="-1" role="dialog" aria-labelledby="editCashierModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
             <div class="modal-content">
                <div class="modal-header">
-                  <h5 class="modal-title" id="editCashierModalLabel">Edit Cashier</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+               <h5 class="modal-title" id="editCashierModalLabel">Edit Cashier</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
                </div>
                <form id="editCashierForm" method="POST" action="update_cashier.php">
-                  <div class="modal-body">
-                     <input type="hidden" name="user_id" id="editCashierId">
-                     <label for="editCashierName">Name</label>
-                     <div class="input-group my-3">
-                        <input type="text" class="form-control" id="editCashierName" name="name" required>
-                     </div>
-                     <label for="editCashierEmail">Email</label>
-                     <div class="input-group my-3">
-                        <input type="email" class="form-control" id="editCashierEmail" name="email" required>
-                     </div>
-                     <label for="editCashierUsername">Username</label>
-                     <div class="input-group my-3">
-                        <input type="text" class="form-control" id="editCashierUsername" name="username" required>
-                     </div>
-                     <label for="editCashierPassword">Password (Leave blank if unchanged)</label>
-                     <div class="input-group my-3">
-                        <input type="password" class="form-control" id="editCashierPassword" name="password">
-                     </div>
+               <div class="modal-body">
+                  <input type="hidden" name="user_id" id="editCashierId">
+                  <label for="editCashierName">Name</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="text" class="form-control" id="editCashierName" name="name" required>
                   </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                     <button type="submit" class="btn btn-primary">Save changes</button>
+                  <label for="editCashierEmail">Email</label>
+                  <div class="input-group input-group-outline my-3">
+                     <input type="email" class="form-control" id="editCashierEmail" name="email" required>
                   </div>
+                  <label for="editCashierUsername">Username</label>
+                  <div class="input-group input-group-outline my-3p">
+                     <input type="text" class="form-control" id="editCashierUsername" name="username" required>
+                  </div>
+                  <label for="editCashierPassword">Password (Leave blank if unchanged)</label>
+                  <div class="input-group input-group-outline my-3">                
+                     <input type="password" class="form-control" id="editCashierPassword" name="password">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
                </form>
             </div>
-         </div>
       </div>
-
+      </div>
 
 
       <script>
@@ -622,6 +625,15 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
+         function openEditModal(table) {
+            console.log("openEditModal called");
+            console.log(table);
+
+            document.getElementById('editTableId').value = table.table_id;
+            document.getElementById('editTableName').value = table.table_number;
+            document.getElementById('editTableStatus').value = table.status;
+            $('#editTableModal').modal('show');
+         }
          $(document).ready(function() {
             $('.show-players').click(function() {
                   var tournamentId = $(this).data('tournament-id');
@@ -658,7 +670,6 @@
                   }
                });
             });
-
             $('#editUserModal').on('show.bs.modal', function(event) {
                var button = $(event.relatedTarget); // Button that triggered the modal
                var userId = button.data('userid');
@@ -672,10 +683,9 @@
                modal.find('#editUserName').val(name);
                modal.find('#editUserEmail').val(email);
                modal.find('#editUserUsername').val(username);
-               modal.find('#editUserPassword').val(''); // Clear the password field
             });
 
-            // Edit Cashier Modal
+            // Handle the Cashier Edit Modal
             $('#editCashierModal').on('show.bs.modal', function(event) {
                var button = $(event.relatedTarget); // Button that triggered the modal
                var userId = button.data('userid');
@@ -689,16 +699,6 @@
                modal.find('#editCashierName').val(name);
                modal.find('#editCashierEmail').val(email);
                modal.find('#editCashierUsername').val(username);
-               modal.find('#editCashierPassword').val(''); // Clear the password field
-            });
-
-            // Optional: Add console logs for debugging
-            $('#editUserModal').on('show.bs.modal', function(event) {
-               console.log('Edit User Modal Opened');
-            });
-
-            $('#editCashierModal').on('show.bs.modal', function(event) {
-               console.log('Edit Cashier Modal Opened');
             });
          });
 
