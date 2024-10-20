@@ -270,11 +270,7 @@
                                                 '<td>' . htmlspecialchars($user["email"]) . '</td>' .
                                                 '<td>' . htmlspecialchars($user["username"]) . '</td>' .
                                                 // Add data attributes correctly
-                                                '<td><button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editUserModal" 
-                                                data-userid="' . $user["user_id"] . '" 
-                                                data-name="' . htmlspecialchars($user["name"]) . '" 
-                                                data-email="' . htmlspecialchars($user["email"]) . '" 
-                                                data-username="' . htmlspecialchars($user["username"]) . '">Edit</button></td>' .
+                                                '<td><button type="button" class="btn btn-warning btn-sm" onclick=\'editUserModal('. json_encode($user) .')\'>Edit</button><td>' .
                                                 '</tr>';
                                              }
                                           } else {
@@ -318,7 +314,7 @@
                                                 '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
                                                 '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
                                                 // Add data attributes correctly
-                                                '<td><button type="btn btn-warning btn-sm" onclick=\'editCashierModal('. json_encode($cashier) .')\'>Edit</button><td>' .
+                                                '<td><button type="button" class="btn btn-warning btn-sm" onclick=\'editCashierModal('. json_encode($cashier) .')\'>Edit</button><td>' .
                                                 '</tr>';
                                              }
                                           } else {
@@ -636,6 +632,19 @@
 
             // Show the modal
             $('#editCashierModal').modal('show');
+         }
+
+         function editCashierModal(user) {
+            console.log("Editing user:", user);
+            
+            // Assuming the modal has fields with these IDs
+            $('#editUserId').val(user.user_id);
+            $('#editUserName').val(user.name);
+            $('#editUserEmail').val(user.email);
+            $('#editUserUsername').val(user.username);
+
+            // Show the modal
+            $('#editUserModal').modal('show');
          }
 
 
