@@ -309,7 +309,6 @@ foreach ($users as $user) {
                         echo '</li>';
                     }
                     ?>
-
                </ul>
             </div>
          </div>
@@ -403,9 +402,73 @@ foreach ($users as $user) {
          </div>
       </div>
 
-      <script>
+      <!-- Edit Announcement Modal -->
+    <div class="modal fade" id="editAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="editAnnouncementModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAnnouncementModalLabel">Edit Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editAnnouncementForm" method="POST" action="update_announcement.php">
+                <div class="modal-body">
+                <!-- Hidden field for announcement ID -->
+                <input type="hidden" id="edit_announcement_id" name="announcement_id">
 
-        </script>
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="edit_title">Title</label>
+                    <input type="text" class="form-control" id="edit_title" name="title" required>
+                </div>
+
+                <!-- Body -->
+                <div class="form-group">
+                    <label for="edit_body">Body</label>
+                    <textarea class="form-control" id="edit_body" name="body" rows="3" required></textarea>
+                </div>
+
+                <!-- Tournament Start Date -->
+                <div class="form-group">
+                    <label for="edit_start_date">Tournament Start Date</label>
+                    <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                </div>
+
+                <!-- Tournament End Date -->
+                <div class="form-group">
+                    <label for="edit_end_date">Tournament End Date</label>
+                    <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
+                </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function openEditModal(announcement) {
+            console.log("editAnnouncementModal called");
+            console.log(announcement);
+
+            // Populate the modal with the announcement details
+            document.getElementById('edit_announcement_id').value = announcement.tournament_id; // Hidden field for the announcement ID
+            document.getElementById('edit_title').value = announcement.title;
+            document.getElementById('edit_body').value = announcement.body;
+            document.getElementById('edit_start_date').value = announcement.start_date;
+            document.getElementById('edit_end_date').value = announcement.end_date;
+
+            // Open the modal
+            $('#editAnnouncementModal').modal('show');
+        }
+
+
+    </script>
 
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
