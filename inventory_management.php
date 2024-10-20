@@ -222,7 +222,7 @@
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Inventory Management</h1>
             <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addItemModal'>Add Item</button>
-            <button class='btn btn-primary editBtn'>Generate Item report</button>
+            <button class='btn btn-primary editBtn' onclick="window.location.href='generate_inventory_report.php'">Generate Item Report</button>
             <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#showReportModal'>Show Report</button>
          </div>
          <!-- Content Row -->
