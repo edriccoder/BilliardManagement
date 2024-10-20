@@ -946,11 +946,11 @@
                   });
                });
       </script>
-      <style>
+<style>
 .bracket {
     display: flex;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; /* Ensure rounds stay on one line */
     overflow-x: auto;
     padding: 20px;
     background-color: #2c3e50;
@@ -960,135 +960,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 60px; /* Adjust spacing between rounds */
-    position: relative;
-    color: white;
-}
-
-.round h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #f39c12;
-}
-
-.match {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 80px; /* More space between matches to fit lines */
-    padding: 10px;
-    border: 2px solid #f39c12;
-    border-radius: 8px;
-    background-color: #34495e;
-    position: relative;
-    width: 180px;
-}
-
-/* Vertical Line */
-.match::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    height: calc(100% + 80px); /* Adjust this based on match height and spacing */
-    border-left: 2px solid #f39c12;
-    z-index: -1;
-}
-
-/* Horizontal Line to the next round */
-.match::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    width: 60px; /* Adjust based on gap between rounds */
-    border-top: 2px solid #f39c12;
-    z-index: -1;
-}
-
-/* Connecting odd matches to the next round */
-.match:nth-child(odd)::before {
-    height: calc(100% + 120px); /* Longer line for odd matches */
-}
-
-/* Remove the vertical line for the last match of the round */
-.match:last-child::before,
-.match:nth-last-child(2)::before {
-    display: none;
-}
-
-/* Define the final match lines */
-.final-round {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
-/* Team styling */
-.team {
-    width: 150px;
-    text-align: center;
-    padding: 10px;
-    color: white;
-    font-weight: bold;
-    background-color: #2c3e50;
-    border-radius: 4px;
-    margin-bottom: 5px;
-}
-
-.team.selected {
-    background-color: #e67e22;
-    border-radius: 10px;
-}
-
-.team.eliminated {
-    text-decoration: line-through;
-    color: #bdc3c7;
-}
-
-.winner-placeholder {
-    height: 50px;
-}
-
-/* Vertically center align matches */
-.vertical-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-/* Winner button */
-.win-btn {
-    margin-top: 5px;
-    color: white;
-    background-color: #f39c12;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
-}
-
-.win-btn:hover {
-    background-color: #e67e22;
-}
-
-.bracket {
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    background-color: #2c3e50;
-    overflow-x: auto;
-}
-
-.round {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 40px;
+    margin: 0 40px; /* Adjust spacing between rounds */
     position: relative;
 }
 
 .round h2 {
+    text-align: center;
     color: #f39c12;
     margin-bottom: 20px;
 }
@@ -1101,23 +978,30 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 60px; /* Adjust as needed */
     position: relative;
+    padding: 10px;
+    border: 2px solid #f39c12;
+    border-radius: 8px;
+    background-color: #34495e;
+    width: 180px; /* Ensure consistent width */
 }
 
 .match .team {
-    width: 160px;
+    width: 160px; /* Adjust width to match match width */
     text-align: center;
     padding: 10px;
     margin: 5px 0;
     background-color: #34495e;
     color: white;
+    font-weight: bold;
     border: 2px solid #f39c12;
     border-radius: 4px;
 }
 
 .team.selected {
     background-color: #e67e22;
+    border-radius: 10px; /* Match previous styling */
 }
 
 .team.eliminated {
@@ -1175,8 +1059,28 @@
     border-radius: 4px;
 }
 
+/* Vertically center align matches */
+.vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-    </style>
+/* Winner button */
+.win-btn {
+    margin-top: 5px;
+    color: white;
+    background-color: #f39c12;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.win-btn:hover {
+    background-color: #e67e22;
+}
+</style>
+
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
