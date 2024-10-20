@@ -11,10 +11,24 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
 
-$sqlAnnouncement = "SELECT title, body, created_at, expires_at FROM announcements";
+$sqlAnnouncement = "
+    SELECT 
+        a.title, 
+        a.body, 
+        a.created_at, 
+        a.expires_at, 
+        a.tournament_id, 
+        t.start_date, 
+        t.end_date 
+    FROM 
+        announcements a
+    LEFT JOIN 
+        tournaments t ON a.tournament_id = t.tournament_id
+";
 $stmtAnnouncement = $conn->prepare($sqlAnnouncement);
 $stmtAnnouncement->execute();
 $announcements = $stmtAnnouncement->fetchAll(PDO::FETCH_ASSOC);
+
 
 $userMap = [];
 foreach ($users as $user) {
@@ -262,32 +276,40 @@ foreach ($users as $user) {
             </div>
             <div class="card-body pt-4 p-3">
                <ul class="list-group">
-                <?php
-                        if (!empty($announcements)) {
-                            foreach ($announcements as $announcement) {
-                                echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                                echo '<input type="hidden" name="announcement_id" value="' . htmlspecialchars($announcement["id"]) . '">';
-                                echo '<div class="d-flex flex-column">';
-                                echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($announcement["title"]) . '</h6>';
-                                echo '<span class="mb-2 text-xs">Body: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($announcement["body"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Created At: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["created_at"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Expires At: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["expires_at"]) . '</span></span>';
-                                echo '</div>';
-                                echo '<div class="ms-auto text-end">';
-                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_announcement.php?announcement_id=' . htmlspecialchars($announcement["id"]) . '">';
-                                echo '<i class="material-icons text-sm me-2">delete</i>Archive</a>';
-                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#announcementModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($announcement)) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
-                                echo '</div>';
-                                echo '</li>';
-                            }
-                        } else {
+               <?php
+                    if (!empty($announcements)) {
+                        foreach ($announcements as $announcement) {
                             echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                            echo '<input type="hidden" name="announcement_id" value="' . htmlspecialchars($announcement["tournament_id"]) . '">';
                             echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">No announcements found.</h6>';
+                            echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($announcement["title"]) . '</h6>';
+                            echo '<span class="mb-2 text-xs">Body: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($announcement["body"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Created At: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["created_at"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Expires At: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["expires_at"]) . '</span></span>';
+                            
+                            // Display tournament dates if they exist
+                            if (!empty($announcement["start_date"]) && !empty($announcement["end_date"])) {
+                                echo '<span class="mb-2 text-xs">Tournament Start: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["start_date"]) . '</span></span>';
+                                echo '<span class="mb-2 text-xs">Tournament End: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($announcement["end_date"]) . '</span></span>';
+                            }
+
+                            echo '</div>';
+                            echo '<div class="ms-auto text-end">';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_announcement.php?announcement_id=' . htmlspecialchars($announcement["tournament_id"]) . '">';
+                            echo '<i class="material-icons text-sm me-2">delete</i>Archive</a>';
+                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#announcementModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($announcement)) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
                             echo '</div>';
                             echo '</li>';
                         }
+                    } else {
+                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<div class="d-flex flex-column">';
+                        echo '<h6 class="mb-3 text-sm">No announcements found.</h6>';
+                        echo '</div>';
+                        echo '</li>';
+                    }
                     ?>
+
                </ul>
             </div>
          </div>
