@@ -757,8 +757,11 @@
                                     const newMatchups = [];
 
                                     for (let match = 0; match < matches; match++) {
-                                          const matchDiv = document.createElement('div');
-                                          matchDiv.className = 'match';
+                                       const matchContainer = document.createElement('div');
+                                       matchContainer.className = 'match-container';
+
+                                       const matchDiv = document.createElement('div');
+                                       matchDiv.className = 'match';
 
                                           const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
                                           const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
@@ -769,7 +772,8 @@
                                              <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
                                           `;
 
-                                          roundDiv.appendChild(matchDiv);
+                                          matchContainer.appendChild(matchDiv);
+                                          roundDiv.appendChild(matchContainer);
 
                                           newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
                                     }
@@ -1067,6 +1071,110 @@
 .win-btn:hover {
     background-color: #e67e22;
 }
+
+.bracket {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #2c3e50;
+    overflow-x: auto;
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 40px;
+    position: relative;
+}
+
+.round h2 {
+    color: #f39c12;
+    margin-bottom: 20px;
+}
+
+.match-container {
+    position: relative;
+}
+
+.match {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.match .team {
+    width: 160px;
+    text-align: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #34495e;
+    color: white;
+    border: 2px solid #f39c12;
+    border-radius: 4px;
+}
+
+.team.selected {
+    background-color: #e67e22;
+}
+
+.team.eliminated {
+    text-decoration: line-through;
+    color: #bdc3c7;
+}
+
+/* Horizontal line connecting to next round */
+.match-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -20px; /* Adjust based on spacing between rounds */
+    width: 20px;
+    height: 0;
+    border-top: 2px solid #f39c12;
+}
+
+/* Vertical line connecting matches */
+.match-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -20px; /* Adjust based on spacing between rounds */
+    width: 0;
+    border-left: 2px solid #f39c12;
+}
+
+/* Hide lines for the final match in a round */
+.match-container:last-child::before,
+.match-container:last-child::after {
+    display: none;
+}
+
+/* Lines for rounds after the first */
+.round:not(:first-child) .match-container::before,
+.round:not(:first-child) .match-container::after {
+    right: auto;
+    left: -20px; /* Adjust based on spacing between rounds */
+    border-left: none;
+    border-right: 2px solid #f39c12;
+}
+
+/* Winner placeholder styling */
+.winner-placeholder {
+    height: 50px;
+    width: 160px;
+    background-color: #34495e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #f39c12;
+    border-radius: 4px;
+}
+
 
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
