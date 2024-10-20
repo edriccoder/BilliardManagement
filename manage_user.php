@@ -634,7 +634,7 @@
             $('#editCashierModal').modal('show');
          }
 
-         function editCashierModal(user) {
+         function editUserModal(user) {
             console.log("Editing user:", user);
             
             // Assuming the modal has fields with these IDs
