@@ -956,7 +956,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 40px;
+    margin: 0 60px; /* Adjust spacing between rounds */
     position: relative;
     color: white;
 }
@@ -971,7 +971,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 80px; /* More space between matches to fit lines */
     padding: 10px;
     border: 2px solid #f39c12;
     border-radius: 8px;
@@ -986,7 +986,7 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    height: calc(100% + 20px); /* Adjust this based on spacing */
+    height: calc(100% + 80px); /* Adjust this based on match height and spacing */
     border-left: 2px solid #f39c12;
     z-index: -1;
 }
@@ -997,21 +997,31 @@
     position: absolute;
     top: 50%;
     left: 100%;
-    width: 40px; /* Adjust based on gap between rounds */
+    width: 60px; /* Adjust based on gap between rounds */
     border-top: 2px solid #f39c12;
     z-index: -1;
 }
 
-/* Connecting the match vertically */
+/* Connecting odd matches to the next round */
 .match:nth-child(odd)::before {
-    height: calc(200% + 60px);
+    height: calc(100% + 120px); /* Longer line for odd matches */
 }
 
+/* Remove the vertical line for the last match of the round */
 .match:last-child::before,
 .match:nth-last-child(2)::before {
-    display: none; /* Hide the vertical lines for the last matches */
+    display: none;
 }
 
+/* Define the final match lines */
+.final-round {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Team styling */
 .team {
     width: 150px;
     text-align: center;
@@ -1037,12 +1047,14 @@
     height: 50px;
 }
 
+/* Vertically center align matches */
 .vertical-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+/* Winner button */
 .win-btn {
     margin-top: 5px;
     color: white;
