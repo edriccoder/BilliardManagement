@@ -318,7 +318,7 @@
                                                 '<td>' . htmlspecialchars($cashier["email"]) . '</td>' .
                                                 '<td>' . htmlspecialchars($cashier["username"]) . '</td>' .
                                                 // Add data attributes correctly
-                                                '<button type="button" class="btn btn-sm btn-outline-secondary" onclick=\'editCashierModal('. json_encode($cashier) .')\'>Edit</button>' .
+                                                '<td><button type="btn btn-warning btn-sm" onclick=\'editCashierModal('. json_encode($cashier) .')\'>Edit</button><td>' .
                                                 '</tr>';
                                              }
                                           } else {
