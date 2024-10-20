@@ -460,40 +460,6 @@
             </div>
          </div>
       </div>
-      <!-- Modal for edit table -->            
-      <div class="modal fade" id="editTableModal" tabindex="-1" role="dialog" aria-labelledby="editTableModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="editTableModalLabel">Edit Billiard Table</h5>
-                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <form method="POST" action="editTable.php" enctype="multipart/form-data">
-                        <input type="hidden" name="table_id" id="editTableId">
-                        <div class="form-group">
-                              <label>Table Name</label>
-                              <input type="text" name="table_number" id="editTableName" class="form-control" required="required"/>
-                        </div>
-                        <div class="form-group">
-                              <label>Table Status</label>
-                              <select name="status" id="editTableStatus" class="form-control" required="required">
-                                 <option value="Available">Available</option>
-                                 <option value="Occupied">Occupied</option>
-                                 <option value="Under Maintenance">Under Maintenance</option>
-                              </select>
-                        </div>
-                        <div class="modal-footer">
-                              <button type="submit" name="save" class="btn btn-primary">Save</button>
-                              <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                        </div>
-                     </form>
-                  </div>
-            </div>
-         </div>
-      </div>
 
       <!-- Modal for Adding Cashier Account -->
       <div class="modal fade" id="addCashier" tabindex="-1" role="dialog" aria-labelledby="addCashierLabel" aria-hidden="true">
@@ -625,15 +591,6 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
-            console.log(table);
-
-            document.getElementById('editTableId').value = table.table_id;
-            document.getElementById('editTableName').value = table.table_number;
-            document.getElementById('editTableStatus').value = table.status;
-            $('#editTableModal').modal('show');
-         }
          $(document).ready(function() {
             $('.show-players').click(function() {
                   var tournamentId = $(this).data('tournament-id');
@@ -670,36 +627,37 @@
                   }
                });
             });
-            $('#editUserModal').on('show.bs.modal', function(event) {
-               var button = $(event.relatedTarget); // Button that triggered the modal
-               var userId = button.data('userid');
-               var name = button.data('name');
-               var email = button.data('email');
-               var username = button.data('username');
+            function openEditModal(user) {
+               console.log("openEditModal called");
+               console.log(user);
 
-               // Fill the modal fields with the data from the button
-               var modal = $(this);
-               modal.find('#editUserId').val(userId);
-               modal.find('#editUserName').val(name);
-               modal.find('#editUserEmail').val(email);
-               modal.find('#editUserUsername').val(username);
+               // Determine if we are editing a User or a Cashier and select the correct modal
+               var modalId = user.role === 'cashier' ? '#editCashierModal' : '#editUserModal';
+
+               // Set values in the modal
+               $(modalId).find('[name="user_id"]').val(user.user_id);
+               $(modalId).find('[name="name"]').val(user.name);
+               $(modalId).find('[name="email"]').val(user.email);
+               $(modalId).find('[name="username"]').val(user.username);
+
+               // Show the modal
+               $(modalId).modal('show');
+            }
+
+            // Bind event listeners for both User and Cashier modals
+            $('#editUserModal, #editCashierModal').on('show.bs.modal', function(event) {
+               var button = $(event.relatedTarget); // Button that triggered the modal
+               var user = {
+                  user_id: button.data('userid'),
+                  name: button.data('name'),
+                  email: button.data('email'),
+                  username: button.data('username'),
+                  role: button.data('role') // Add a role identifier to differentiate between user and cashier
+               };
+
+               openEditModal(user);
             });
 
-            // Handle the Cashier Edit Modal
-            $('#editCashierModal').on('show.bs.modal', function(event) {
-               var button = $(event.relatedTarget); // Button that triggered the modal
-               var userId = button.data('userid');
-               var name = button.data('name');
-               var email = button.data('email');
-               var username = button.data('username');
-
-               // Fill the modal fields with the data from the button
-               var modal = $(this);
-               modal.find('#editCashierId').val(userId);
-               modal.find('#editCashierName').val(name);
-               modal.find('#editCashierEmail').val(email);
-               modal.find('#editCashierUsername').val(username);
-            });
          });
 
 
