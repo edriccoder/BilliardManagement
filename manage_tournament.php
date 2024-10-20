@@ -852,24 +852,26 @@
             });
 
             function moveWinnerToNextRound(winnerElement, round, match) {
-                  const nextRound = parseInt(round) + 1;
-                  const nextMatch = Math.floor(match / 2);
+               const nextRound = parseInt(round) + 1;
+               const nextMatch = Math.floor(match / 2);
 
-                  const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
-                  if (nextRoundDiv) {
-                     const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
-                     const nextTeamDiv = nextMatchDiv.querySelectorAll('.team')[match % 2];
+               const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
+               if (nextRoundDiv) {
+                  const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
+                  const nextTeamContainer = nextMatchDiv.querySelectorAll('.team-container')[match % 2];
+                  const nextTeamDiv = nextTeamContainer.querySelector('.team');
 
-                     nextTeamDiv.textContent = winnerElement.textContent;
-                     nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-                  } else {
-                     const winnerPlaceholder = document.querySelector('.winner-placeholder .team');
-                     if (winnerPlaceholder) {
-                        winnerPlaceholder.textContent = winnerElement.textContent;
-                        winnerPlaceholder.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-                     }
+                  nextTeamDiv.textContent = winnerElement.textContent;
+                  nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
+               } else {
+                  const winnerTeamDiv = document.querySelector('.winner .team');
+                  if (winnerTeamDiv) {
+                     winnerTeamDiv.textContent = winnerElement.textContent;
+                     winnerTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
                   }
+               }
             }
+
 
             function announceWinner(winnerName, tournamentId, round) {
                   if (!tournamentId) {
@@ -932,89 +934,124 @@
                   });
                });
       </script>
-      <style>
-        .bracket {
-            display: flex;
-            justify-content: center;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 20px;
-            background-color: #2c3e50; /* Dark blue background */
+   <style>
+      .winner {
+         position: absolute;
+         top: 0;
+         left: 50%;
+         transform: translateX(-50%);
+      }
+
+         .winner .team {
+         background-color: gold;
+         font-weight: bold;
+      }
+      /* For even better alignment */
+      .match {
+      margin-bottom: 60px;
+      }
+
+      .round:first-child .match::after {
+      right: -20px;
+      }
+
+      .round:nth-child(2) .match::after {
+      right: -40px;
+      }
+
+      .round:nth-child(3) .match::after {
+      right: -60px;
+      }
+
+      /* Adjust connector height based on the round */
+      .round[data-round="1"] .connector {
+      height: 40px;
+      }
+
+      .round[data-round="2"] .connector {
+      height: 80px;
+      }
+
+      .round[data-round="3"] .connector {
+      height: 160px;
+      }
+      /* Container for the entire bracket */
+         #bracketContainer {
+         display: flex;
+         justify-content: center;
+         align-items: flex-start;
+         position: relative;
          }
 
+         /* Styling each round */
          .round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 20px;
-            position: relative;
-            color: white;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         margin: 0 20px;
+         position: relative;
          }
 
-         .round h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #f39c12; /* Light orange accent for round titles */
-         }
-
+         /* Styling each match */
          .match {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 2px solid #f39c12; /* Light orange borders */
-            border-radius: 8px;
-            background-color: #34495e; /* Darker background for the match box */
-            position: relative;
-            width: 180px; /* Adjusted width for better spacing */
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         position: relative;
+         margin-bottom: 40px;
          }
 
+         /* Team container to hold the team and connector */
+         .team-container {
+         position: relative;
+         }
+
+         /* Team styling */
          .team {
-            width: 150px;
-            text-align: center;
-            padding: 10px;
-            color: white;
-            font-weight: bold;
-            background-color: #2c3e50; /* Dark blue team background */
-            border-radius: 4px;
-            margin-bottom: 5px;
+         padding: 10px 20px;
+         background-color: #f1f1f1;
+         margin: 5px 0;
+         text-align: center;
+         cursor: pointer;
+         position: relative;
          }
 
-         .team.selected {
-            background-color: #e67e22; /* Highlight the selected team */
-            border-radius: 10px;
+         /* Connector styling */
+         .connector {
+         width: 2px;
+         height: 20px;
+         background-color: #000;
+         position: absolute;
+         left: 50%;
+         bottom: -20px;
+         transform: translateX(-50%);
          }
 
-         .team.eliminated {
-            text-decoration: line-through;
-            color: #bdc3c7; /* Gray for eliminated teams */
+         /* Horizontal line to the next match */
+         .match::after {
+         content: '';
+         width: 40px;
+         height: 2px;
+         background-color: #000;
+         position: absolute;
+         right: -40px;
+         top: 50%;
+         transform: translateY(-50%);
          }
 
-         .winner-placeholder {
-            height: 50px;
+         /* Vertical line connecting to the next round */
+         .round:not(:last-child) .match::after {
+         display: block;
          }
 
-         .vertical-center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+         .round:last-child .match::after {
+         display: none;
          }
 
-         .win-btn {
-            margin-top: 5px;
-            color: white;
-            background-color: #f39c12; /* Light orange buttons */
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-         }
 
-         .win-btn:hover {
-            background-color: #e67e22; /* Darker orange on hover */
-         }
 
-    </style>
+
+   </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
