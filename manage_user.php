@@ -625,17 +625,19 @@
             });
          });
 
-         function openEditModal(table) {
-            console.log("openEditModal called");
-            console.log(table);
+         function editCashierModal(cashier) {
+            console.log("Editing cashier:", cashier);
+            
+            // Assuming the modal has fields with these IDs
+            $('#editCashierId').val(cashier.user_id);
+            $('#editCashierName').val(cashier.name);
+            $('#editCashierEmail').val(cashier.email);
+            $('#editCashierUsername').val(cashier.username);
 
-            document.getElementById('editCashierId').value = table.user_id;
-            document.getElementById('editCashierName').value = table.name;
-            document.getElementById('editCashierEmail').value = table.email;
-            document.getElementById('editCashierUsername').value = table.username;
-
+            // Show the modal
             $('#editCashierModal').modal('show');
          }
+
 
       </script>
 
