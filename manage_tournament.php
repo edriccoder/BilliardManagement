@@ -944,85 +944,108 @@
       </script>
       <style>
         .bracket {
-            display: flex;
-            justify-content: center;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 20px;
-            background-color: #2c3e50; 
-         }
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 20px;
+  background-color: #2c3e50;
+}
 
-         .round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 20px;
-            position: relative;
-            color: white;
-         }
+.round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 40px; /* Increased margin to space out rounds */
+  position: relative;
+  color: white;
+}
 
-         .round h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #f39c12; 
-         }
+.round h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #f39c12;
+}
 
-         .match {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 2px solid #f39c12; 
-            border-radius: 8px;
-            background-color: #34495e; 
-            position: relative;
-            width: 180px; 
-         }
+.match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px; /* Increased margin to accommodate lines */
+  padding: 10px;
+  border: 2px solid #f39c12;
+  border-radius: 8px;
+  background-color: #34495e;
+  position: relative; /* Set position to relative for positioning pseudo-elements */
+  width: 180px;
+}
 
-         .team {
-            width: 150px;
-            text-align: center;
-            padding: 10px;
-            color: white;
-            font-weight: bold;
-            background-color: #2c3e50; 
-            border-radius: 4px;
-            margin-bottom: 5px;
-         }
+.match::after {
+  content: '';
+  position: absolute;
+  right: -40px; /* Adjust as per the spacing between rounds */
+  top: 50%;
+  width: 40px; /* Length of the horizontal line to the next round */
+  border-top: 2px solid #f39c12;
+}
 
-         .team.selected {
-            background-color: #e67e22;
-            border-radius: 10px;
-         }
+.match:nth-child(odd)::before {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  height: calc(100% + 60px);
+  border-left: 2px solid #f39c12;
+}
 
-         .team.eliminated {
-            text-decoration: line-through;
-            color: #bdc3c7; 
-         }
+.match:last-child::after {
+  display: none; /* Hide the line for the last match if necessary */
+}
 
-         .winner-placeholder {
-            height: 50px;
-         }
+.team {
+  width: 150px;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  background-color: #2c3e50;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
 
-         .vertical-center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-         }
+.team.selected {
+  background-color: #e67e22;
+  border-radius: 10px;
+}
 
-         .win-btn {
-            margin-top: 5px;
-            color: white;
-            background-color: #f39c12; 
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-         }
+.team.eliminated {
+  text-decoration: line-through;
+  color: #bdc3c7;
+}
 
-         .win-btn:hover {
-            background-color: #e67e22; 
-         }
+.winner-placeholder {
+  height: 50px;
+}
+
+.vertical-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.win-btn {
+  margin-top: 5px;
+  color: white;
+  background-color: #f39c12;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+.win-btn:hover {
+  background-color: #e67e22;
+}
+
 
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
