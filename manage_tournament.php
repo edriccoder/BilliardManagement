@@ -518,11 +518,10 @@
             </div>
          </div>
       </div>
-      <!-- Modal for showing bracket -->
+      <!-- Modal to Display Tournament Bracket -->
       <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-lg">
+         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-<<<<<<< HEAD
                <div class="modal-header">
                <h5 class="modal-title" id="bracketModalLabel">Tournament Bracket</h5>
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -557,27 +556,12 @@
                <div class="modal-footer">
                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                </div>
-=======
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="bracketModalLabel">Single Elimination Tournament Bracket</h5>
-                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                     <div class="bracket" id="bracketContainer">
-                        <!-- Bracket content will be loaded here -->
-                     </div>
-                  <div class="modal-footer">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
->>>>>>> parent of 6cacb1e (fix)
             </div>
          </div>
       </div>
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> parent of 6cacb1e (fix)
       <!-- Edit Tournament Modal -->
       <div class="modal fade" id="editTournamentModal" tabindex="-1" role="dialog" aria-labelledby="editTournamentModalLabel" aria-hidden="true">
          <div class="modal-dialog" role="document">
@@ -727,7 +711,6 @@
                               console.error('Error fetching players:', error);
                            });
                   });
-<<<<<<< HEAD
 
                   function loadBracket(tournamentId) {
       currentTournamentId = tournamentId;
@@ -914,9 +897,6 @@
         alert('There was an error announcing the winner. Please try again later.');
       });
     }
-=======
-               });
->>>>>>> parent of 6cacb1e (fix)
 
     // Event listener to open the bracket modal and load the bracket
     document.querySelectorAll('.show-bracket').forEach(button => {
@@ -954,7 +934,6 @@
     });
   }
 
-<<<<<<< HEAD
   // Event listener for creating a bracket (existing code)
   document.getElementById('createBracketBtn').addEventListener('click', function() {
     if (currentTournamentId !== null) {
@@ -973,187 +952,6 @@
     }
   });
          
-=======
-               document.querySelectorAll('.show-bracket').forEach(button => {
-                  button.addEventListener('click', function () {
-                     currentTournamentId = this.getAttribute('data-tournament-id');
-
-                     fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                              const bracketContainer = document.getElementById('bracketContainer');
-                              bracketContainer.innerHTML = '';
-
-                              if (data.success && data.players.length > 0) {
-                                 const players = data.players;
-                                 const rounds = Math.ceil(Math.log2(players.length));
-                                 finalRound = rounds;
-                                 let matchups = data.matchups || players.slice();
-
-                                 for (let round = 1; round <= rounds; round++) {
-                                    const roundDiv = document.createElement('div');
-                                    roundDiv.className = 'round';
-                                    roundDiv.dataset.round = round;
-                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
-
-                                    const matches = Math.ceil(matchups.length / 2);
-                                    const newMatchups = [];
-
-                                    for (let match = 0; match < matches; match++) {
-                                          const matchDiv = document.createElement('div');
-                                          matchDiv.className = 'match';
-
-                                          const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
-                                          const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
-
-                                          matchDiv.innerHTML = `
-                                             <div class="team" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
-                                             <div class="team" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
-                                             <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
-                                          `;
-
-                                          roundDiv.appendChild(matchDiv);
-
-                                          newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
-                                    }
-
-                                    if (round > 1) {
-                                          roundDiv.classList.add('vertical-center');
-                                    }
-
-                                    bracketContainer.appendChild(roundDiv);
-                                    matchups = newMatchups;
-                                 }
-
-                                 if (players.length > 1) {
-                                    const finalRoundDiv = document.createElement('div');
-                                    finalRoundDiv.className = 'vertical-center';
-                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
-
-                                    const winnerPlaceholder = document.createElement('div');
-                                    winnerPlaceholder.className = 'match winner-placeholder';
-                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
-
-                                    finalRoundDiv.appendChild(winnerPlaceholder);
-                                    bracketContainer.appendChild(finalRoundDiv);
-                                 }
-
-                                 const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
-                                 playersModal.show();
-                              } else {
-                                 alert(data.message);
-                              }
-                        })
-                        .catch(error => {
-                              console.error('Error fetching bracket:', error);
-                        });
-                  });
-            });
-
-            document.getElementById('bracketContainer').addEventListener('click', function (event) {
-                  if (event.target.classList.contains('win-btn')) {
-                     const round = event.target.getAttribute('data-round');
-                     const match = event.target.getAttribute('data-match');
-                     const winnerElement = event.target.parentElement.querySelector('.team.selected');
-
-                     if (winnerElement) {
-                        const winnerId = winnerElement.getAttribute('data-player-id');
-                        fetch(`update_bracket.php`, {
-                              method: 'POST',
-                              headers: {
-                                 'Content-Type': 'application/x-www-form-urlencoded',
-                              },
-                              body: new URLSearchParams({
-                                 tournament_id: currentTournamentId,
-                                 round: round,
-                                 match: match,
-                                 winner_id: winnerId,
-                              })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                              if (data.success) {
-                                 winnerElement.parentElement.querySelector('.win-btn').setAttribute('disabled', 'disabled');
-                                 winnerElement.parentElement.querySelectorAll('.team').forEach(team => {
-                                    if (team !== winnerElement) {
-                                          team.classList.add('eliminated');
-                                    }
-                                 });
-                                 console.log('Winner updated successfully');
-
-                                 moveWinnerToNextRound(winnerElement, round, match);
-                                 announceWinner(winnerElement.textContent, currentTournamentId, round);
-                                 if (parseInt(round) === parseInt(finalRound)) {
-                                    announceWinner(winnerElement.textContent, currentTournamentId, round);
-                                 }
-                              } else {
-                                 alert('Error: ' + data.message);
-                              }
-                        })
-                        .catch(error => {
-                              console.error('Error updating winner:', error);
-                        });
-                     } else {
-                        alert('Please select a winner.');
-                     }
-                  } else if (event.target.classList.contains('team')) {
-                     event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
-                     event.target.classList.add('selected');
-                  }
-            });
-
-            function moveWinnerToNextRound(winnerElement, round, match) {
-               const nextRound = parseInt(round) + 1;
-               const nextMatch = Math.floor(match / 2);
-
-               const nextRoundDiv = document.querySelector(`.round[data-round="${nextRound}"]`);
-               if (nextRoundDiv) {
-                  const nextMatchDiv = nextRoundDiv.querySelectorAll('.match')[nextMatch];
-                  const nextTeamContainer = nextMatchDiv.querySelectorAll('.team-container')[match % 2];
-                  const nextTeamDiv = nextTeamContainer.querySelector('.team');
-
-                  nextTeamDiv.textContent = winnerElement.textContent;
-                  nextTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-               } else {
-                  const winnerTeamDiv = document.querySelector('.winner .team');
-                  if (winnerTeamDiv) {
-                     winnerTeamDiv.textContent = winnerElement.textContent;
-                     winnerTeamDiv.setAttribute('data-player-id', winnerElement.getAttribute('data-player-id'));
-                  }
-               }
-            }
-
-
-            function announceWinner(winnerName, tournamentId, round) {
-                  if (!tournamentId) {
-                     console.error('Tournament ID is missing.');
-                     return;
-                  }
-
-                  fetch('announce_winner.php', {
-                     method: 'POST',
-                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                     },
-                     body: new URLSearchParams({
-                        winner_name: winnerName,
-                        tournament_id: tournamentId,
-                        round: round
-                     })
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                     if (data.success) {
-                        console.log('Winner announcement made successfully.');
-                     } else {
-                        console.error('Failed to announce winner:', data.message);
-                     }
-                  })
-                  .catch(error => {
-                     console.error('Error announcing winner:', error);
-                  });
-            }
->>>>>>> parent of 6cacb1e (fix)
 
                function deleteTournament(tournamentId) {
                   if (confirm('Are you sure you want to delete this tournament?')) {
@@ -1187,86 +985,48 @@
                });
       </script>
       <style>
-        .bracket {
-            display: flex;
-            justify-content: center;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 20px;
-            background-color: #2c3e50; 
-         }
+        .bracket-region {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-         .round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 20px;
-            position: relative;
-            color: white;
-         }
+.match {
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  border-radius: 5px;
+  position: relative;
+}
 
-         .round h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #f39c12; 
-         }
+.match::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  width: 20px;
+  height: 2px;
+  background: #000;
+}
 
-         .match {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 2px solid #f39c12; 
-            border-radius: 8px;
-            background-color: #34495e; 
-            position: relative;
-            width: 180px; 
-         }
+.match:last-child::after {
+  display: none;
+}
 
-         .team {
-            width: 150px;
-            text-align: center;
-            padding: 10px;
-            color: white;
-            font-weight: bold;
-            background-color: #2c3e50; 
-            border-radius: 4px;
-            margin-bottom: 5px;
-         }
+.player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
 
-         .team.selected {
-            background-color: #e67e22;
-            border-radius: 10px;
-         }
+.player:last-child {
+  margin-bottom: 0;
+}
 
-         .team.eliminated {
-            text-decoration: line-through;
-            color: #bdc3c7; 
-         }
+.btn-winner {
+  margin-left: 10px;
+}
 
-         .winner-placeholder {
-            height: 50px;
-         }
-
-         .vertical-center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-         }
-
-         .win-btn {
-            margin-top: 5px;
-            color: white;
-            background-color: #f39c12; 
-            border: none;
-            border-radius: 4px;
-            padding: 8px 12px;
-         }
-
-         .win-btn:hover {
-            background-color: #e67e22; 
-         }
 
     </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
