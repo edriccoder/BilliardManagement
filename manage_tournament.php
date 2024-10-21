@@ -943,20 +943,21 @@
                });
       </script>
       <style>
-        .bracket {
+         .bracket {
             display: flex;
-            justify-content: center;
+            justify-content: space-between; /* Space between rounds */
             flex-wrap: nowrap;
             overflow-x: auto;
             padding: 20px;
-            background-color: #2c3e50; 
+            background-color: #2c3e50;
+            align-items: center; /* Vertical alignment */
          }
 
          .round {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Stack matches vertically within a round */
             align-items: center;
-            margin: 0 20px;
+            margin: 0 50px; /* Increase space between rounds */
             position: relative;
             color: white;
          }
@@ -964,7 +965,7 @@
          .round h2 {
             text-align: center;
             margin-bottom: 10px;
-            color: #f39c12; 
+            color: #f39c12;
          }
 
          .match {
@@ -973,11 +974,11 @@
             align-items: center;
             margin-bottom: 20px;
             padding: 10px;
-            border: 2px solid #f39c12; 
+            border: 2px solid #f39c12;
             border-radius: 8px;
-            background-color: #34495e; 
+            background-color: #34495e;
             position: relative;
-            width: 180px; 
+            width: 180px;
          }
 
          .team {
@@ -986,7 +987,7 @@
             padding: 10px;
             color: white;
             font-weight: bold;
-            background-color: #2c3e50; 
+            background-color: #2c3e50;
             border-radius: 4px;
             margin-bottom: 5px;
          }
@@ -998,7 +999,7 @@
 
          .team.eliminated {
             text-decoration: line-through;
-            color: #bdc3c7; 
+            color: #bdc3c7;
          }
 
          .winner-placeholder {
@@ -1014,14 +1015,14 @@
          .win-btn {
             margin-top: 5px;
             color: white;
-            background-color: #f39c12; 
+            background-color: #f39c12;
             border: none;
             border-radius: 4px;
             padding: 8px 12px;
          }
 
          .win-btn:hover {
-            background-color: #e67e22; 
+            background-color: #e67e22;
          }
 
     </style>
