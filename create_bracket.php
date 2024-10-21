@@ -1,18 +1,6 @@
 <?php
+// create_bracket.php
 include 'conn.php';
-
-function createSingleEliminationBracket($players) {
-    $bracket = [];
-    shuffle($players); // Randomize the order of players
-    $round = 1;
-    $matchNumber = 1;
-
-    while (count($players) > 1) {
-        $bracket[] = ['round' => $round, 'match_number' => $matchNumber++, 'players' => array_splice($players, 0, 2)];
-    }
-
-    return $bracket;
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
     $tournamentId = $_GET['tournament_id'];
@@ -34,21 +22,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
 
     if ($tournament) {
         // Get the players
-        $stmt = $conn->prepare('SELECT user_id, username FROM players WHERE tournament_id = ?');
+        $stmt = $conn->prepare('SELECT player_id, user_id, username FROM players WHERE tournament_id = ?');
         $stmt->execute([$tournamentId]);
         $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($players) >= $tournament['max_player']) {
+            // Assign regions (East and West) evenly
+            $half = ceil(count($players) / 2);
+            $eastPlayers = array_slice($players, 0, $half);
+            $westPlayers = array_slice($players, $half);
+
             // Create the bracket
-            $bracket = createSingleEliminationBracket($players);
+            $bracket = createSingleEliminationBracket(array_merge($eastPlayers, $westPlayers));
 
             // Save the bracket to the database
             foreach ($bracket as $match) {
-                $player1_id = isset($match['players'][0]) ? $match['players'][0]['user_id'] : null;
-                $player2_id = isset($match['players'][1]) ? $match['players'][1]['user_id'] : null;
+                $player1_id = isset($match['players'][0]) ? $match['players'][0]['player_id'] : null;
+                $player2_id = isset($match['players'][1]) ? $match['players'][1]['player_id'] : null;
+                $region = isset($match['players'][0]['player_id']) && in_array($match['players'][0], $eastPlayers) ? 'East' : 'West';
 
-                $stmt = $conn->prepare('INSERT INTO bracket (tournament_id, round, match_number, player1_id, player2_id) VALUES (?, ?, ?, ?, ?)');
-                $stmt->execute([$tournamentId, $match['round'], $match['match_number'], $player1_id, $player2_id]);
+                $stmt = $conn->prepare('INSERT INTO bracket (tournament_id, round, match_number, player1_id, player2_id, region) VALUES (?, ?, ?, ?, ?, ?)');
+                $stmt->execute([$tournamentId, $match['round'], $match['match_number'], $player1_id, $player2_id, $region]);
             }
 
             echo json_encode(['success' => true]);
@@ -60,5 +54,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['tournament_id'])) {
     }
 } else {
     echo json_encode(['success' => false, 'message' => 'No tournament ID received.']);
+}
+
+function createSingleEliminationBracket($players) {
+    $bracket = [];
+    shuffle($players); // Randomize the order of players
+    $round = 'Round of 16'; // Starting round
+    $matchNumber = 1;
+
+    while (count($players) > 1) {
+        $bracket[] = [
+            'round' => $round,
+            'match_number' => $matchNumber++,
+            'players' => array_splice($players, 0, 2)
+        ];
+    }
+
+    // Add finals if necessary
+    if (count($players) == 1) {
+        $bracket[] = [
+            'round' => 'Finals',
+            'match_number' => $matchNumber,
+            'players' => [$players[0], null]
+        ];
+    }
+
+    return $bracket;
 }
 ?>
