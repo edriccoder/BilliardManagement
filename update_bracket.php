@@ -1,13 +1,7 @@
 <?php
-// At the beginning of your PHP scripts
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', '/path/to/your/error.log');
-error_reporting(E_ALL);
 // update_bracket.php
-include 'conn.php';
-
 header('Content-Type: application/json');
+include 'conn.php';
 
 // Retrieve the JSON input
 $data = json_decode(file_get_contents('php://input'), true);
@@ -25,9 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($data['tournament_id']) && iss
         if ($result) {
             // Determine the next match where the winner should be placed
             // This logic depends on how you structure your bracket
-            // For example, you might have a mapping table or calculate based on round and match_number
 
-            // Placeholder Logic:
             // Fetch the current match details
             $stmt = $conn->prepare('SELECT round, match_number FROM bracket WHERE bracket_id = ? AND tournament_id = ?');
             $stmt->execute([$bracketId, $tournamentId]);
@@ -42,13 +34,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($data['tournament_id']) && iss
 
                 if ($nextRound) {
                     // Calculate the next match_number based on current match_number
-                    // This logic will vary depending on your bracket structure
-                    // For simplicity, assume the next match_number is floor((current_match_number + 1)/2)
-
+                    // Example: For every two matches in the current round, they feed into one match in the next round
                     $nextMatchNumber = ceil($currentMatchNumber / 2);
 
-                    // Find the next match where this winner should be placed
-                    // Assume that winners go to player1 or player2 based on match_number parity
+                    // Fetch the next match where the winner should be placed
                     $stmt = $conn->prepare('SELECT bracket_id, player1_id, player2_id FROM bracket WHERE tournament_id = ? AND round = ? AND match_number = ?');
                     $stmt->execute([$tournamentId, $nextRound, $nextMatchNumber]);
                     $nextMatch = $stmt->fetch(PDO::FETCH_ASSOC);

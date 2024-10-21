@@ -1,13 +1,7 @@
 <?php
-// At the beginning of your PHP scripts
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-ini_set('error_log', '/path/to/your/error.log');
-error_reporting(E_ALL);
 // get_bracket.php
 header('Content-Type: application/json');
 include 'conn.php';
-
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['tournament_id'])) {
@@ -25,7 +19,8 @@ try {
                 b.winner_id,
                 p1.username AS player1_name,
                 p2.username AS player2_name,
-                p3.username AS winner_name
+                p3.username AS winner_name,
+                p1.region
             FROM 
                 bracket b
             LEFT JOIN 
