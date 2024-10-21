@@ -1,4 +1,9 @@
 <?php
+// At the beginning of your PHP scripts
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', '/path/to/your/error.log');
+error_reporting(E_ALL);
 include 'conn.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['winner_name']) && isset($_POST['tournament_id']) && isset($_POST['round'])) {
