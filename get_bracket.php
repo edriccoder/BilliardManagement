@@ -1,12 +1,16 @@
 <?php
+<<<<<<< HEAD
 // get_bracket.php
 header('Content-Type: application/json');
+=======
+>>>>>>> parent of 6cacb1e (fix)
 include 'conn.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['tournament_id'])) {
         $tournamentId = intval($_GET['tournament_id']); // Sanitize input
 
+<<<<<<< HEAD
         // Prepare and execute the query
         $stmt = $conn->prepare('
             SELECT 
@@ -44,6 +48,17 @@ try {
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'No tournament ID received or invalid request method.']);
+=======
+    // Fetch players in the specified tournament
+    $stmt = $conn->prepare('SELECT * FROM players WHERE tournament_id = ?');
+    $stmt->execute([$tournamentId]);
+    $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($players) {
+        echo json_encode(['success' => true, 'players' => $players]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'No players found for this tournament ID.']);
+>>>>>>> parent of 6cacb1e (fix)
     }
 } catch (Exception $e) {
     // Log the error message to a file or monitoring system
