@@ -1000,11 +1000,8 @@
                                     const newMatchups = [];
 
                                     for (let match = 0; match < matches; match++) {
-                                       const matchContainer = document.createElement('div');
-                                       matchContainer.className = 'match-container';
-
-                                       const matchDiv = document.createElement('div');
-                                       matchDiv.className = 'match';
+                                          const matchDiv = document.createElement('div');
+                                          matchDiv.className = 'match';
 
                                           const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
                                           const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
@@ -1015,8 +1012,7 @@
                                              <button class="win-btn btn btn-success" data-round="${round}" data-match="${match}">Select Winner</button>
                                           `;
 
-                                          matchContainer.appendChild(matchDiv);
-                                          roundDiv.appendChild(matchContainer);
+                                          roundDiv.appendChild(matchDiv);
 
                                           newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
                                     }
@@ -1190,141 +1186,89 @@
                   });
                });
       </script>
-<style>
-.bracket {
-    display: flex;
-    justify-content: center;
-    flex-wrap: nowrap; /* Ensure rounds stay on one line */
-    overflow-x: auto;
-    padding: 20px;
-    background-color: #2c3e50;
-}
+      <style>
+        .bracket {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 20px;
+            background-color: #2c3e50; 
+         }
 
-.round {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 40px; /* Adjust spacing between rounds */
-    position: relative;
-}
+         .round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px;
+            position: relative;
+            color: white;
+         }
 
-.round h2 {
-    text-align: center;
-    color: #f39c12;
-    margin-bottom: 20px;
-}
+         .round h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #f39c12; 
+         }
 
-.match-container {
-    position: relative;
-}
+         .match {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #f39c12; 
+            border-radius: 8px;
+            background-color: #34495e; 
+            position: relative;
+            width: 180px; 
+         }
 
-.match {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 60px; /* Adjust as needed */
-    position: relative;
-    padding: 10px;
-    border: 2px solid #f39c12;
-    border-radius: 8px;
-    background-color: #34495e;
-    width: 180px; /* Ensure consistent width */
-}
+         .team {
+            width: 150px;
+            text-align: center;
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            background-color: #2c3e50; 
+            border-radius: 4px;
+            margin-bottom: 5px;
+         }
 
-.match .team {
-    width: 160px; /* Adjust width to match match width */
-    text-align: center;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #34495e;
-    color: white;
-    font-weight: bold;
-    border: 2px solid #f39c12;
-    border-radius: 4px;
-}
+         .team.selected {
+            background-color: #e67e22;
+            border-radius: 10px;
+         }
 
-.team.selected {
-    background-color: #e67e22;
-    border-radius: 10px; /* Match previous styling */
-}
+         .team.eliminated {
+            text-decoration: line-through;
+            color: #bdc3c7; 
+         }
 
-.team.eliminated {
-    text-decoration: line-through;
-    color: #bdc3c7;
-}
+         .winner-placeholder {
+            height: 50px;
+         }
 
-/* Horizontal line connecting to next round */
-.match-container::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: -20px; /* Adjust based on spacing between rounds */
-    width: 20px;
-    height: 0;
-    border-top: 2px solid #f39c12;
-}
+         .vertical-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+         }
 
-/* Vertical line connecting matches */
-.match-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: -20px; /* Adjust based on spacing between rounds */
-    width: 0;
-    border-left: 2px solid #f39c12;
-}
+         .win-btn {
+            margin-top: 5px;
+            color: white;
+            background-color: #f39c12; 
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+         }
 
-/* Hide lines for the final match in a round */
-.match-container:last-child::before,
-.match-container:last-child::after {
-    display: none;
-}
+         .win-btn:hover {
+            background-color: #e67e22; 
+         }
 
-/* Lines for rounds after the first */
-.round:not(:first-child) .match-container::before,
-.round:not(:first-child) .match-container::after {
-    right: auto;
-    left: -20px; /* Adjust based on spacing between rounds */
-    border-left: none;
-    border-right: 2px solid #f39c12;
-}
-
-/* Winner placeholder styling */
-.winner-placeholder {
-    height: 50px;
-    width: 160px;
-    background-color: #34495e;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #f39c12;
-    border-radius: 4px;
-}
-
-/* Vertically center align matches */
-.vertical-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-/* Winner button */
-.win-btn {
-    margin-top: 5px;
-    color: white;
-    background-color: #f39c12;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
-}
-
-.win-btn:hover {
-    background-color: #e67e22;
-}
-</style>
-
+    </style>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
