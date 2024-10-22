@@ -322,7 +322,7 @@
                                     echo '<td>' . htmlspecialchars($item["description"]) . '</td>';
                                     echo '<td><img src="inventory_image/' . htmlspecialchars($item["image"]) . '" alt="Item image" class="img-fluid shadow border-radius-xl" style="max-width: 100px;"></td>';
                                     echo '<td class="align-middle">';
-                                    echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" onclick=\'openEditModal(' . json_encode($item) . ')\'>Edit</button>';
+                                    echo '<button type="button" class="btn btn-outline-primary btn-sm mb-0" data-toggle="modal" onclick=\'editItemModal(' . json_encode($item) . ')\'>Edit</button>';
                                     echo '<form method="POST" style="display:inline-block;">';
                                     echo '<input type="hidden" name="action" value="delete">';
                                     echo '<input type="hidden" name="item_id" value="' . $item["item_id"] . '">';
@@ -501,7 +501,6 @@
             </div>
          </div>
       </div>
-
       <!-- Modal Structure -->
       <div class="modal fade" id="showReportModal" tabindex="-1" role="dialog" aria-labelledby="showReportModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-lg" role="document">
