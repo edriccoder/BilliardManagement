@@ -501,6 +501,7 @@
             </div>
          </div>
       </div>
+
       <!-- Modal Structure -->
       <div class="modal fade" id="showReportModal" tabindex="-1" role="dialog" aria-labelledby="showReportModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-lg" role="document">
@@ -563,15 +564,20 @@
          }
 
          function openEditModal(item) {
+    // Log the item data (for debugging purposes)
             console.log("editItemModal called");
             console.log(item);
 
+            // Populate the form with the item details
             document.getElementById('edit_item_id').value = item.item_id;
             document.getElementById('edit_item_name').value = item.item_name;
             document.getElementById('edit_quantity').value = item.quantity;
             document.getElementById('edit_description').value = item.description;
-            document.getElementById('edit_image').value = ''; // Clear file input
 
+            // Clear the file input field
+            document.getElementById('edit_image').value = ''; 
+
+            // Show the modal using jQuery
             $('#editItemModal').modal('show');
          }
 
