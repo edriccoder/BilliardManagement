@@ -1,3 +1,32 @@
+<?php
+session_start(); // Use session to pass messages between pages
+
+// Example: Setting alert messages based on session variables
+if (isset($_SESSION['alert'])) {
+    $alertType = $_SESSION['alert']['type']; // success, error, info
+    $alertTitle = $_SESSION['alert']['title'];
+    $alertMessage = $_SESSION['alert']['message'];
+
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: '$alertType',
+                title: '$alertTitle',
+                text: '$alertMessage'
+            });
+        });
+    </script>";
+
+    // Clear the alert from session after displaying it
+    unset($_SESSION['alert']);
+}
+if (isset($_GET['form']) && $_GET['form'] === 'login') {
+    echo "<script>document.addEventListener('DOMContentLoaded', function() { showForm('login'); });</script>";
+} elseif (isset($_GET['form']) && $_GET['form'] === 'registration') {
+    echo "<script>document.addEventListener('DOMContentLoaded', function() { showForm('registration'); });</script>";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +36,10 @@
 
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- SweetAlert2 CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
 
 <style>
     * {
@@ -147,12 +180,20 @@
             <p class="text-center">Please enter your personal details.</p>
             <form action="add-user.php" method="POST">
                 <div class="form-group">
-                    <label for="name">Full Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <label for="firstName">First Name:</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="number">Contact Number:</label>
+                    <input type="number" class="form-control" id="number" name="number" required>
                 </div>
                 <div class="form-group">
                     <label for="registerUsername">Username:</label>
@@ -172,6 +213,7 @@
                 <button type="submit" class="btn form-control">Register</button>
             </form>
         </div>
+
 
         <!-- Forgot Password Form -->
         <div class="forgot-password-container" id="forgotPasswordForm" style="display:none;">
@@ -224,6 +266,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 
 <script>
+
     function showForm(form) {
         const loginForm = document.getElementById('loginForm');
         const registrationForm = document.getElementById('registrationForm');
@@ -241,6 +284,27 @@
             forgotPasswordForm.style.display = 'block';
         }
     }
+
+    // Store the form type in sessionStorage
+    function showFormOnLoad(formType) {
+        sessionStorage.setItem('formType', formType); // Save form type in sessionStorage
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // PHP-based session handling for showing login form
+        <?php if (isset($_SESSION['show_login_form']) && $_SESSION['show_login_form'] === true): ?>
+            showForm('login');
+            <?php unset($_SESSION['show_login_form']); ?>
+        <?php else: ?>
+            // Use sessionStorage if PHP session variable is not set
+            const formType = sessionStorage.getItem('formType');
+            if (formType) {
+                showForm(formType);
+                sessionStorage.removeItem('formType'); // Clear after use
+            }
+        <?php endif; ?>
+    });
 </script>
+
 </body>
 </html>

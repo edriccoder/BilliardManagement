@@ -1,106 +1,175 @@
 <?php
 session_start();
+ob_start(); // Start output buffering
+
 include 'conn.php';
+require_once('vendor/autoload.php'); // Ensure TCPDF is installed via Composer
+use TCPDF;
 
-if (!isset($_GET['booking_id'])) {
-    die("Booking ID is required.");
+// Function to generate the PDF receipt
+function generate_invoice($booking) {
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    // Document Information
+    $pdf->SetCreator('T JAMES SPORTY BAR');
+    $pdf->SetAuthor('T JAMES SPORTY BAR');
+    $pdf->SetTitle('Receipt for Booking ID: ' . htmlspecialchars($booking['booking_id']));
+    $pdf->SetSubject('Invoice for Booking ID: ' . htmlspecialchars($booking['booking_id']));
+    $pdf->SetKeywords('TCPDF, PDF, invoice, booking, receipt');
+
+    // Header Data
+    $logoFile = 'img/tjamesLOGO.jpg';
+    if (file_exists($logoFile)) {
+        $pdf->SetHeaderData($logoFile, 30, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\nGeneral Santos City, South Cotabato, 9500\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
+    } else {
+        $pdf->SetHeaderData('', 0, 'T JAMES SPORTY BAR', "1234 Sporty Ave.\nGeneral Santos City, South Cotabato, 9500\nPhone: (123) 456-7890\nEmail: info@tjamessportybar.com");
+    }
+
+    // Set fonts, margins, and page setup
+    $pdf->setHeaderFont(['helvetica', '', 12]);
+    $pdf->setFooterFont(['helvetica', '', 10]);
+    $pdf->SetMargins(15, 45, 15);
+    $pdf->SetHeaderMargin(15);
+    $pdf->SetFooterMargin(20);
+    $pdf->SetAutoPageBreak(false); // Disable automatic page breaks
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    $pdf->SetFont('helvetica', '', 12);
+
+    // Add a page and set initial styling
+    $pdf->AddPage();
+    $pdf->SetFont('helvetica', 'B', 16);
+    $pdf->Cell(0, 10, 'RECEIPT', 0, 1, 'C');
+    $pdf->Ln(5);
+
+    // Company Information (in the header)
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'T JAMES SPORTY BAR', 0, 1, 'C');
+    $pdf->SetFont('helvetica', '', 10);
+    $pdf->Cell(0, 8, '1234 Sporty Ave.', 0, 1, 'C');
+    $pdf->Cell(0, 8, 'General Santos City, South Cotabato, 9500', 0, 1, 'C');
+    $pdf->Cell(0, 8, 'Phone: (123) 456-7890 | Email: info@tjamessportybar.com', 0, 1, 'C');
+    $pdf->Ln(10);
+
+    // Transaction Details
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Transaction Details', 0, 1, 'L');
+    $pdf->SetFont('helvetica', '', 10);
+
+    // Table with transaction info
+    $html = '
+    <table cellpadding="5" cellspacing="0" border="1">
+        <tr>
+            <td><strong>Invoice No:</strong> ' . htmlspecialchars($booking['booking_id']) . '</td>
+            <td><strong>Date:</strong> ' . date('F j, Y, g:i a') . '</td>
+        </tr>
+        <tr>
+            <td><strong>Customer ID:</strong> ' . htmlspecialchars($booking['user_id']) . '</td>
+            <td><strong>Status:</strong> ' . htmlspecialchars(ucfirst($booking['status'])) . '</td>
+        </tr>
+    </table>';
+    $pdf->writeHTML($html, true, false, false, false, '');
+    $pdf->Ln(5);
+
+    // Booking and Service Details
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Booking and Service Details', 0, 1, 'L');
+    $pdf->SetFont('helvetica', '', 10);
+
+    $html = '
+    <table cellpadding="5" cellspacing="0" border="1">
+        <thead>
+            <tr style="background-color:#f2f2f2;">
+                <th width="25%"><strong>Item</strong></th>
+                <th width="45%"><strong>Description</strong></th>
+                <th width="15%"><strong>Quantity</strong></th>
+                <th width="15%"><strong>Amount</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Table Reservation</td>
+                <td>' . htmlspecialchars($booking['table_name']) . ' | ' . htmlspecialchars(date('F j, Y, g:i a', strtotime($booking['start_time']))) . ' to ' . htmlspecialchars(date('F j, Y, g:i a', strtotime($booking['end_time']))) . '</td>
+                <td>1</td>
+                <td>' . number_format((float)$booking['amount'], 2) . '</td>
+            </tr>
+            <tr>
+                <td>Number of Matches</td>
+                <td>Total matches during reservation</td>
+                <td>' . htmlspecialchars($booking['num_matches']) . '</td>
+                <td>Included</td>
+            </tr>
+            <tr>
+                <td>Payment Method</td>
+                <td colspan="3">' . htmlspecialchars(ucfirst($booking['payment_method'])) . '</td>
+            </tr>
+        </tbody>
+    </table>';
+    $pdf->writeHTML($html, true, false, false, false, '');
+    $pdf->Ln(10);
+
+    // Proof of Payment Image
+    if (!empty($booking['proof_of_payment'])) {
+        $proofImagePath = $_SERVER['DOCUMENT_ROOT'] . '/' . $booking['proof_of_payment']; // Convert to absolute path
+        $pdf->SetFont('helvetica', '', 10);
+        if (file_exists($proofImagePath)) {
+            $pdf->Cell(0, 10, 'Proof of Payment:', 0, 1, 'L');
+            $pdf->Image($proofImagePath, 15, $pdf->GetY(), 50, 50, '', '', '', false, 300, '', false, false, 0, false, false, false);
+            $pdf->Ln(55); // Adjust space after image
+        } else {
+            $pdf->Cell(0, 10, 'Proof of Payment: Image not available.', 0, 1, 'L');
+        }
+    }
+
+    // Summary and Total Amount
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Total Amount Due', 0, 1, 'R');
+    $pdf->SetFont('helvetica', '', 12);
+    $pdf->Cell(0, 8, number_format((float)$booking['amount'], 2), 0, 1, 'R');
+    $pdf->Ln(5);
+
+    // Additional Notes
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Terms and Conditions', 0, 1, 'L');
+    $pdf->SetFont('helvetica', '', 10);
+    $terms = '
+    <p><strong>Note:</strong> This receipt serves as proof of payment</p>
+    <p>for services rendered at T JAMES SPORTY BAR.</p>
+    <p>Please retain this receipt for your records.</p>';
+
+    $pdf->writeHTML($terms, true, false, false, false, '');
+    $pdf->Ln(5);
+
+    // QR Code with Booking Link
+    $bookingURL = "https://www.tjamessportybar.com/bookings.php?booking_id=" . urlencode($booking['booking_id']);
+    $pdf->write2DBarcode($bookingURL, 'QRCODE,H', 150, 245, 30, 30);
+    $pdf->Text(150, 275, 'Scan for Booking Details');
+
+    // Output PDF
+    ob_end_clean(); // Clean any buffered output before sending the PDF
+    $pdf->Output('receipt_' . htmlspecialchars($booking['booking_id']) . '.pdf', 'I');
 }
 
-$booking_id = htmlspecialchars($_GET['booking_id'], ENT_QUOTES, 'UTF-8');
+// Handle the request
+if (isset($_GET['booking_id'])) {
+    $booking_id = intval($_GET['booking_id']);
 
-// Fetch booking details
-$sqlBooking = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, t.amount, t.payment_method
-               FROM bookings b
-               LEFT JOIN transactions t ON b.booking_id = t.booking_id
-               WHERE b.booking_id = :booking_id";
-$stmtBooking = $conn->prepare($sqlBooking);
-$stmtBooking->bindParam(':booking_id', $booking_id, PDO::PARAM_INT);
-$stmtBooking->execute();
-$booking = $stmtBooking->fetch(PDO::FETCH_ASSOC);
+    try {
+        // Prepare and execute the SQL statement
+        $stmt = $conn->prepare("SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, t.amount, t.payment_method, t.proof_of_payment FROM bookings b LEFT JOIN transactions t ON b.booking_id = t.booking_id WHERE b.booking_id = :booking_id");
+        $stmt->bindParam(":booking_id", $booking_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$booking) {
-    die("Booking not found.");
+        if ($booking) {
+            generate_invoice($booking); // Generate the PDF
+            exit(); // End the script after generating PDF
+        } else {
+            echo "<h2>Error</h2><p>Booking not found.</p>";
+        }
+    } catch (PDOException $e) {
+        echo "<h2>Database Error</h2><p>" . htmlspecialchars($e->getMessage()) . "</p>";
+    }
+} else {
+    echo "<h2>Error</h2><p>No booking ID provided.</p>";
 }
-
-// Fetch username
-$sqlUser = "SELECT username FROM users WHERE user_id = :user_id";
-$stmtUser = $conn->prepare($sqlUser);
-$stmtUser->bindParam(':user_id', $booking['user_id'], PDO::PARAM_INT);
-$stmtUser->execute();
-$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
-
-if (!$user) {
-    die("User not found.");
-}
-
-$username = htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8');
-
-// Check if the booking status is cancelled or pending
-if ($booking['status'] == 'Canceled' || $booking['status'] == 'Pending') {
-    echo "<script>alert('Cannot generate receipt for a booking with status: " . htmlspecialchars($booking['status'], ENT_QUOTES, 'UTF-8') . "');</script>";
-    echo "<script>window.history.back();</script>";
-    exit();
-}
-
-// Check if GD library is enabled
-if (!function_exists('imagecreatetruecolor')) {
-    die("GD library is not enabled.");
-}
-
-// Create the receipt image
-$width = 400;
-$height = 300;
-$image = imagecreatetruecolor($width, $height);
-
-// Set the colors
-$white = imagecolorallocate($image, 255, 255, 255);
-$black = imagecolorallocate($image, 0, 0, 0);
-$grey = imagecolorallocate($image, 128, 128, 128);
-
-// Fill the background
-imagefill($image, 0, 0, $white);
-
-// Set the font path
-$font = __DIR__ . '/arial.ttf'; // Ensure you have a TTF font file in the same directory
-
-// Check if the font file exists
-if (!file_exists($font)) {
-    die("Font file not found.");
-}
-
-// Add text to the image
-imagettftext($image, 16, 0, 10, 30, $black, $font, 'Booking Receipt');
-imagettftext($image, 12, 0, 10, 60, $grey, $font, 'Booking ID: ' . htmlspecialchars($booking['booking_id'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 90, $grey, $font, 'Username: ' . $username);
-imagettftext($image, 12, 0, 10, 120, $grey, $font, 'Table Name: ' . htmlspecialchars($booking['table_name'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 150, $grey, $font, 'Start Time: ' . htmlspecialchars($booking['start_time'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 180, $grey, $font, 'End Time: ' . htmlspecialchars($booking['end_time'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 210, $grey, $font, 'Status: ' . htmlspecialchars($booking['status'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 240, $grey, $font, 'Amount: ' . htmlspecialchars($booking['amount'], ENT_QUOTES, 'UTF-8'));
-imagettftext($image, 12, 0, 10, 270, $grey, $font, 'Payment Method: ' . htmlspecialchars($booking['payment_method'], ENT_QUOTES, 'UTF-8'));
-
-// Add payment confirmation based on the payment method
-if ($booking['payment_method'] == 'gcash') {
-    imagettftext($image, 12, 0, 10, 300, $grey, $font, 'Payment Status: Paid');
-} else if ($booking['payment_method'] == 'cash') {
-    imagettftext($image, 12, 0, 10, 300, $grey, $font, 'Payment Status: Pending');
-}
-
-// Check if the receipts directory exists and is writable; if not, create it
-$receiptsDir = 'receipts';
-if (!is_dir($receiptsDir)) {
-    mkdir($receiptsDir, 0777, true);
-}
-
-// Save the image as PNG
-$filename = $receiptsDir . '/receipt_' . htmlspecialchars($booking['booking_id'], ENT_QUOTES, 'UTF-8') . '.png';
-imagepng($image, $filename);
-
-// Clean up
-imagedestroy($image);
-
-// Redirect to the image
-header('Content-Type: image/png');
-header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
-readfile($filename);
 ?>

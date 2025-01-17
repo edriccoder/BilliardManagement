@@ -297,7 +297,7 @@ foreach ($users as $user) {
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>

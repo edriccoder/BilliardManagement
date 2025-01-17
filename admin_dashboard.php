@@ -35,6 +35,22 @@ try {
 } catch (PDOException $e) {
    echo "Failed " . $e->getMessage();
 }
+
+try {
+    $stmt = $conn->prepare("SELECT notification_id, user_id, message, created_at, is_read FROM admin_notifications ORDER BY created_at DESC");
+    $stmt->execute();
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch unread notifications count
+    $stmt_unread = $conn->prepare("SELECT COUNT(*) AS unread_count FROM admin_notifications WHERE is_read = 0");
+    $stmt_unread->execute();
+    $unreadCountResult = $stmt_unread->fetch(PDO::FETCH_ASSOC);
+    $unreadCount = $unreadCountResult['unread_count'] ?? 0;
+} catch (PDOException $e) {
+    echo "Error retrieving notifications: " . $e->getMessage();
+}
+
+
 ?>
 <html lang="en">
    <head>
@@ -100,7 +116,7 @@ try {
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>
                      </div>
-                     <span class="nav-link-text ms-1">Manage User and Cashier</span>
+                     <span class="nav-link-text ms-1">User Account Management</span>
                   </a>
                </li> 
                <li class="nav-item">
@@ -108,7 +124,7 @@ try {
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">flag</i>
                      </div>
-                     <span class="nav-link-text ms-1">Manage Tournament</span>
+                     <span class="nav-link-text ms-1">Billiard Tournament Scheduling Management</span>
                   </a>
                </li> 
             <li class="nav-item">
@@ -124,7 +140,7 @@ try {
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">campaign</i>
                   </div>
-                  <span class="nav-link-text ms-1">Manage Announcement</span>
+                  <span class="nav-link-text ms-1">Announcement Management</span>
                </a>
             </li>
             <li class="nav-item">
@@ -132,7 +148,15 @@ try {
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
-                  <span class="nav-link-text ms-1">Booking</span>
+                  <span class="nav-link-text ms-1">Reservation Management</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="admin_reports.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">bar_chart</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Reports & Analytics</span>
                </a>
             </li>
             <li class="nav-item">
@@ -143,15 +167,6 @@ try {
                   <span class="nav-link-text ms-1">Manage Feedback</span>
                </a>
             </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="./notifications.html">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">notifications</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Notifications</span>
-               </a>
-            </li>
-            <li class="nav-item mt-3">
          </ul>
       </aside>
       <main class="main-content border-radius-lg ">
@@ -173,84 +188,38 @@ try {
                            </div>
                         </a>
                      </li>
-                     <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                        </a>
-                     </li>
-                     <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-bell cursor-pointer"></i>
-                        </a>
-                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New message</span> from Laur
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          13 minutes ago
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New album</span> by Travis Scott
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          1 day
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                          <title>credit-card</title>
-                                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                             <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                                <g transform="translate(1716.000000, 291.000000)">
-                                                   <g transform="translate(453.000000, 454.000000)">
-                                                      <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                                      <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                                   </g>
-                                                </g>
-                                             </g>
-                                          </g>
-                                       </svg>
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          Payment successfully completed
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          2 days
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                        </ul>
-                     </li>
+                     <!-- Notification Icon with Unread Count Badge -->
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell cursor-pointer"></i>
+                                <?php if ($unreadCount > 0): ?>
+                                    <span class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 0.75rem;">
+                                        <?php echo $unreadCount; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                                <?php foreach ($notifications as $notification): ?>
+                                    <li class="mb-2">
+                                        <a class="dropdown-item border-radius-md notification <?php echo $notification['is_read'] ? 'read' : ''; ?>" 
+                                           href="javascript:;" 
+                                           data-notification-id="<?php echo $notification['notification_id']; ?>">
+                                            <div class="d-flex py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1">
+                                                        <?php echo htmlspecialchars($notification['message']); ?>
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        <?php echo htmlspecialchars($notification['created_at']); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
                      <li class="nav-item d-flex align-items-center">
                         <a href="logout.php" class="nav-link text-body font-weight-bold px-0">
                         <span class="d-sm-inline d-none">Logout</span>
@@ -265,7 +234,6 @@ try {
          <!-- Page Heading -->
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addAnnouncement'>Add Announcement</button>
          </div>
          <!-- Content Row -->
          <div class="row">
@@ -405,7 +373,7 @@ try {
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -549,16 +517,49 @@ try {
                      });
                });
          });
+         
+         document.addEventListener("DOMContentLoaded", function() {
+            const unreadBadge = document.querySelector("#dropdownMenuButton .badge");
+        
+            document.querySelectorAll(".notification").forEach(notification => {
+                notification.addEventListener("click", function() {
+                    const notificationId = this.dataset.notificationId;
+                    fetch("admin_notifications.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `action=mark_as_read&notification_id=${notificationId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.classList.add("read");
+                            this.style.pointerEvents = "none"; // Disable further clicks
+        
+                            // Update the badge count
+                            if (unreadBadge) {
+                                let currentCount = parseInt(unreadBadge.innerText);
+                                if (currentCount > 0) {
+                                    unreadBadge.innerText = currentCount - 1;
+                                    if (currentCount - 1 === 0) {
+                                        unreadBadge.style.display = 'none'; // Hide badge if count is zero
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        });
+
+
       </script>
       <!-- Required Scripts -->
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <!-- Bootstrap JavaScript -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-      <!-- Optional Plugins for Other Functionalities -->
+      <!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- Other Plugins -->
+      <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+      <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
       <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
       <script src="vendor/datatables/jquery.dataTables.min.js"></script>

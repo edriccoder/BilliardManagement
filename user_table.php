@@ -122,14 +122,6 @@ echo "<script>
                   </div>
                   <span class="nav-link-text ms-1">My Feedback</span>
                </a>
-            </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="./notifications.html">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">notifications</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Notifications</span>
-                  </a>
                </li>
             <li class="nav-item mt-3">
          </ul>
@@ -300,7 +292,7 @@ echo "<script>
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -437,24 +429,20 @@ echo "<script>
                        </div>
         
                        <label for="paymentMethod">Payment Method</label>
-                       <div class="input-group input-group-outline my-3">
-                          <select name="payment_method" id="paymentMethod" class="form-control" onchange="toggleGcashFields()">
-                             <option value="cash">Cash</option>
-                             <option value="gcash">GCash</option>
-                          </select>
-                       </div>
-        
-                       <div id="gcashFields" style="display: none;">
-                          <label>GCash QR Code</label>
-                          <div class="input-group input-group-outline my-3">
-                             <img src="img/gcashqr.jpg" alt="GCash QR Code" class="img-fluid">
-                          </div>
-                          <label for="proofOfPayment">Proof of Payment</label>
-                          <div class="input-group input-group-outline my-3">
-                             <input type="file" id="proofOfPayment" name="proof_of_payment" class="form-control">
-                          </div>
-                       </div>
-        
+                        <div class="input-group input-group-outline my-3">
+                           <select name="payment_method" id="paymentMethod" class="form-control" onchange="togglePaymentFields()">
+                              <option value="cash">Cash</option>
+                              <option value="gcash">GCash</option>
+                              <option value="paypal">PayPal</option> <!-- Added PayPal Option -->
+                           </select>
+                        </div>
+
+                        
+                        <!-- GCash Payment Notice -->
+                        <div id="gcashFields" style="display: none;">
+                           <p>You will be redirected to PayMongo to complete your payment.</p>
+                        </div>
+
                        <label for="totalAmount">Total Amount</label>
                        <div class="input-group input-group-outline my-3">
                           <input type="text" id="totalAmount" class="form-control" readonly>
@@ -480,6 +468,26 @@ echo "<script>
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
          }
+         
+         // Toggle Payment Fields
+        function togglePaymentFields() {
+           var paymentMethod = document.getElementById('paymentMethod').value;
+           var gcashFields = document.getElementById('gcashFields');
+           var paypalFields = document.getElementById('paypalFields'); // New PayPal Fields
+        
+           if (paymentMethod === 'gcash') {
+              gcashFields.style.display = 'block';
+           } else {
+              gcashFields.style.display = 'none';
+           }
+        
+           if (paymentMethod === 'paypal') {
+              paypalFields.style.display = 'block';
+           } else {
+              paypalFields.style.display = 'none';
+           }
+        }
+
 
          // Toggle booking type fields
          
@@ -602,6 +610,7 @@ echo "<script>
             // Optionally, set the default booking type here
             toggleBookingType();
          });
+
 
 
       </script>

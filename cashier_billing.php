@@ -1,23 +1,21 @@
 <?php
 session_start();
 include 'conn.php';
+
+// Check if session variables are set
 if (!isset($_SESSION['username']) || !isset($_SESSION['user_id'])) {
-    // Redirect to login page if session variables are not set
     header("Location: index.php");
     exit();
-    
 }
 
 $username = htmlspecialchars($_SESSION['username']);
 $user_id = htmlspecialchars($_SESSION['user_id']);
 
 function getCount($conn, $sql) {
-   $stmt = $conn->prepare($sql);
-   $stmt->execute();
-   $result = $stmt->fetch(PDO::FETCH_ASSOC);
-   return $result ? $result['total'] : 0;
-
-   
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['total'] : 0;
 }
 
 // Fetch total users
@@ -32,10 +30,22 @@ $total_tables = getCount($conn, $sql_tables);
 $sql_bookings = "SELECT COUNT(*) as total FROM bookings";
 $total_bookings = getCount($conn, $sql_bookings);
 
-// Escape and encode session variables for safe output
-$user_id = htmlspecialchars($_SESSION['user_id']);
-
-$sqlBookings = "SELECT b.booking_id, b.user_id, b.table_id, b.table_name, b.start_time, b.end_time, b.status, b.num_matches, b.num_players, t.amount, t.payment_method, t.proof_of_payment
+// Fetch bookings with customer_name and contact_number
+$sqlBookings = "SELECT 
+                    b.booking_id, 
+                    b.user_id, 
+                    b.customer_name, 
+                    b.contact_number, 
+                    b.table_id, 
+                    b.table_name, 
+                    b.start_time, 
+                    b.end_time, 
+                    b.status, 
+                    b.num_matches, 
+                    b.num_players, 
+                    t.amount, 
+                    t.payment_method, 
+                    t.proof_of_payment
                 FROM bookings b
                 LEFT JOIN transactions t ON b.booking_id = t.booking_id
                 WHERE b.archive = 0
@@ -44,17 +54,21 @@ $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->execute();
 $bookings = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
 
-// Create a map for user_id to username (if needed)
-$sqlUsers = "SELECT user_id, username FROM users";
+// Create a map for user_id to username and contact_number
+$sqlUsers = "SELECT user_id, username, contact_number FROM users";
 $stmtUsers = $conn->prepare($sqlUsers);
 $stmtUsers->execute();
 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
 
 $userMap = [];
 foreach ($users as $user) {
-    $userMap[$user['user_id']] = $user['username'];
+    $userMap[$user['user_id']] = [
+        'username' => htmlspecialchars($user['username']),
+        'contact_number' => htmlspecialchars($user['contact_number'])
+    ];
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -121,6 +135,14 @@ foreach ($users as $user) {
                      <i class="material-icons opacity-10">report</i>
                   </div>
                   <span class="nav-link-text ms-1">Reports</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="cashier_reports.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">bar_chart</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Reports & Analytics</span>
                </a>
             </li>
             <li class="nav-item mt-3">
@@ -239,58 +261,71 @@ foreach ($users as $user) {
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Billing and Payments</h6>
-               <button class='btn btn-primary editBtn' onclick='generateReport()'>Generate Invoice Today</button>
-               <button class='btn btn-primary editBtn' onclick='generateReportWeek()'>Generate Invoice Weekly</button>
             </div>
             <div class="card-body pt-4 p-3">
-               <ul class="list-group">
+               <!-- Inside the card body where bookings are listed -->
+                <ul class="list-group">
                     <?php
-                        if (!empty($bookings)) {
-                            foreach ($bookings as $booking) {
-                                echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                                echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
-                                echo '<div class="d-flex flex-column">';
-                                echo '<h6 class="mb-3 text-sm">' . htmlspecialchars($userMap[$booking["user_id"]]) . '</h6>';
-                                echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Number Of matches: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_matches"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
-                                echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
-                                
-                                if (!empty($booking["proof_of_payment"])) {
-                                    echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
-                                    echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
-                                    echo '</a>';
-                                    echo '</span></span>';
-                                }
-                                echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
-                                echo '</div>';
-                                echo '<div class="ms-auto text-end">';
-                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
-                                echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
-
-                                if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
-                                    echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
-                                } else {
-                                    echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_invoice.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Generate Reciept</a>';
-                                }
-
-                                echo '</div>';
-                                echo '</li>';
-                            }
-                        } else {
+                    if (!empty($bookings)) {
+                        foreach ($bookings as $booking) {
                             echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                            echo '<input type="hidden" name="booking_id" value="' . htmlspecialchars($booking["booking_id"]) . '">';
                             echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                            
+                            // Determine if it's a Walk-In booking
+                            if (!empty($booking["user_id"])) {
+                                // Regular Booking
+                                $displayName = $userMap[$booking["user_id"]]['username'] ?? 'Unknown User';
+                                $displayContact = $userMap[$booking["user_id"]]['contact_number'] ?? 'N/A';
+                            } else {
+                                // Walk-In Booking
+                                $displayName = htmlspecialchars($booking["customer_name"]) ?: 'Walk-In';
+                                $displayContact = htmlspecialchars($booking["contact_number"]) ?: 'N/A';
+                            }
+                
+                            echo '<h6 class="mb-3 text-sm">' . $displayName . '</h6>';
+                            echo '<span class="mb-2 text-xs">Table Name: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($booking["table_name"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Start Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["start_time"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">End Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["end_time"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Status: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["status"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Amount: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["amount"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Number of Players: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["num_players"]) . '</span></span>';
+                            echo '<span class="mb-2 text-xs">Contact Number: <span class="text-dark ms-sm-2 font-weight-bold">' . $displayContact . '</span></span>';
+                            
+                            if (!empty($booking["proof_of_payment"])) {
+                                echo '<span class="mb-2 text-xs">Proof of Payment: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($booking["proof_of_payment"]) . '\'); return false;">';
+                                echo '<img src="' . htmlspecialchars($booking["proof_of_payment"]) . '" alt="Proof of Payment" style="max-width: 100px; max-height: 100px;">';
+                                echo '</a>';
+                                echo '</span></span>';
+                            }
+                            
+                            echo '<span class="mb-2 text-xs">Payment Method: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($booking["payment_method"]) . '</span></span>';
+                            echo '</div>';
+                            
+                            echo '<div class="ms-auto text-end">';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_booking.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#bookingModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($booking)) . ')\'>';
+                            echo '<i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                    
+                            if ($booking['status'] == 'cancelled' || $booking['status'] == 'pending') {
+                                echo '<a class="btn btn-link text-success px-3 mb-0" onclick="alert(\'Cannot generate receipt for a booking with status: ' . htmlspecialchars($booking['status']) . '\');"><i class="material-icons text-sm me-2">receipt</i>Generate Receipt</a>';
+                            } else {
+                                echo '<a class="btn btn-link text-success px-3 mb-0" href="generate_invoice.php?booking_id=' . htmlspecialchars($booking["booking_id"]) . '"><i class="material-icons text-sm me-2">receipt</i>Show Receipt</a>';
+                            }
+                    
                             echo '</div>';
                             echo '</li>';
                         }
-                        ?>
-               </ul>
+                    } else {
+                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                        echo '<div class="d-flex flex-column">';
+                        echo '<h6 class="mb-3 text-sm">No bookings found.</h6>';
+                        echo '</div>';
+                        echo '</li>';
+                    }
+                    ?>
+                </ul>
                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                      <div class="modal-content">
@@ -316,7 +351,7 @@ foreach ($users as $user) {
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -410,18 +445,31 @@ foreach ($users as $user) {
                         <form method="POST" action="manage_booking.php">
                             <input type="hidden" id="bookingId" name="booking_id">
                             <input type="hidden" id="userId" name="user_id">
+                    
+                            <!-- Username -->
                             <label for="username">User</label>
                             <div class="input-group input-group-outline my-3">
                                 <input type="text" class="form-control" id="username" name="username" value="" readonly>
                             </div>
+                    
+                            <!-- Contact Number -->
+                            <label for="editContactNumber">Contact Number</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" class="form-control" id="editContactNumber" name="contact_number" readonly>
+                            </div>
+                    
+                            <!-- Start Time -->
                             <label>Start Time</label>
                             <div class="input-group input-group-outline my-3">
                                 <input type="datetime-local" name="start_time" id="editStartTime" class="form-control" required>
                             </div>
+                    
+                            <!-- End Time -->
                             <label>End Time</label>
                             <div class="input-group input-group-outline my-3">
                                 <input type="datetime-local" name="end_time" id="editEndTime" class="form-control" required>
                             </div>
+                    
                             <div class="modal-footer">
                                 <button type="submit" name="confirm" class="btn btn-primary">Confirm Booking</button>
                                 <button type="submit" name="cancel" class="btn btn-danger">Cancel Booking</button>
@@ -432,42 +480,30 @@ foreach ($users as $user) {
                 </div>
             </div>
         </div>
-      <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-               damping: '0.5'
+       <script>
+            var userData = <?php echo json_encode($userMap); ?>;
+        
+            function openEditModal(booking) {
+                document.getElementById('bookingId').value = booking.booking_id;
+                document.getElementById('userId').value = booking.user_id;
+        
+                if (booking.user_id) {
+                    // Regular Booking
+                    document.getElementById('username').value = userData[booking.user_id]['username'] || 'Unknown User';
+                    document.getElementById('editContactNumber').value = userData[booking.user_id]['contact_number'] || 'N/A';
+                } else {
+                    // Walk-In Booking
+                    document.getElementById('username').value = booking.customer_name || 'Walk-In';
+                    document.getElementById('editContactNumber').value = booking.contact_number || 'N/A';
+                }
+                
+                document.getElementById('editStartTime').value = booking.start_time ? booking.start_time.replace(' ', 'T') : '';
+                document.getElementById('editEndTime').value = booking.end_time ? booking.end_time.replace(' ', 'T') : '';
+        
+                var bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+                bookingModal.show();
             }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
-         function openImageModal(imageUrl) {
-            $('#imageModalContent').attr('src', imageUrl);
-            $('#imageModal').modal('show');
-         }
-         function generateReport(){
-            window.location.href = 'generate_report.php'
-         }
-
-        function generateReportWeek(){ 
-         window.location.href = 'generate_reportWeekly.php'
-        }
-        const userData = <?php echo json_encode($userMap); ?>;
-
-        function openEditModal(booking) {
-            document.getElementById('bookingId').value = booking.booking_id;
-            document.getElementById('userId').value = booking.user_id;
-            document.getElementById('username').value = userData[booking.user_id];
-            document.getElementById('editStartTime').value = booking.start_time.replace(' ', 'T');
-            document.getElementById('editEndTime').value = booking.end_time.replace(' ', 'T');
-            document.getElementById('editAmount').value = booking.amount;
-
-            $('#bookingModal').modal('show');
-         }
-         function openImageModal(imageUrl) {
-            $('#imageModalContent').attr('src', imageUrl);
-            $('#imageModal').modal('show');
-         }
-      </script>
+        </script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

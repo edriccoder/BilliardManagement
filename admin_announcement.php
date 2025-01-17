@@ -12,7 +12,8 @@ $user_id = htmlspecialchars($_SESSION['user_id']);
 
 
 $sqlAnnouncement = "
-    SELECT 
+    SELECT
+        a.id,
         a.title, 
         a.body, 
         a.created_at, 
@@ -33,6 +34,19 @@ $announcements = $stmtAnnouncement->fetchAll(PDO::FETCH_ASSOC);
 $userMap = [];
 foreach ($users as $user) {
     $userMap[$user['user_id']] = $user['username'];
+}
+try {
+    $stmt = $conn->prepare("SELECT notification_id, user_id, message, created_at, is_read FROM admin_notifications ORDER BY created_at DESC");
+    $stmt->execute();
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch unread notifications count
+    $stmt_unread = $conn->prepare("SELECT COUNT(*) AS unread_count FROM admin_notifications WHERE is_read = 0");
+    $stmt_unread->execute();
+    $unreadCountResult = $stmt_unread->fetch(PDO::FETCH_ASSOC);
+    $unreadCount = $unreadCountResult['unread_count'] ?? 0;
+} catch (PDOException $e) {
+    echo "Error retrieving notifications: " . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>
@@ -100,7 +114,7 @@ foreach ($users as $user) {
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>
                      </div>
-                     <span class="nav-link-text ms-1">Manage User and Cashier</span>
+                     <span class="nav-link-text ms-1">User Account Management</span>
                   </a>
                </li> 
                <li class="nav-item">
@@ -108,7 +122,7 @@ foreach ($users as $user) {
                      <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">flag</i>
                      </div>
-                     <span class="nav-link-text ms-1">Manage Tournament</span>
+                     <span class="nav-link-text ms-1">Billiard Tournament Scheduling Management</span>
                   </a>
                </li> 
             <li class="nav-item">
@@ -124,15 +138,23 @@ foreach ($users as $user) {
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">campaign</i>
                   </div>
-                  <span class="nav-link-text ms-1">Manage Announcement</span>
+                  <span class="nav-link-text ms-1">Announcement Management</span>
                </a>
-            </li> 
+            </li>
             <li class="nav-item">
                <a class="nav-link text-white " href="admin_booking.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">book</i>
                   </div>
-                  <span class="nav-link-text ms-1">Booking</span>
+                  <span class="nav-link-text ms-1">Reservation Management</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="admin_reports.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">bar_chart</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Reports & Analytics</span>
                </a>
             </li>
             <li class="nav-item">
@@ -141,14 +163,6 @@ foreach ($users as $user) {
                      <i class="material-icons opacity-10">feedback</i>
                   </div>
                   <span class="nav-link-text ms-1">Manage Feedback</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="./notifications.html">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">notifications</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Notifications</span>
                </a>
             </li>
             <li class="nav-item mt-3">
@@ -174,84 +188,38 @@ foreach ($users as $user) {
                            </div>
                         </a>
                      </li>
-                     <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                        </a>
-                     </li>
-                     <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-bell cursor-pointer"></i>
-                        </a>
-                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New message</span> from Laur
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          13 minutes ago
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New album</span> by Travis Scott
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          1 day
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                          <title>credit-card</title>
-                                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                             <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                                <g transform="translate(1716.000000, 291.000000)">
-                                                   <g transform="translate(453.000000, 454.000000)">
-                                                      <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                                      <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                                   </g>
-                                                </g>
-                                             </g>
-                                          </g>
-                                       </svg>
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          Payment successfully completed
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          2 days
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                        </ul>
-                     </li>
+                      <!-- Notification Icon with Unread Count Badge -->
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell cursor-pointer"></i>
+                                <?php if ($unreadCount > 0): ?>
+                                    <span class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 0.75rem;">
+                                        <?php echo $unreadCount; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                                <?php foreach ($notifications as $notification): ?>
+                                    <li class="mb-2">
+                                        <a class="dropdown-item border-radius-md notification <?php echo $notification['is_read'] ? 'read' : ''; ?>" 
+                                           href="javascript:;" 
+                                           data-notification-id="<?php echo $notification['notification_id']; ?>">
+                                            <div class="d-flex py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1">
+                                                        <?php echo htmlspecialchars($notification['message']); ?>
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        <?php echo htmlspecialchars($notification['created_at']); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
                      <li class="nav-item d-flex align-items-center">
                         <a href="logout.php" class="nav-link text-body font-weight-bold px-0">
                         <span class="d-sm-inline d-none">Logout</span>
@@ -267,7 +235,7 @@ foreach ($users as $user) {
          <!-- Table Row -->
          <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Manage Announcement</h1>
-            <button class='btn btn-primary editBtn'>Announcement Report</button>
+            <button class='btn btn-primary editBtn' data-toggle='modal' data-target='#addAnnouncement'>Add Announcement</button>
          </div>
 
          <div class="card">
@@ -295,8 +263,8 @@ foreach ($users as $user) {
 
                             echo '</div>';
                             echo '<div class="ms-auto text-end">';
-                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_announcement.php?announcement_id=' . htmlspecialchars($announcement["tournament_id"]) . '">';
-                            echo '<i class="material-icons text-sm me-2">delete</i>Archive</a>';
+                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_announcement.php?announcement_id=' . htmlspecialchars($announcement["id"]) . '">';
+                            echo '<i class="material-icons text-sm me-2">delete</i>Delete</a>';
                             echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#announcementModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($announcement)) . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
                             echo '</div>';
                             echo '</li>';
@@ -321,7 +289,7 @@ foreach ($users as $user) {
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T james Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -449,6 +417,31 @@ foreach ($users as $user) {
             </div>
         </div>
     </div>
+    <div class="modal fade" id="addAnnouncement" tabindex="-1" role="dialog" aria-labelledby="addAnnouncementLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="addAnnouncementLabel">Add Announcement</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div class="modal-body">
+                     <form method="POST" action = "add_announcement.php" enctype="multipart/form-data">
+                     <label for="announcementTitle">Title</label>
+                        <div class="input-group input-group-outline my-3">
+                              <input type="text" class="form-control" id="announcementTitle" name="title" required>
+                        </div>
+                        <label for="announcementBody">Body</label>
+                        <div class="input-group input-group-outline my-3">
+                              <textarea class="form-control" id="announcementBody" name="body" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" name="save" class="btn btn-primary">Submit</button>
+                     </form>
+                  </div>
+            </div>
+         </div>
+      </div>
 
 
     <script>
@@ -466,7 +459,39 @@ foreach ($users as $user) {
             // Open the modal
             $('#editAnnouncementModal').modal('show');
         }
-
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const unreadBadge = document.querySelector("#dropdownMenuButton .badge");
+        
+            document.querySelectorAll(".notification").forEach(notification => {
+                notification.addEventListener("click", function() {
+                    const notificationId = this.dataset.notificationId;
+                    fetch("admin_notifications.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: `action=mark_as_read&notification_id=${notificationId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.classList.add("read");
+                            this.style.pointerEvents = "none"; // Disable further clicks
+        
+                            // Update the badge count
+                            if (unreadBadge) {
+                                let currentCount = parseInt(unreadBadge.innerText);
+                                if (currentCount > 0) {
+                                    unreadBadge.innerText = currentCount - 1;
+                                    if (currentCount - 1 === 0) {
+                                        unreadBadge.style.display = 'none'; // Hide badge if count is zero
+                                    }
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        });
 
     </script>
 
@@ -481,6 +506,9 @@ foreach ($users as $user) {
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <!-- Bootstrap JS -->
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
       <!-- Core plugin JavaScript-->

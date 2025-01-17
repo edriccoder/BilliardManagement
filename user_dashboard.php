@@ -28,10 +28,28 @@ try {
     echo "Failed " . $e->getMessage();
 }
 
-$sqlBookings = "SELECT title, body, expires_at FROM announcements";
+$sqlBookings = "SELECT title, body, created_at, expires_at 
+                FROM announcements 
+                ORDER BY created_at DESC";
 $stmtBookings = $conn->prepare($sqlBookings);
 $stmtBookings->execute();
 $announcements = $stmtBookings->fetchAll(PDO::FETCH_ASSOC);
+
+try {
+    $stmt = $conn->prepare("SELECT notification_id, user_id, message, created_at, is_read FROM notifications ORDER BY created_at DESC");
+    $stmt->execute();
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch unread notifications count
+    $stmt_unread = $conn->prepare("SELECT COUNT(*) AS unread_count FROM admin_notifications WHERE is_read = 0");
+    $stmt_unread->execute();
+    $unreadCountResult = $stmt_unread->fetch(PDO::FETCH_ASSOC);
+    $unreadCount = $unreadCountResult['unread_count'] ?? 0;
+} catch (PDOException $e) {
+    echo "Error retrieving notifications: " . $e->getMessage();
+}
+
+
 
 
 // Fetch tournaments for the logged-in user
@@ -61,7 +79,85 @@ echo "<script>
         const tournaments = " . json_encode($tournaments) . ";
       </script>";
 ?>
+<style>
+    /* Enhanced Announcement Styling */
+    .announcement-card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
 
+    .announcement-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .announcement-body {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        color: #495057;
+    }
+
+    .announcement-meta {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .announcement-meta p {
+        margin: 0;
+    }
+
+    .announcement-icon {
+        font-size: 2rem;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .alert-one-hour {
+        background-color: #ffeb3b; /* Yellow background for within the first hour */
+        color: #000;
+    }
+
+    .alert-new {
+        background-color: #d4edda; /* Green background for within 24 hours */
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    /* Adjust spacing */
+    .alert {
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    /* Custom button styling */
+    .btn-close {
+        color: #000;
+    }
+</style>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -154,19 +250,11 @@ echo "<script>
                   </a>
                </li> 
             <li class="nav-item">
-               <a class="nav-link text-white " href="feedback.php">
+               <a class="nav-link text-white " href="user_feedback.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">feedback</i>
                   </div>
                   <span class="nav-link-text ms-1">My Feedback</span>
-               </a>
-            </li>
-            <li class="nav-item">
-               <a class="nav-link text-white " href="./notifications.html">
-                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                     <i class="material-icons opacity-10">notifications</i>
-                  </div>
-                  <span class="nav-link-text ms-1">Notifications</span>
                </a>
             </li>
             <li class="nav-item mt-3">
@@ -191,84 +279,38 @@ echo "<script>
                            </div>
                         </a>
                      </li>
-                     <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                        </a>
-                     </li>
-                     <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-bell cursor-pointer"></i>
-                        </a>
-                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New message</span> from Laur
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          13 minutes ago
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New album</span> by Travis Scott
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          1 day
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                          <title>credit-card</title>
-                                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                             <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                                <g transform="translate(1716.000000, 291.000000)">
-                                                   <g transform="translate(453.000000, 454.000000)">
-                                                      <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                                      <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                                   </g>
-                                                </g>
-                                             </g>
-                                          </g>
-                                       </svg>
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          Payment successfully completed
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          2 days
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                        </ul>
-                     </li>
+                      <!-- Notification Icon with Unread Count Badge -->
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell cursor-pointer"></i>
+                                <?php if ($unreadCount > 0): ?>
+                                    <span class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 0.75rem;">
+                                        <?php echo $unreadCount; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                                <?php foreach ($notifications as $notification): ?>
+                                    <li class="mb-2">
+                                        <a class="dropdown-item border-radius-md notification <?php echo $notification['is_read'] ? 'read' : ''; ?>" 
+                                           href="javascript:;" 
+                                           data-notification-id="<?php echo $notification['notification_id']; ?>">
+                                            <div class="d-flex py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1">
+                                                        <?php echo htmlspecialchars($notification['message']); ?>
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        <?php echo htmlspecialchars($notification['created_at']); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
                      <li class="nav-item d-flex align-items-center">
                         <a href="logout.php" class="nav-link text-body font-weight-bold px-0">
                         <span class="d-sm-inline d-none">Logout</span>
@@ -286,7 +328,7 @@ echo "<script>
          </div>
          <!-- Content Row -->
          <div class="card shadow mb-4">
-            <img class="card-img-top" src="./img/background_bil.png" alt="Card image cap">
+            <img class="card-img-top" src="./img/tjamesLOGO.jpg" alt="Card image cap">
          </div>
          <!-- Table Row -->
          <div class="card shadow mb-4">
@@ -316,7 +358,7 @@ echo "<script>
                            </div>
                         </div>
                         <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
-                           $<?php echo htmlspecialchars($transaction['amount']); ?>
+                           ₱<?php echo htmlspecialchars($transaction['amount']); ?>
                         </div>
                      </li>
                      <?php endforeach; ?>
@@ -329,37 +371,85 @@ echo "<script>
             </div>
             <div class="card-body p-3 pb-0">
                <?php if (!empty($announcements)): ?>
-                  <?php foreach ($announcements as $announcement): ?>
-                     <?php
-                     // Determine alert type based on the title or content (customizable logic)
-                     $alertType = "alert-primary"; // Default alert type
-                     if (stripos($announcement['title'], 'danger') !== false) {
-                           $alertType = "alert-danger";
-                     } elseif (stripos($announcement['title'], 'warning') !== false) {
-                           $alertType = "alert-warning";
-                     } elseif (stripos($announcement['title'], 'info') !== false) {
-                           $alertType = "alert-info";
-                     } elseif (stripos($announcement['title'], 'success') !== false) {
-                           $alertType = "alert-success";
-                     }
-
-                     // Format the expiration date to include both date and time
-                     $expiresAt = date('F j, Y, g:i a', strtotime($announcement['expires_at']));
-                     ?>
-                     <div class="alert <?php echo $alertType; ?> alert-dismissible fade show custom-alert" role="alert">
-                           <strong><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
-                           <?php echo nl2br(htmlspecialchars($announcement['body'])); ?>
-                           <p>This announcement will expire at: <?php echo $expiresAt; ?></p>
-                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                     </div>
-                  <?php endforeach; ?>
-               <?php else: ?>
-                  <div class="alert alert-warning" role="alert">
-                     No announcements found.
-                  </div>
-               <?php endif; ?>
+                    <?php
+                    $hasValidAnnouncements = false; // Flag to check if there are any valid announcements
+                    foreach ($announcements as $announcement):
+                        $currentTime = time();
+                        $expiresAtTimestamp = strtotime($announcement['expires_at']);
+                
+                        // Skip expired announcements
+                        if ($currentTime > $expiresAtTimestamp) {
+                            continue;
+                        }
+                
+                        $hasValidAnnouncements = true; // Set to true if at least one valid announcement exists
+                
+                        // Determine alert type based on the title or content (customizable logic)
+                        $alertType = "alert-primary";
+                        $icon = '<i class="fas fa-info-circle announcement-icon"></i>';
+                
+                        if (stripos($announcement['title'], 'danger') !== false) {
+                            $alertType = "alert-danger";
+                            $icon = '<i class="fas fa-exclamation-triangle announcement-icon"></i>';
+                        } elseif (stripos($announcement['title'], 'warning') !== false) {
+                            $alertType = "alert-warning";
+                            $icon = '<i class="fas fa-exclamation-circle announcement-icon"></i>';
+                        } elseif (stripos($announcement['title'], 'info') !== false) {
+                            $alertType = "alert-info";
+                            $icon = '<i class="fas fa-info-circle announcement-icon"></i>';
+                        } elseif (stripos($announcement['title'], 'success') !== false) {
+                            $alertType = "alert-success";
+                            $icon = '<i class="fas fa-check-circle announcement-icon"></i>';
+                        }
+                
+                        // Format the expiration date
+                        $expiresAt = date('F j, Y, g:i a', $expiresAtTimestamp);
+                
+                        // Check if the announcement is new (created in the last 24 hours)
+                        $createdAtTimestamp = strtotime($announcement['created_at']);
+                        $isNewAnnouncement = ($currentTime - $createdAtTimestamp) <= (24 * 60 * 60);
+                        $isWithinOneHour = ($currentTime - $createdAtTimestamp) <= (60 * 60);
+                
+                        // Apply special styling for recent announcements
+                        if ($isWithinOneHour) {
+                            $alertType = "alert-one-hour";
+                        } elseif ($isNewAnnouncement) {
+                            $alertType = "alert-new";
+                        }
+                        ?>
+                        <div class="alert <?php echo $alertType; ?> alert-dismissible fade show custom-alert" role="alert">
+                            <div class="d-flex align-items-start">
+                                <?php echo $icon; ?>
+                                <div>
+                                    <strong class="announcement-title"><?php echo htmlspecialchars($announcement['title']); ?>:</strong>
+                                    <div class="announcement-body"><?php echo nl2br(htmlspecialchars($announcement['body'])); ?></div>
+                                    <div class="announcement-meta">
+                                        <p>Expires at: <?php echo $expiresAt; ?></p>
+                                        <?php if ($isWithinOneHour): ?>
+                                            <p><strong>New Announcement! (Within the last hour)</strong></p>
+                                        <?php elseif ($isNewAnnouncement): ?>
+                                            <p><strong>New Announcement! (Within the last 24 hours)</strong></p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endforeach; ?>
+                
+                    <?php if (!$hasValidAnnouncements): ?>
+                        <div class="alert alert-light alert-dismissible fade show custom-alert" role="alert">
+                            <span class="text-sm">No announcements at this time.</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <div class="alert alert-light alert-dismissible fade show custom-alert" role="alert">
+                        <span class="text-sm">No announcements at this time.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
             </div>
-         </div>
          <div class="card mt-4">
             <div class="card-header p-3">
                   <h5 class="mb-0">Tournaments</h5>
@@ -400,7 +490,7 @@ echo "<script>
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -577,8 +667,53 @@ echo "<script>
                 updateTournamentTimes();
             }
         });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+           const unreadBadge = document.querySelector("#dropdownMenuButton .badge");
+    
+           // Hide badge if unread count is zero
+           if (unreadBadge && parseInt(unreadBadge.innerText) === 0) {
+               unreadBadge.style.display = 'none';
+           }
+    
+           // Add click event to each notification item
+           document.querySelectorAll(".notification").forEach(notification => {
+               notification.addEventListener("click", function () {
+                   const notificationId = this.dataset.notificationId;
+    
+                   // Send request to mark notification as read
+                   fetch("user_notifications.php", {
+                       method: "POST",
+                       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                       body: `action=mark_as_read&notification_id=${notificationId}`
+                   })
+                   .then(response => response.json())
+                   .then(data => {
+                       if (data.success) {
+                           // Mark as read and disable further clicks
+                           this.classList.add("read");
+                           this.style.pointerEvents = "none";
+    
+                           // Update the unread badge count
+                           if (unreadBadge) {
+                               let currentCount = parseInt(unreadBadge.innerText);
+                               if (currentCount > 0) {
+                                   unreadBadge.innerText = currentCount - 1;
+                                   // Hide badge if count reaches zero
+                                   if (currentCount - 1 === 0) {
+                                       unreadBadge.style.display = 'none';
+                                   }
+                               }
+                           }
+                       }
+                   });
+               });
+           });
+       });
       </script>
-
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

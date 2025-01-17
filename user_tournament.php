@@ -104,21 +104,13 @@ echo "<script>
                   </a>
                </li> 
             <li class="nav-item">
-               <a class="nav-link text-white " href="feedback.php">
+               <a class="nav-link text-white " href="user_feedback.php">
                   <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                      <i class="material-icons opacity-10">feedback</i>
                   </div>
                   <span class="nav-link-text ms-1">My Feedback</span>
                </a>
             </li>
-               <li class="nav-item">
-                  <a class="nav-link text-white " href="./notifications.html">
-                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">notifications</i>
-                     </div>
-                     <span class="nav-link-text ms-1">Notifications</span>
-                  </a>
-               </li>
             <li class="nav-item mt-3">
          </ul>
       </aside>
@@ -141,84 +133,38 @@ echo "<script>
                            </div>
                         </a>
                      </li>
-                     <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                        </a>
-                     </li>
-                     <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                        <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-bell cursor-pointer"></i>
-                        </a>
-                        <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New message</span> from Laur
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          13 minutes ago
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li class="mb-2">
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                       <img src="./assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          <span class="font-weight-bold">New album</span> by Travis Scott
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          1 day
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item border-radius-md" href="javascript:;">
-                                 <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                          <title>credit-card</title>
-                                          <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                             <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                                <g transform="translate(1716.000000, 291.000000)">
-                                                   <g transform="translate(453.000000, 454.000000)">
-                                                      <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                                      <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                                   </g>
-                                                </g>
-                                             </g>
-                                          </g>
-                                       </svg>
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                       <h6 class="text-sm font-weight-normal mb-1">
-                                          Payment successfully completed
-                                       </h6>
-                                       <p class="text-xs text-secondary mb-0">
-                                          <i class="fa fa-clock me-1"></i>
-                                          2 days
-                                       </p>
-                                    </div>
-                                 </div>
-                              </a>
-                           </li>
-                        </ul>
-                     </li>
+                     <!-- Notification Icon with Unread Count Badge -->
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell cursor-pointer"></i>
+                                <?php if ($unreadCount > 0): ?>
+                                    <span class="badge bg-danger text-white position-absolute top-0 start-100 translate-middle p-1 rounded-circle" style="font-size: 0.75rem;">
+                                        <?php echo $unreadCount; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                                <?php foreach ($notifications as $notification): ?>
+                                    <li class="mb-2">
+                                        <a class="dropdown-item border-radius-md notification <?php echo $notification['is_read'] ? 'read' : ''; ?>" 
+                                           href="javascript:;" 
+                                           data-notification-id="<?php echo $notification['notification_id']; ?>">
+                                            <div class="d-flex py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1">
+                                                        <?php echo htmlspecialchars($notification['message']); ?>
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        <?php echo htmlspecialchars($notification['created_at']); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
                      <li class="nav-item d-flex align-items-center">
                         <a href="logout.php" class="nav-link text-body font-weight-bold px-0">
                         <span class="d-sm-inline d-none">Logout</span>
@@ -264,12 +210,26 @@ echo "<script>
                                              <h6 class="mb-3 text-sm"><?php echo htmlspecialchars($tournament['name']); ?></h6>
                                              <span class="mb-2 text-xs">Start Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_date']); ?></span></span>
                                              <span class="mb-2 text-xs">End Date: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_date']); ?></span></span>
+                                             <span class="mb-2 text-xs">Start Time: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['start_time']); ?></span></span>
+                                             <span class="mb-2 text-xs">End Time: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['end_time']); ?></span></span>
                                              <span class="mb-2 text-xs">Max Players: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['max_player']); ?></span></span>
+                                             <span class="mb-2 text-xs">Fee: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['fee']); ?></span></span>
                                              <span class="mb-2 text-xs">Prize: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['prize']); ?></span></span>
                                              <span class="text-xs">Status: <span class="text-dark font-weight-bold ms-sm-2"><?php echo htmlspecialchars($tournament['status']); ?></span></span>
                                        </div>
                                        <div class="ms-auto text-end">
-                                             <button type="button" class="btn btn-primary join-tournament" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">Join Tournament</button>
+                                             <!-- Inside Tournament List Item -->
+                                                <button type="button" 
+                                                        class="btn btn-primary join-tournament" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#joinTournamentModal" 
+                                                        data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"
+                                                        data-total-amount="<?php echo htmlspecialchars($tournament['fee']); ?>">
+                                                    Join Tournament
+                                                </button>
+                                             <button class="btn btn-link text-dark px-3 mb-0 show-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">
+                                                <i class="material-icons text-sm me-2">schedule</i>Show Schedule
+                                             </button>
                                        </div>
                                     </li>
                                  <?php endforeach; ?>
@@ -308,7 +268,13 @@ echo "<script>
                                        </div>
                                        <div class="d-flex align-items-center text-sm">
                                           Status: <?php echo htmlspecialchars($tournament['status']); ?>
-                                          <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" data-toggle="modal" data-target="#bracketModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-lg position-relative me-1"></i> Show Players</button>
+                                          <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-bracket" data-toggle="modal" data-target="#bracketModal" data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>"><i class="material-icons text-lg position-relative me-1"></i> Show Bracket</button>
+                                          <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4 show-scores" 
+                                                 data-toggle="modal" 
+                                                 data-target="#showScores" 
+                                                 data-tournament-id="<?php echo htmlspecialchars($tournament['tournament_id']); ?>">
+                                              <i class="material-icons text-lg position-relative me-1"></i> Show Scores
+                                        </button>
                                        </div>
                                     </li>
                            <?php
@@ -337,7 +303,7 @@ echo "<script>
             <footer class="sticky-footer bg-white">
                <div class="container my-auto">
                      <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>T James Sporty Bar</span>
                       </div>
                 </div>
             </footer>
@@ -418,29 +384,47 @@ echo "<script>
          </div>
       </div>
       <!-- Modal -->
-      <div class="modal fade" id="joinTournamentModal" tabindex="-1" role="dialog" aria-labelledby="joinTournamentModalLabel" aria-hidden="true">
-         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                  <div class="modal-header">
-                     <h5 class="modal-title" id="joinTournamentModalLabel">Join Tournament</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                     </button>
-                  </div>
-                  <div class="modal-body">
-                     <img src="img/gcashqr.jpg" alt="GCash QR" class="img-fluid mb-3">
-                     <form id="joinTournamentForm">
-                        <div class="form-group">
-                              <label for="proofOfPayment">Proof of Payment</label>
-                              <input type="file" class="form-control" id="proofOfPayment" name="proof_of_payment" required>
-                        </div>
-                        <input type="hidden" id="tournamentId" name="tournament_id">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                     </form>
-                  </div>
+    <!-- Join Tournament Modal -->
+        <div class="modal fade" id="joinTournamentModal" tabindex="-1" aria-labelledby="joinTournamentModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="joinTournamentModalLabel">Join Tournament</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="join_tournament.php" enctype="multipart/form-data" id="joinTournamentForm">
+                            <!-- Payment Option Selection -->
+                            <label class="form-label">Choose Payment Method</label>
+                            <div class="input-group input-group-outline my-3">
+                                <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                                    <option value="gcash">GCash</option>
+                                </select>
+                            </div>
+
+                            <!-- Total Amount -->
+                            <input type="hidden" id="tournament_id" name="tournament_id">
+                            <label for="fee" class="form-label">Total Amount</label>
+                            <div class="input-group input-group-outline my-3">
+                                <input type="text" id="fee" name="totalAmount" class="form-control" readonly>
+                            </div>
+
+                            <!-- Payment Containers -->
+                            <div id="gcashPayment" class="d-block">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+
+                            <div id="paypalButtonContainer" class="d-none">
+                                <div id="paypal-button"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
+        </div>
+
+
+
       <!-- Modal for showing bracket -->
       <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-lg">
@@ -458,240 +442,602 @@ echo "<script>
             </div>
          </div>
       </div>
-      <script>
-         var win = navigator.platform.indexOf('Win') > -1;
-         if (win && document.querySelector('#sidenav-scrollbar')) {
-               var options = {
-                  damping: '0.5'
-               }
-               Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-         }
-         document.querySelectorAll('.join-tournament').forEach(button => {
-            button.addEventListener('click', function() {
-               const tournamentId = this.getAttribute('data-tournament-id');
-               document.getElementById('tournamentId').value = tournamentId;
+      <!-- Scores Modal -->
+    <div class="modal fade" id="showScores" tabindex="-1" role="dialog" aria-labelledby="showScoresLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showScoresLabel">Tournament Scores</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Player ID</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scoresTableBody">
+                            <!-- Scores will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Schedule Modal -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tournament Schedule</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Round</th>
+                                <th>Match Number</th>
+                                <th>Player 1</th>
+                                <th>Player 2</th>
+                                <th>Scheduled Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <!-- Schedule rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = { damping: '0.5' }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
 
-               fetch('check_tournament_status.php', {
-                     method: 'POST',
-                     headers: {
-                        'Content-Type': 'application/json'
-                     },
-                     body: JSON.stringify({
-                        user_id: userData.user_id,
-                        tournament_id: tournamentId
-                     })
-               })
-               .then(response => response.json())
-               .then(data => {
-                     if (data.success) {
-                        $('#joinTournamentModal').modal('show');
-                     } else {
-                        alert(data.message);
-                     }
-               })
-               .catch(error => console.error('Error:', error));
-            });
-         });
-
-         document.querySelectorAll('.show-bracket').forEach(button => {
-               button.addEventListener('click', function () {
-                  currentTournamentId = this.getAttribute('data-tournament-id');
-
-                  fetch(`get_bracket.php?tournament_id=${currentTournamentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                           const bracketContainer = document.getElementById('bracketContainer');
-                           bracketContainer.innerHTML = '';
-
-                           if (data.success && data.players.length > 0) {
-                              const players = data.players;
-                              const rounds = Math.ceil(Math.log2(players.length));
-                              let matchups = data.matchups || players.slice();
-
-                              for (let round = 1; round <= rounds; round++) {
-                                    const roundDiv = document.createElement('div');
-                                    roundDiv.className = 'round';
-                                    roundDiv.dataset.round = round;
-                                    roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
-
-                                    const matches = Math.ceil(matchups.length / 2);
-                                    const newMatchups = [];
-
-                                    for (let match = 0; match < matches; match++) {
-                                       const matchDiv = document.createElement('div');
-                                       matchDiv.className = 'match';
-
-                                       const team1 = matchups[match * 2] ? matchups[match * 2].username : 'TBA';
-                                       const team2 = matchups[match * 2 + 1] ? matchups[match * 2 + 1].username : 'TBA';
-
-                                       matchDiv.innerHTML = `
-                                          <div class="team ${matchups[match * 2]?.selected ? 'selected' : ''}" data-player-id="${matchups[match * 2] ? matchups[match * 2].user_id : ''}">${team1}</div>
-                                          <div class="team ${matchups[match * 2 + 1]?.selected ? 'selected' : ''}" data-player-id="${matchups[match * 2 + 1] ? matchups[match * 2 + 1].user_id : ''}">${team2}</div>
-                                       
-                                       `;
-
-                                       roundDiv.appendChild(matchDiv);
-
-                                       // Placeholder for winners to advance to the next round
-                                       newMatchups.push({ user_id: `winner_${round}_${match}`, username: 'TBA' });
-                                    }
-
-                                    if (round > 1) {
-                                       roundDiv.classList.add('vertical-center');
-                                    }
-
-                                    bracketContainer.appendChild(roundDiv);
-                                    matchups = newMatchups;
-                              }
-
-                              // Add the final winner placeholder if there are more than 1 player
-                              if (players.length > 1) {
-                                    const finalRoundDiv = document.createElement('div');
-                                    finalRoundDiv.className = 'vertical-center';
-                                    finalRoundDiv.innerHTML = `<h2>Winner</h2>`;
-
-                                    const winnerPlaceholder = document.createElement('div');
-                                    winnerPlaceholder.className = 'match winner-placeholder';
-                                    winnerPlaceholder.innerHTML = '<div class="team">TBA</div>';
-
-                                    finalRoundDiv.appendChild(winnerPlaceholder);
-                                    bracketContainer.appendChild(finalRoundDiv);
-                              }
-
-                              // Show the modal
-                              const playersModal = new bootstrap.Modal(document.getElementById('bracketModal'));
-                              playersModal.show();
-                           } else {
-                              alert(data.message);
-                           }
-                        })
-                        .catch(error => {
-                           console.error('Error fetching bracket:', error);
+        let currentTournamentId = null;
+        let finalRound = 0;
+        const showScheduleButtons = document.querySelectorAll('.show-schedule');
+        
+        showScheduleButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const tournamentId = this.getAttribute('data-tournament-id');
+        
+                fetch(`fetch_schedule.php?tournament_id=${tournamentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const scheduleTableBody = document.getElementById('scheduleTableBody');
+                        scheduleTableBody.innerHTML = '';
+        
+                        if (data.success && data.schedule.length > 0) {
+                            data.schedule.forEach(match => {
+                                // Format the scheduled date and time
+                                const scheduledDateTimeFormatted = formatDateTime(match.scheduled_time);
+        
+                                const row = `
+                                    <tr>
+                                        <td>${match.round}</td>
+                                        <td>${match.match_number}</td>
+                                        <td>${match.player1_name || 'TBA'}</td>
+                                        <td>${match.player2_name || 'TBA'}</td>
+                                        <td>${scheduledDateTimeFormatted || 'TBA'}</td>
+                                    </tr>
+                                `;
+                                scheduleTableBody.innerHTML += row;
+                            });
+                        } else {
+                            const row = `
+                                <tr>
+                                    <td colspan="5">${data.message || 'No schedule available.'}</td>
+                                </tr>
+                            `;
+                            scheduleTableBody.innerHTML += row;
+                        }
+        
+                        // Show the Schedule Modal
+                        const scheduleModal = new bootstrap.Modal(document.getElementById('scheduleModal'));
+                        scheduleModal.show();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching schedule:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while fetching the schedule.',
                         });
-               });
+                    });
             });
+        });
+        
+        // Add the date and time formatting function
+        function formatDateTime(datetimeStr) {
+            if (!datetimeStr) return 'TBA';
+        
+            // Parse the datetime string
+            const datetime = new Date(datetimeStr);
+        
+            if (isNaN(datetime)) return 'Invalid Date';
+        
+            // Options for formatting date and time
+            const options = {
+                month: 'long',     // Full month name (e.g., "September")
+                day: 'numeric',    // Day of the month
+                year: 'numeric',   // Four-digit year
+                hour: 'numeric',   // Hour (numeric)
+                minute: 'numeric', // Minute (numeric)
+                hour12: true       // 12-hour format
+            };
+        
+            // Format the date and time
+            return datetime.toLocaleString('en-US', options);
+        }
 
-         document.getElementById('joinTournamentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            formData.append('user_id', userData.user_id);
-            formData.append('username', userData.username);
+        // Handle Join Tournament Buttons
+        document.querySelectorAll('.join-tournament').forEach(button => {
+            button.addEventListener('click', function () {
+                const tournamentId = this.getAttribute('data-tournament-id');
+                const totalAmount = parseFloat(this.getAttribute('data-total-amount'));
+        
+                // Validate the total amount before proceeding
+                if (totalAmount <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Fee',
+                        text: 'The tournament fee must be greater than zero. Please contact support.',
+                    });
+                    return; // Exit if the fee is invalid
+                }
+        
+                // Set the tournament_id and fee in the modal form
+                document.getElementById('tournament_id').value = tournamentId;
+                document.getElementById('fee').value = `PHP ${totalAmount.toFixed(2)}`;
+        
+                // Reset payment method selection
+                document.getElementById('paymentMethod').value = 'gcash';
+                document.getElementById('gcashPayment').classList.remove('d-none');
+                document.getElementById('paypalButtonContainer').classList.add('d-none');
+            });
+        });
 
-            fetch('join_tournament.php', {
-               method: 'POST',
-               body: formData
+                // Handle Payment Method Change
+                document.getElementById('paymentMethod').addEventListener('change', function () {
+                    if (this.value === 'paypal') {
+                        document.getElementById('gcashPayment').classList.add('d-none');
+                        document.getElementById('paypalButtonContainer').classList.remove('d-none');
+                        // Initialize PayPal button if using PayPal SDK
+                    } else {
+                        document.getElementById('gcashPayment').classList.remove('d-none');
+                        document.getElementById('paypalButtonContainer').classList.add('d-none');
+                    }
+                });
+
+
+        // Handle Show Bracket Buttons
+        document.querySelectorAll('.show-bracket').forEach(button => {
+            button.addEventListener('click', function () {
+                currentTournamentId = this.getAttribute('data-tournament-id');
+                renderBracket(currentTournamentId);
+            });
+        });
+
+        // Handle Notifications
+        const unreadBadge = document.querySelector("#dropdownMenuButton .badge");
+
+        // Hide badge if unread count is zero
+        if (unreadBadge && parseInt(unreadBadge.innerText) === 0) {
+            unreadBadge.style.display = 'none';
+        }
+
+        // Add click event to each notification item
+        document.querySelectorAll(".notification").forEach(notification => {
+            notification.addEventListener("click", function () {
+                const notificationId = this.dataset.notificationId;
+
+                // Send request to mark notification as read
+                fetch("user_notifications.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `action=mark_as_read&notification_id=${notificationId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Mark as read and disable further clicks
+                        this.classList.add("read");
+                        this.style.pointerEvents = "none";
+
+                        // Update the unread badge count
+                        if (unreadBadge) {
+                            let currentCount = parseInt(unreadBadge.innerText);
+                            if (currentCount > 0) {
+                                unreadBadge.innerText = currentCount - 1;
+                                // Hide badge if count reaches zero
+                                if (currentCount - 1 === 0) {
+                                    unreadBadge.style.display = 'none';
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        // Handle Show Scores Buttons
+        document.querySelectorAll('.show-scores').forEach(button => {
+            button.addEventListener('click', function () {
+                const tournamentId = this.getAttribute('data-tournament-id');
+
+                fetch(`fetch_scores.php?tournament_id=${tournamentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const scoresTableBody = document.getElementById('scoresTableBody');
+                        scoresTableBody.innerHTML = '';
+
+                        if (data.success && data.scores.length > 0) {
+                            data.scores.forEach(score => {
+                                const row = `
+                                    <tr>
+                                        <td>${score.user_id}</td>
+                                        <td>${score.username}</td>
+                                        <td>${score.scores}</td>
+                                    </tr>
+                                `;
+                                scoresTableBody.innerHTML += row;
+                            });
+                        } else {
+                            const row = `
+                                <tr>
+                                    <td colspan="3">No scores found for this tournament.</td>
+                                </tr>
+                            `;
+                            scoresTableBody.innerHTML += row;
+                        }
+
+                        const scoresModal = new bootstrap.Modal(document.getElementById('showScores'));
+                        scoresModal.show();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching scores:', error);
+                    });
+            });
+        });
+
+        // Function to Render the Bracket with Scores
+        function renderBracket(tournamentId, showModal = true) {
+            if (!tournamentId) {
+                alert('Tournament ID is missing.');
+                return;
+            }
+
+            // Fetch Bracket and Scores Data in Parallel
+            Promise.all([
+                fetch(`get_bracket.php?tournament_id=${tournamentId}`).then(response => response.json()),
+                fetch(`fetch_scores.php?tournament_id=${tournamentId}`).then(response => response.json())
+            ])
+            .then(([bracketData, scoresData]) => {
+                const bracketContainer = document.getElementById('bracketContainer');
+                bracketContainer.innerHTML = '';
+
+                if (bracketData.success && bracketData.matches.length > 0) {
+                    const matches = bracketData.matches;
+                    const rounds = Math.max(...matches.map(m => m.round));
+                    finalRound = rounds;
+
+                    // Create a mapping from user_id to scores
+                    const scoresMap = {};
+                    if (scoresData.success && scoresData.scores.length > 0) {
+                        scoresData.scores.forEach(score => {
+                            scoresMap[score.user_id] = score.scores;
+                        });
+                    }
+
+                    for (let round = 1; round <= rounds; round++) {
+                        const roundDiv = document.createElement('div');
+                        roundDiv.className = 'round';
+                        roundDiv.dataset.round = round;
+                        roundDiv.innerHTML = `<h2>Round ${round}</h2>`;
+
+                        const matchesInRound = matches.filter(m => m.round == round);
+
+                        matchesInRound.forEach(match => {
+                            const matchDiv = document.createElement('div');
+                            matchDiv.className = 'match';
+                            matchDiv.setAttribute('data-match-number', match.match_number);
+
+                            // Retrieve scores from scoresMap
+                            const player1Score = match.player1_id && scoresMap[match.player1_id] !== undefined ? scoresMap[match.player1_id] : '-';
+                            const player2Score = match.player2_id && scoresMap[match.player2_id] !== undefined ? scoresMap[match.player2_id] : '-';
+
+                            const team1Name = match.player1_name || 'TBA';
+                            const team2Name = match.player2_name || 'TBA';
+                            const winnerId = match.winner_id;
+
+                            matchDiv.innerHTML = `
+                                <div class="team ${winnerId == match.player1_id ? 'selected' : ''} ${winnerId && winnerId != match.player1_id ? 'eliminated' : ''}" data-player-id="${match.player1_id || ''}" data-toggle="tooltip" title="Click to view scores">
+                                    ${team1Name} <span class="score">(${player1Score})</span>
+                                </div>
+                                <div class="team ${winnerId == match.player2_id ? 'selected' : ''} ${winnerId && winnerId != match.player2_id ? 'eliminated' : ''}" data-player-id="${match.player2_id || ''}" data-toggle="tooltip" title="Click to view scores">
+                                    ${team2Name} <span class="score">(${player2Score})</span>
+                                </div>
+                            `;
+
+                            roundDiv.appendChild(matchDiv);
+                        });
+
+                        bracketContainer.appendChild(roundDiv);
+                    }
+
+                    // Add Winner Placeholder
+                    const winnerPlaceholder = document.createElement('div');
+                    winnerPlaceholder.className = 'winner-placeholder';
+                    const finalMatch = matches.find(m => m.round == finalRound);
+                    const winnerName = finalMatch && finalMatch.winner_id ? 
+                        (finalMatch.player1_id === finalMatch.winner_id ? finalMatch.player1_name : finalMatch.player2_name) : 
+                        'TBA';
+                    winnerPlaceholder.innerHTML = `
+                        <h2>Winner</h2>
+                        <div class="team">${winnerName}</div>
+                    `;
+                    bracketContainer.appendChild(winnerPlaceholder);
+
+                    // Initialize Bootstrap Tooltips
+                    $('[data-toggle="tooltip"]').tooltip();
+
+                    if (showModal) {
+                        const bracketModal = new bootstrap.Modal(document.getElementById('bracketModal'));
+                        bracketModal.show();
+                    }
+                } else {
+                    alert(bracketData.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching bracket or scores:', error);
+            });
+        }
+
+        // Event Listener for Selecting Winner in the Bracket
+        document.getElementById('bracketContainer').addEventListener('click', function (event) {
+            if (event.target.classList.contains('win-btn')) {
+                const round = parseInt(event.target.getAttribute('data-round'));
+                const matchNumber = parseInt(event.target.getAttribute('data-match'));
+
+                if (event.target.hasAttribute('disabled')) {
+                    return;
+                }
+
+                const selectedTeam = event.target.parentElement.querySelector('.team.selected');
+
+                if (selectedTeam) {
+                    const winnerId = selectedTeam.getAttribute('data-player-id');
+                    const winnerName = selectedTeam.textContent.split(' (')[0]; // Extract name without score
+
+                    fetch(`update_bracket.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            tournament_id: currentTournamentId,
+                            round: round,
+                            match: matchNumber,
+                            winner_id: winnerId,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Disable the win button
+                            event.target.setAttribute('disabled', 'disabled');
+
+                            // Update UI to reflect the winner
+                            selectedTeam.classList.add('selected');
+                            event.target.parentElement.querySelectorAll('.team').forEach(team => {
+                                if (team !== selectedTeam) {
+                                    team.classList.add('eliminated');
+                                }
+                            });
+
+                            console.log('Winner updated successfully');
+
+                            // Move winner to the next round
+                            moveWinnerToNextRound(selectedTeam, round, matchNumber);
+
+                            // Re-render the bracket without closing the modal
+                            renderBracket(currentTournamentId, false);
+
+                            // If it's the final round, announce the winner
+                            if (round === finalRound) {
+                                announceWinner(winnerName, currentTournamentId, round);
+                            }
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating winner:', error);
+                    });
+                } else {
+                    alert('Please select a winner.');
+                }
+            } else if (event.target.classList.contains('team')) {
+                if (event.target.parentElement.querySelector('.win-btn').hasAttribute('disabled')) {
+                    return; // Do not allow selection if match is already decided
+                }
+                event.target.parentElement.querySelectorAll('.team').forEach(team => team.classList.remove('selected'));
+                event.target.classList.add('selected');
+            }
+        });
+
+        // Function to Announce the Winner
+        function announceWinner(winnerName, tournamentId, round) {
+            if (!tournamentId) {
+                console.error('Tournament ID is missing.');
+                return;
+            }
+
+            fetch('announce_winner.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    winner_name: winnerName,
+                    tournament_id: tournamentId,
+                    round: round
+                })
             })
             .then(response => response.json())
             .then(data => {
-               if (data.success) {
-                     alert('Joined the tournament successfully!');
-                     location.reload();
-               } else {
-                     alert(data.message);
-               }
+                if (data.success) {
+                    alert(`Congratulations to ${winnerName} for winning the tournament!`);
+                } else {
+                    console.error('Failed to announce winner:', data.message);
+                }
             })
-            .catch(error => console.error('Error:', error));
-         });
-        </script>
-
-<style>
-        .bracket {
-            display: flex;
-            justify-content: center;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            .catch(error => {
+                console.error('Error announcing winner:', error);
+            });
         }
 
-        .round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 20px;
-            position: relative;
-        }
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
-        .round h2 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+      <style>
+.bracket {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
 
-        .match {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            position: relative;
-        }
+.round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 20px;
+    position: relative;
+}
 
-        .team {
-            width: 150px;
-            text-align: center;
-            padding: 5px;
-        }
+.round h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-        .winner-placeholder {
-            height: 50px;
-        }
+.match {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    position: relative;
+}
 
-        .round-line {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            background-color: #ccc;
-        }
+.team {
+    width: 150px;
+    text-align: center;
+    padding: 5px;
+}
 
-        .match-line {
-            position: absolute;
-            width: 2px;
-            height: 20px;
-            background-color: #ccc;
-            top: 50%;
-            left: 100%;
-        }
+.winner-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 200px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    margin-top: 20px; /* Space above the winner area */
+    align-self: center; /* Center within the flex container */
+}
 
-        .vertical-center {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+.winner-placeholder .team {
+    width: auto;
+    text-align: center;
+    font-weight: bold;
+}
 
-        .final-round {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
+.round-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: #ccc;
+}
 
-        .final-winner {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100px;
-            width: 200px;
-            border: 2px solid #000;
-            border-radius: 5px;
-            background-color: #ddd;
-        }
+.match-line {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background-color: #ccc;
+    top: 50%;
+    left: 100%;
+}
 
-        .team.selected {
-            background-color: #e0f7fa;
-            border-radius: 10px;
-        }
+.vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-        .team.eliminated {
-            text-decoration: line-through;
-        }
+.final-round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.final-winner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 200px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    background-color: #ddd;
+}
+
+.team.selected {
+    background-color: #e0f7fa;
+    border-radius: 10px;
+}
+
+.team.eliminated {
+    text-decoration: line-through;
+}
+
     </style>
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

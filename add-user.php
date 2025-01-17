@@ -1,67 +1,126 @@
-<?php 
+<?php
 include('conn.php');
+session_start();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-if (isset($_POST['name'], $_POST['email'], $_POST['username'], $_POST['password'], $_POST['confirmPassword'])) {
-    $name = trim($_POST['name']);
+require 'vendor/autoload.php';
+
+function sendActivationEmail($email, $activationCode) {
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'tjamesportybar@gmail.com'; // SMTP username
+        $mail->Password = 'pycj jhmw irtv yxka'; // SMTP password
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('no-reply@tjamessportybar.com', 'T James Sporty Bar');
+        $mail->addAddress($email);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Account Activation Required';
+        $activationLink = "https://tjamessportybar.com/BilliardManagement/activate.php?code=" . urlencode($activationCode);
+        $mail->Body = "<p>Hello,</p><p>Thank you for registering. Please click the link below to activate your account:</p><p><a href='$activationLink'>$activationLink</a></p><p>If you did not request this, please ignore this email.</p>";
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    }
+}
+
+if (isset($_POST['firstName'], $_POST['lastName'], $_POST['email'], $_POST['username'], $_POST['password'], $_POST['confirmPassword'], $_POST['number'])) {
+    $firstName = trim($_POST['firstName']);
+    $lastName = trim($_POST['lastName']);
+    $name = $firstName . ' ' . $lastName;
     $email = trim($_POST['email']);
-    $role = 'user'; // Automatically set role to 'user'
+    $role = 'user';
     $username = trim($_POST['username']);
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirmPassword'];
-    
+    $contactNumber = trim($_POST['number']);
+
     // Check if passwords match
     if ($password !== $confirmPassword) {
-        echo "
-        <script>
-            alert('Passwords do not match!');
-            window.location.href = 'register.php'; // Change to your registration page
-        </script>
-        ";
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Oops...',
+            'message' => 'Passwords do not match!'
+        ];
+        header('Location: register.php');
         exit;
     }
 
-    // Check if the email already exists
     try {
+        // Check if email already exists
         $stmt = $conn->prepare("SELECT `email` FROM `users` WHERE `email` = :email");
         $stmt->execute(['email' => $email]);
-        $nameExist = $stmt->fetch(PDO::FETCH_ASSOC);
+        $emailExists = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (empty($nameExist)) {
-            // Password hashing
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        if ($emailExists) {
+            $_SESSION['alert'] = [
+                'type' => 'info',
+                'title' => 'Account Already Exists!',
+                'message' => 'An account with this email already exists. Please use a different email.'
+            ];
+            header('Location: register.php');
+            exit;
+        }
 
-            $insertStmt = $conn->prepare("INSERT INTO `users` (`name`, `email`, `role`, `username`, `password`) VALUES (:name, :email, :role, :username, :password)");
-            $insertStmt->bindParam(':name', $name, PDO::PARAM_STR);
-            $insertStmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $insertStmt->bindParam(':role', $role, PDO::PARAM_STR);
-            $insertStmt->bindParam(':username', $username, PDO::PARAM_STR);
-            $insertStmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Ensure this is hashed
+        // Check if username already exists
+        $stmt = $conn->prepare("SELECT `username` FROM `users` WHERE `username` = :username");
+        $stmt->execute(['username' => $username]);
+        $usernameExists = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($insertStmt->execute()) {
-                echo "
-                <script>
-                    alert('Registered Successfully!');
-                    window.location.href = 'register.php'; // Redirect after registration
-                </script>
-                ";
-            } else {
-                echo "
-                <script>
-                    alert('Error registering the user.');
-                    window.location.href = 'register.php';
-                </script>
-                ";
-            }
-        } else {
-            echo "
-            <script>
-                alert('Account Already Exists!');
-                window.location.href = 'register.php'; // Change to your registration page
-            </script>
-            ";
+        if ($usernameExists) {
+            $_SESSION['alert'] = [
+                'type' => 'info',
+                'title' => 'Username Already Taken!',
+                'message' => 'The chosen username is already in use. Please use a different username.'
+            ];
+            header('Location: register.php');
+            exit;
+        }
+
+        // If both email and username are unique, proceed with registration
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $activationCode = bin2hex(random_bytes(32));
+
+        $insertStmt = $conn->prepare("INSERT INTO `users` (`name`, `email`, `role`, `username`, `password`, `contact_number`, `is_activated`, `activation_code`) VALUES (:name, :email, :role, :username, :password, :contactNumber, 0, :activationCode)");
+        $insertStmt->bindParam(':name', $name);
+        $insertStmt->bindParam(':email', $email);
+        $insertStmt->bindParam(':role', $role);
+        $insertStmt->bindParam(':username', $username);
+        $insertStmt->bindParam(':password', $hashedPassword);
+        $insertStmt->bindParam(':contactNumber', $contactNumber);
+        $insertStmt->bindParam(':activationCode', $activationCode);
+
+        if ($insertStmt->execute()) {
+            sendActivationEmail($email, $activationCode);
+
+            $_SESSION['alert'] = [
+                'type' => 'success',
+                'title' => 'Registered Successfully!',
+                'message' => 'Please check your email to activate your account.'
+            ];
+            header('Location: register.php');
+            exit;
         }
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+        error_log("Database error: " . $e->getMessage());
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Database Error',
+            'message' => 'An error occurred. Please try again later.'
+        ];
+        header('Location: register.php');
+        exit;
     }
 }
 ?>

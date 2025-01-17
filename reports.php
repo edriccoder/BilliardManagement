@@ -17,10 +17,11 @@ $username = htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
 $user_id = htmlspecialchars($_SESSION['user_id'], ENT_QUOTES, 'UTF-8');
 
 // Fetch reports from the database
-$sql = "SELECT id, type, description, datetime, photo, name FROM reports ORDER BY datetime DESC";
+$sql = "SELECT id, type, description, datetime, photo, name, charges, contact_number FROM reports ORDER BY datetime DESC";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,6 +40,8 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
       <!-- Font Awesome Icons -->
       <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.9/dist/sweetalert2.all.min.js"></script>
       <!-- Material Icons -->
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
       <!-- CSS Files -->
@@ -88,6 +91,14 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                      <i class="material-icons opacity-10">report</i>
                   </div>
                   <span class="nav-link-text ms-1">Reports</span>
+               </a>
+            </li>
+            <li class="nav-item">
+               <a class="nav-link text-white " href="cashier_reports.php">
+                  <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                     <i class="material-icons opacity-10">bar_chart</i>
+                  </div>
+                  <span class="nav-link-text ms-1">Reports & Analytics</span>
                </a>
             </li>
             <li class="nav-item mt-3">
@@ -206,41 +217,77 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
          <div class="card">
             <div class="card-header pb-0 px-3">
                <h6 class="mb-0">Reports</h6>
-                    <button class='btn btn-primary editBtn' data-toggle="modal" data-target="#reportModal">Create Report</button>
+                    <!-- Button to Open Item Damage Report Modal -->
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#itemDamageModal">Create Item Damage Report</button>
+                    
+                    <!-- Button to Open Incident Report Modal -->
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#incidentReportModal">Create Incident Report</button>
             </div>
             <div class="card-body pt-4 p-3">
                 <ul class="list-group">
-                    <?php   
-                    if (!empty($reports)) {
-                        foreach ($reports as $report) {
+                    <?php
+                        if (!empty($reports)) {
+                            foreach ($reports as $report) {
+                                echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
+                                echo '<div class="d-flex flex-column">';
+                        
+                                // Type
+                                if (!empty($report["type"])) {
+                                    echo '<h6 class="mb-3 text-sm">Type: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["type"], ENT_QUOTES, 'UTF-8') . '</span></h6>';
+                                }
+                        
+                                // Description
+                                if (!empty($report["description"])) {
+                                    echo '<span class="mb-2 text-xs">Description: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["description"], ENT_QUOTES, 'UTF-8') . '</span></span>';
+                                }
+                        
+                                // Date & Time
+                                if (!empty($report["datetime"])) {
+                                    echo '<span class="mb-2 text-xs">Date & Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["datetime"], ENT_QUOTES, 'UTF-8') . '</span></span>';
+                                }
+                        
+                                // Charges
+                                if (isset($report["charges"]) && $report["charges"] !== '') { // Allowing '0.00' as a valid value
+                                    echo '<span class="mb-2 text-xs">Charges: <span class="text-dark ms-sm-2 font-weight-bold">₱' . htmlspecialchars($report["charges"], ENT_QUOTES, 'UTF-8') . '</span></span>';
+                                }
+                        
+                                // Photo
+                                if (!empty($report["photo"])) {
+                                    echo '<span class="mb-2 text-xs">Photo: <span class="text-dark ms-sm-2 font-weight-bold">';
+                                    echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '\'); return false;">';
+                                    echo '<img src="' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '" alt="Report Photo" style="max-width: 100px; max-height: 100px;">';
+                                    echo '</a>';
+                                    echo '</span></span>';
+                                }
+                        
+                                // Reported By
+                                if (!empty($report["name"])) {
+                                    echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"], ENT_QUOTES, 'UTF-8') . '</span></span>';
+                                }
+                        
+                                // Contact Number
+                                if (!empty($report["contact_number"])) {
+                                    echo '<span class="mb-2 text-xs">Contact Number: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["contact_number"], ENT_QUOTES, 'UTF-8') . '</span></span>';
+                                }
+                        
+                                echo '</div>'; // Closing the flex column div properly
+                        
+                                // Actions section
+                                echo '<div class="ms-auto text-end">';
+                                echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8') . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
+                                echo '<a class="btn btn-link text-dark px-3 mb-0" data-bs-toggle="modal" data-bs-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report), ENT_QUOTES, 'UTF-8') . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                                echo '</div>';
+                                echo '</li>';
+                            }
+                        } else {
                             echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
                             echo '<div class="d-flex flex-column">';
-                            echo '<h6 class="mb-3 text-sm">Type: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["type"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></h6>';
-                            echo '<span class="mb-2 text-xs">Description: <span class="text-dark font-weight-bold ms-sm-2">' . htmlspecialchars($report["description"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
-                            echo '<span class="mb-2 text-xs">Date & Time: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["datetime"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
-                            if (!empty($report["photo"])) {
-                                echo '<span class="mb-2 text-xs">Photo: <span class="text-dark ms-sm-2 font-weight-bold">';
-                                echo '<a href="#" onclick="openImageModal(\'' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '\'); return false;">';
-                                echo '<img src="' . htmlspecialchars($report["photo"], ENT_QUOTES, 'UTF-8') . '" alt="Report Photo" style="max-width: 100px; max-height: 100px;">';
-                                echo '</a>';
-                                echo '</span></span>';
-                            }
-                            echo '<span class="mb-2 text-xs">Reported By: <span class="text-dark ms-sm-2 font-weight-bold">' . htmlspecialchars($report["name"] ?? '', ENT_QUOTES, 'UTF-8') . '</span></span>';
-                            echo '</div>';
-                            echo '<div class="ms-auto text-end">';
-                            echo '<a class="btn btn-link text-danger text-gradient px-3 mb-0" href="delete_report.php?report_id=' . htmlspecialchars($report["id"], ENT_QUOTES, 'UTF-8') . '"><i class="material-icons text-sm me-2">delete</i>Delete</a>';
-                            echo '<a class="btn btn-link text-dark px-3 mb-0" data-toggle="modal" data-target="#reportModal" onclick=\'openEditModal(' . htmlspecialchars(json_encode($report), ENT_QUOTES, 'UTF-8') . ')\'><i class="material-icons text-sm me-2">edit</i>Edit</a>';
+                            echo '<h6 class="mb-3 text-sm">No reports found.</h6>';
                             echo '</div>';
                             echo '</li>';
                         }
-                    } else {
-                        echo '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">';
-                        echo '<div class="d-flex flex-column">';
-                        echo '<h6 class="mb-3 text-sm">No reports found.</h6>';
-                        echo '</div>';
-                        echo '</li>';
-                    }
-                    ?>
+                        ?>
+
                 </ul>
                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -348,111 +395,177 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
          </div>
       </div>
 
-        <!-- Modal Structure -->
-        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="reportModalLabel">Choose Report Type</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Item Damage Report Modal -->
+<div class="modal fade" id="itemDamageModal" tabindex="-1" aria-labelledby="itemDamageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemDamageModalLabel">Item Damage Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="itemDamageForm" action="submit_item_damage.php" method="POST" enctype="multipart/form-data">
+                    <label for="item_damage_description" class="form-label">Description of the damage:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
                     </div>
-                    <div class="modal-body">
-                        <form id="reportForm" action="submit_report.php" method="POST" enctype="multipart/form-data">
-                            <p>Select the type of report you want to create:</p>
-                            <div class="dropdown mb-3">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Create Report
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#" onclick="showSection('item_damage')">Item Damage</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="showSection('incident_report')">Incident Report</a></li>
-                                </ul>
-                            </div>
 
-                            <!-- Item Damage Section -->
-                            <div id="itemDamageSection" class="report-section" style="display: none;">
-                                <h6>Item Damage Report</h6>
-                                <label for="item_damage_description" class="form-label">Description of the damage:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <textarea name="item_damage_description" id="item_damage_description" class="form-control" rows="3" placeholder="Describe the damage..." required></textarea>
-                                </div>
-                                <label for="item_damage_datetime" class="form-label">Date & Time:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
-                                </div>
-                                <label for="item_damage_photo" class="form-label">Upload Photo:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
-                                </div>
-                            </div>
-
-                            <!-- Incident Report Section -->
-                            <div id="incidentReportSection" class="report-section" style="display: none;">
-                                <h6>Incident Report</h6>
-                                <label for="incident_report_name" class="form-label">Name of the person to report:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
-                                </div>
-                                <label for="incident_report_description" class="form-label">Description of the incident:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
-                                </div>
-                                <label for="incident_report_datetime" class="form-label">Date & Time:</label>
-                                <div class="input-group input-group-outline my-3">
-                                    <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" name="saveReport">Submit Report</button>
-                            </div>
-                        </form>
+                    <label for="item_damage_datetime" class="form-label">Date & Time:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="item_damage_datetime" id="item_damage_datetime" class="form-control" required>
                     </div>
-                </div>
+
+                    <label for="item_damage_photo" class="form-label">Upload Photo:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="file" name="item_damage_photo" id="item_damage_photo" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <label for="item_reported_by" class="form-label">Reported By:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="text" name="item_reported_by" id="item_reported_by" class="form-control" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                    </div>
+
+                    <label for="item_damage_caused_by" class="form-label">Damage By:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="text" name="item_damage_caused_by" id="item_damage_caused_by" class="form-control" placeholder="Name of the person who caused the damage" required>
+                    </div>
+
+                    <label for="item_damage_charges" class="form-label">Charges (in ₱):</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="number" name="item_damage_charges" id="item_damage_charges" class="form-control" placeholder="Enter charges" min="0" step="0.01" required>
+                    </div>
+
+                    <!-- New Contact Number Field -->
+                    <label for="item_damage_contact_number" class="form-label">Contact Number:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="tel" name="item_damage_contact_number" id="item_damage_contact_number" class="form-control" placeholder="Enter contact number" pattern="[0-9]{10,15}" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit Item Damage Report</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
 
-        <script>
-            function showSection(reportType) {
-                const itemDamageSection = document.getElementById('itemDamageSection');
-                const incidentReportSection = document.getElementById('incidentReportSection');
 
-                // Get the form fields that need to be required or not
-                const itemDamageDescription = document.getElementById('item_damage_description');
-                const itemDamageDateTime = document.getElementById('item_damage_datetime');
-                const itemDamagePhoto = document.getElementById('item_damage_photo');
 
-                const incidentReportName = document.getElementById('incident_report_name');
-                const incidentReportDescription = document.getElementById('incident_report_description');
-                const incidentReportDateTime = document.getElementById('incident_report_datetime');
+<!-- Incident Report Modal -->
+<div class="modal fade" id="incidentReportModal" tabindex="-1" aria-labelledby="incidentReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="incidentReportModalLabel">Incident Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="incidentReportForm" action="submit_incident_report.php" method="POST" enctype="multipart/form-data">
+                    <!-- Hidden Field to Specify Report Type -->
+                    <input type="hidden" name="report_type" value="incident_report">
 
-                // Hide both sections initially
-                itemDamageSection.style.display = 'none';
-                incidentReportSection.style.display = 'none';
+                    <label for="incident_report_name" class="form-label">Name of the person to report:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="text" name="incident_report_name" id="incident_report_name" class="form-control" placeholder="Name" required>
+                    </div>
 
-                // Remove the 'required' attribute from all fields
-                itemDamageDescription.removeAttribute('required');
-                itemDamageDateTime.removeAttribute('required');
-                itemDamagePhoto.removeAttribute('required');
+                    <label for="incident_report_description" class="form-label">Description of the incident:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <textarea name="incident_report_description" id="incident_report_description" class="form-control" rows="3" placeholder="Describe the incident..." required></textarea>
+                    </div>
 
-                incidentReportName.removeAttribute('required');
-                incidentReportDescription.removeAttribute('required');
-                incidentReportDateTime.removeAttribute('required');
+                    <label for="incident_report_datetime" class="form-label">Date & Time:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="datetime-local" name="incident_report_datetime" id="incident_report_datetime" class="form-control" required>
+                    </div>
 
-                // Show the selected section and add 'required' attributes
-                if (reportType === 'item_damage') {
-                    itemDamageSection.style.display = 'block';
-                    itemDamageDescription.setAttribute('required', 'required');
-                    itemDamageDateTime.setAttribute('required', 'required');
-                    itemDamagePhoto.setAttribute('required', 'required');
-                } else if (reportType === 'incident_report') {
-                    incidentReportSection.style.display = 'block';
-                    incidentReportName.setAttribute('required', 'required');
-                    incidentReportDescription.setAttribute('required', 'required');
-                    incidentReportDateTime.setAttribute('required', 'required');
-                }
-            }
-        </script>
+                    <label for="reported_by" class="form-label">Reported By:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="text" name="reported_by" id="reported_by" class="form-control" value="<?php echo htmlspecialchars($username); ?>" readonly>
+                    </div>
+                    
+                    <label for="item_damage_caused_by" class="form-label">Person Involved in The Accident:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="text" name="damaged_by" id="damaged_by" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    
+                    <label for="incident_contact_number" class="form-label">Contact Number:</label>
+                    <div class="input-group input-group-outline my-3">
+                        <input type="tel" name="incident_contact_number" id="incident_contact_number" class="form-control" placeholder="Enter contact number" pattern="[0-9]{10,15}" required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit Incident Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function showSection(reportType) {
+        const itemDamageSection = document.getElementById('itemDamageSection');
+        const incidentReportSection = document.getElementById('incidentReportSection');
+
+        // Get the form fields that need to be required or not
+        const itemDamageDescription = document.getElementById('item_damage_description');
+        const itemDamageDateTime = document.getElementById('item_damage_datetime');
+        const itemDamagePhoto = document.getElementById('item_damage_photo');
+        const itemReportedBy = document.getElementById('item_reported_by');
+
+        const incidentReportDescription = document.getElementById('incident_report_description');
+        const incidentReportDateTime = document.getElementById('incident_report_datetime');
+        const reportedBy = document.getElementById('reported_by');
+
+        // Hide both sections initially
+        itemDamageSection.style.display = 'none';
+        incidentReportSection.style.display = 'none';
+
+        // Remove the 'required' attribute from all fields
+        itemDamageDescription.removeAttribute('required');
+        itemDamageDateTime.removeAttribute('required');
+        itemDamagePhoto.removeAttribute('required');
+        itemReportedBy.removeAttribute('required');
+
+        incidentReportDescription.removeAttribute('required');
+        incidentReportDateTime.removeAttribute('required');
+        reportedBy.removeAttribute('required');
+
+        // Show the selected section and add 'required' attributes
+        if (reportType === 'item_damage') {
+            itemDamageSection.style.display = 'block';
+            itemDamageDescription.setAttribute('required', 'required');
+            itemDamageDateTime.setAttribute('required', 'required');
+            itemDamagePhoto.setAttribute('required', 'required');
+            itemReportedBy.setAttribute('required', 'required');
+        } else if (reportType === 'incident_report') {
+            incidentReportSection.style.display = 'block';
+            incidentReportName.setAttribute('required', 'required');
+            incidentReportDescription.setAttribute('required', 'required');
+            incidentReportDateTime.setAttribute('required', 'required');
+            reportedBy.setAttribute('required', 'required');
+        }
+    }
+</script>
+
+<?php
+    // Display the SweetAlert modal if there's an alert set in the session
+    if (!empty($_SESSION['alert'])) {
+        echo "<script>
+            Swal.fire({
+                title: '" . $_SESSION['alert']['title'] . "',
+                text: '" . $_SESSION['alert']['text'] . "',
+                icon: '" . $_SESSION['alert']['icon'] . "'
+            });
+        </script>";
+        unset($_SESSION['alert']); // Clear the alert after displaying it
+    }
+    ?>
+
+
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
